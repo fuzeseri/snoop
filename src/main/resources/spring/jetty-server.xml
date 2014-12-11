@@ -1,0 +1,63 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:beans="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:sec="http://cxf.apache.org/configuration/security"
+  xmlns:http="http://cxf.apache.org/transports/http/configuration"
+  xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
+  xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+  xsi:schemaLocation="http://cxf.apache.org/configuration/security
+              http://cxf.apache.org/schemas/configuration/security.xsd
+            http://cxf.apache.org/transports/http/configuration
+            http://cxf.apache.org/schemas/configuration/http-conf.xsd
+            http://cxf.apache.org/transports/http-jetty/configuration
+            http://cxf.apache.org/schemas/configuration/http-jetty.xsd
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+            
+  <import resource="classpath:META-INF/cxf/cxf.xml" />
+  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+  <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+ 
+  <httpj:engine-factory bus="cxf">
+    <httpj:identifiedTLSServerParameters id="localhost">
+      <httpj:tlsServerParameters>
+        <sec:keyManagers keyPassword="x.1234.abcd">
+          <sec:keyStore type="JKS" password="password"
+                      file="src/main/resources/keystore.jks"/>
+        </sec:keyManagers>
+      </httpj:tlsServerParameters>
+    </httpj:identifiedTLSServerParameters>
+ 
+    <httpj:engine port="9001">
+      <httpj:tlsServerParametersRef id="secure" />
+      <httpj:threadingParameters minThreads="5"
+                                 maxThreads="15" />
+      <httpj:connector>
+        <beans:bean class="org.eclipse.jetty.server.bio.SocketConnector">
+           <beans:property name="port" value="9001" />
+        </beans:bean>
+      </httpj:connector>
+      <httpj:handlers>
+        <beans:bean class="org.eclipse.jetty.server.handler.DefaultHandler"/>
+        <!-- beans:bean class="org.eclipse.jetty.server.handler.ResourceHandler">
+        			ResourceHandler h = new ResourceHandler();
+					h.setAliases(aliases);
+					h.setBaseResource(base);
+					h.setCacheControl(cacheControl);
+					h.setDirectoriesListed(directory);
+					h.setEtags(etags);
+					h.setHandler(handler);
+					h.setMimeTypes(mimeTypes);
+					h.setResourceBase(arg0);
+					h.setServer(server);
+					h.setStylesheet(arg0);
+					h.setWelcomeFiles(welcomeFiles);
+        	
+        </beans:bean-->
+      </httpj:handlers>
+      <httpj:sessionSupport>true</httpj:sessionSupport>
+    </httpj:engine>
+  </httpj:engine-factory>
+  
+ </beans>
+ 
