@@ -6,15 +6,15 @@
         xsi:schemaLocation="http://www.springframework.org/schema/beans
             				http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
-        <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <bean id="h2DataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
            <property name="driverClassName" value="org.h2.Driver" />
            <property name="url" value="jdbc:h2:/home/karesz/snoop/install/databases/snoop" />
            <property name="username" value="sa" />
            <property name="password" value="sa" />
         </bean>
 
-		<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-			<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+		<bean id="h2dbTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+			<constructor-arg name="h2DataSource" ref="mongoDbFactory" />
 		</bean>
 
 </beans>

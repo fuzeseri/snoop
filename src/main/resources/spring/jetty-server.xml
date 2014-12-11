@@ -39,21 +39,6 @@
       </httpj:connector>
       <httpj:handlers>
         <beans:bean class="org.eclipse.jetty.server.handler.DefaultHandler"/>
-        <!-- beans:bean class="org.eclipse.jetty.server.handler.ResourceHandler">
-        			ResourceHandler h = new ResourceHandler();
-					h.setAliases(aliases);
-					h.setBaseResource(base);
-					h.setCacheControl(cacheControl);
-					h.setDirectoriesListed(directory);
-					h.setEtags(etags);
-					h.setHandler(handler);
-					h.setMimeTypes(mimeTypes);
-					h.setResourceBase(arg0);
-					h.setServer(server);
-					h.setStylesheet(arg0);
-					h.setWelcomeFiles(welcomeFiles);
-        	
-        </beans:bean-->
       </httpj:handlers>
       <httpj:sessionSupport>true</httpj:sessionSupport>
     </httpj:engine>

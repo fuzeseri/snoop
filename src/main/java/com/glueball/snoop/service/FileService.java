@@ -9,16 +9,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
 @Path("/page")
 public class FileService {
-
-    @Autowired
-    MongoTemplate mongoTemplate;
     
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -59,8 +54,4 @@ public class FileService {
     	return Response.ok(res.getInputStream(),"image/png").build();
     }
 
-    public void setMongoTemplate(MongoTemplate mongoTemplate) {
-		this.mongoTemplate = mongoTemplate;
-	}
-	
 }

@@ -9,12 +9,11 @@
           					http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
 		<context:annotation-config/>
-		<context:component-scan base-package="com.glueball.crm.*" />
-
-		<import resource="classpath:spring/mongodb.xml" />
+		<context:component-scan base-package="com.glueball.snoop.*" />
 		<import resource="classpath:spring/h2database.xml" />
 
-		<bean id="fileService"   class="com.glueball.crm.service.FileService"/>
-		
+		<bean id="fileService"   class="com.glueball.snoop.service.FileService"  />
+		<bean id="searchService" class="com.glueball.snoop.service.SearchService"/>
+		<bean id="adminService"  class="com.glueball.snoop.service.AdminService" />
 		
 </beans>

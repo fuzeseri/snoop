@@ -21,7 +21,8 @@
    				<ref bean="jsonProvider"/>
 			</jaxrs:providers>
 			<jaxrs:serviceBeans>
-				<ref bean="clientService"/>
+				<ref bean="searchService"/>
+				<ref bean="adminService"/>
 				<ref bean="fileService"/>
 			</jaxrs:serviceBeans>
 			<jaxrs:extensionMappings>
