@@ -53,7 +53,7 @@ public class DocumentPathBean implements DocumentPathDao {
 
 	public DocumentPath findById(final String Id) throws DataAccessException {
 
-		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type WHERE id = ?";
+		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type FROM DOCUMENT_PATH WHERE id = ?";
 		final DocumentPath doc = new DocumentPath();
 
 		this.jdbcTemplate.query(
@@ -72,7 +72,7 @@ public class DocumentPathBean implements DocumentPathDao {
 	}
 
 	public DocumentPath findBySum(final String md5sum) throws DataAccessException {
-		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type WHERE md5_sum = ?";
+		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type FROM DOCUMENT_PATH WHERE md5_sum = ?";
 		final DocumentPath doc = new DocumentPath();
 
 		this.jdbcTemplate.query(
