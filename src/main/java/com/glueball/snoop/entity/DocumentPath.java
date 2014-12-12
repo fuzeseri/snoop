@@ -13,7 +13,7 @@ public class DocumentPath {
 	private Timestamp lastIndexedTime;
 	private String contentType;
 	
-	public String getCreateTable() {
+	public static String getCreateTable() {
 		return   "CREATE TABLE IF NOT EXISTS DOCUMENT_PATH ("
 			   + "id varchar(50),"
 			   + "md5_sum varchar(255),"

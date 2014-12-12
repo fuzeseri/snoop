@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import com.glueball.snoop.dao.DocumentPathBean;
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.util.MD5;
 
@@ -19,12 +18,12 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 	
 	private List<String> neededTypes = Arrays.asList(new String[]{".doc", ".xml", ".txt", ".xls", ".odf", ".rtf", ".java"});
 	
-	private DocumentPathBean docPathBean;
-
-	public void setDocPathBean(final DocumentPathBean docPathBean) {
-		this.docPathBean = docPathBean;
+	private final List<DocumentPath> docs;
+	
+	public DbLoaderVisitor(final List<DocumentPath> _docs) {
+		this.docs = _docs;
 	}
-
+	
 	public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
 		return FileVisitResult.CONTINUE;
 	}
@@ -52,7 +51,7 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 				doc.setUri(file.toUri().toString());
 				doc.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
 				doc.setLastModifiedTime(new java.sql.Timestamp(attrs.lastModifiedTime().toMillis()));
-				this.docPathBean.insertOne(doc);
+				docs.add(doc);
 				System.out.println(file.toUri());
 			}
 		}

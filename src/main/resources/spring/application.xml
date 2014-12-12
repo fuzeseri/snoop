@@ -12,13 +12,8 @@
 		<context:component-scan base-package="com.glueball.snoop.*" />
 		<import resource="classpath:spring/data-access.xml" />
 
-		<bean id="dbLoaderVisitor" class="com.glueball.snoop.visitor.DbLoaderVisitor">
-			<property name="docPathBean" ref="documentPath"/>
-		</bean>
-
 		<bean id="dataLoader" class="com.glueball.snoop.bean.DataLoader">
 			<constructor-arg value="/home/karesz" />
-			<property name="visitor" ref="dbLoaderVisitor" />
 		</bean>
 		
 </beans>

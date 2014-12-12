@@ -2,14 +2,18 @@ package com.glueball.snoop.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.DocumentPath;
 
@@ -50,6 +54,33 @@ public class DocumentPathBean implements DocumentPathDao {
 						return null;
 					}
 				});
+	}
+
+	public void insertList(final List<DocumentPath> docs) throws DataAccessException {
+
+		final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
+
+		this.jdbcTemplate.batchUpdate(query, new BatchPreparedStatementSetter() {
+
+			public void setValues(final PreparedStatement pstmt, int i) throws SQLException {
+				pstmt.setString(1, docs.get(i).getId());
+				pstmt.setString(2, docs.get(i).getMd5Sum());
+				pstmt.setString(3, docs.get(i).getFileName());
+				pstmt.setString(4, docs.get(i).getUri());
+				pstmt.setString(5, docs.get(i).getPath());
+				pstmt.setTimestamp(6, docs.get(i).getLastModifiedTime());
+				pstmt.setTimestamp(7, docs.get(i).getLastIndexedTime());
+				pstmt.setString(8, docs.get(i).getContentType());
+
+				System.out.println(i + " doc insterted to db");
+			}
+
+			public int getBatchSize() {
+				return docs.size();
+			}
+			
+		});
+
 	}
 
 	public DocumentPath findById(final String Id) throws DataAccessException {
@@ -96,6 +127,22 @@ public class DocumentPathBean implements DocumentPathDao {
 		return null;
 	}
 
+	public void createTable() {
+		this.jdbcTemplate.execute(DocumentPath.getCreateTable());
+	}
+	
+	public long rowNum() {
+
+		return (Long) this.jdbcTemplate.query("SELECT COUNT(*) row_num FROM DOCUMENT_PATH", new ResultSetExtractor(){
+
+			public Object extractData(ResultSet rs) throws SQLException, DataAccessException {
+				long rowNum = 0;
+				if (rs.next()) {
+					rowNum = rs.getLong(1);
+				}
+				return rowNum;
+			}});
+	}
 	/*
 	 *  private String id;
 		private String md5Sum;
