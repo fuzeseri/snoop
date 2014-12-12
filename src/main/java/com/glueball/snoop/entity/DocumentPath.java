@@ -22,7 +22,7 @@ public class DocumentPath {
 			   + "path varchar(1024),"
 			   + "last_modified_time timestamp,"
 			   + "last_indexed_time timestamp,"
-			   + "content_type vachar(100)"
+			   + "content_type varchar(100)"
 			   + ")";
 	}
 

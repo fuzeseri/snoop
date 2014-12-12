@@ -24,7 +24,7 @@ public class DocumentPathBean implements DocumentPathDao {
 
 	public void insertOne(final DocumentPath doc) throws DataAccessException {
 
-		final String query = "INSERT INTO DOCUMENT_PATH VALUES (?,?,?,?,?,?,?,?)";
+		final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
 
 		this.jdbcTemplate.execute(
 				new PreparedStatementCreator() {
@@ -40,13 +40,14 @@ public class DocumentPathBean implements DocumentPathDao {
 						pstmt.setTimestamp(6, doc.getLastModifiedTime());
 						pstmt.setTimestamp(7, doc.getLastIndexedTime());
 						pstmt.setString(8, doc.getContentType());
+						pstmt.executeUpdate();
 
 						return pstmt;
 					}
 				}, new PreparedStatementCallback() {
 
 					public Object doInPreparedStatement(final PreparedStatement pstmt) throws SQLException, DataAccessException {
-						return pstmt.executeUpdate();
+						return null;
 					}
 				});
 	}
