@@ -6,13 +6,13 @@ import java.sql.SQLException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.entity.IndexedDocument;
 
-public class DocumentPathExtractor implements ResultSetExtractor {
+public class IndexedDocumentExtractor implements ResultSetExtractor {
 
-	final DocumentPath doc;
+	final IndexedDocument doc;
 
-	public DocumentPathExtractor(final DocumentPath _doc) {
+	public IndexedDocumentExtractor(final IndexedDocument _doc) {
 		this.doc = _doc;
 	}
 
@@ -25,9 +25,11 @@ public class DocumentPathExtractor implements ResultSetExtractor {
 			doc.setUri(rs.getString("uri"));
 			doc.setPath(rs.getString("path"));
 			doc.setLastModifiedTime(rs.getTimestamp("last_modified_time"));
+			doc.setLastIndexedTime(rs.getTimestamp("last_indexed_time"));
 			doc.setContentType(rs.getString("content_type"));
 		}
 
 		return rs;
 	}
+
 }

@@ -10,5 +10,7 @@ public interface DocumentPathDao extends SnoopDao<DocumentPath> {
 
 	public DocumentPath findBySum(String md5sum) throws DataAccessException;
 	public Set<DocumentPath> fullTextSearch(String search) throws DataAccessException;
+	public void deleteData() throws DataAccessException;
+	public void createTable() throws DataAccessException;
 
 }

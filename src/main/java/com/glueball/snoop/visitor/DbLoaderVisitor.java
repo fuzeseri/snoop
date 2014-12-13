@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import com.glueball.snoop.entity.DocumentPath;
@@ -49,7 +48,6 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 				doc.setContentType(Files.probeContentType(file));
 				doc.setPath(file.toAbsolutePath().toString());
 				doc.setUri(file.toUri().toString());
-				doc.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
 				doc.setLastModifiedTime(new java.sql.Timestamp(attrs.lastModifiedTime().toMillis()));
 				docs.add(doc);
 				System.out.println(file.toUri());

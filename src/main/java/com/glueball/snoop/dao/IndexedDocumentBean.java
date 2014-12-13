@@ -14,9 +14,9 @@ import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.entity.IndexedDocument;
 
-public class DocumentPathBean implements DocumentPathDao {
+public class IndexedDocumentBean implements IndexedDocumentDao {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -25,9 +25,9 @@ public class DocumentPathBean implements DocumentPathDao {
 		this.jdbcTemplate = _jdbcTemplate;
 	}
 
-	public void insertOne(final DocumentPath doc) throws DataAccessException {
+	public void insertOne(final IndexedDocument doc) throws DataAccessException {
 
-		final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?)";
+		final String query = "INSERT INTO INDEXED_DOCUMENT (id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
 
 		this.jdbcTemplate.execute(
 				new PreparedStatementCreator() {
@@ -41,7 +41,7 @@ public class DocumentPathBean implements DocumentPathDao {
 						pstmt.setString(4, doc.getUri());
 						pstmt.setString(5, doc.getPath());
 						pstmt.setTimestamp(6, doc.getLastModifiedTime());
-						pstmt.setString(7, doc.getContentType());
+						pstmt.setString(8, doc.getContentType());
 						pstmt.executeUpdate();
 
 						return pstmt;
@@ -54,17 +54,17 @@ public class DocumentPathBean implements DocumentPathDao {
 				});
 	}
 
-	public void insertList(final List<DocumentPath> docs) throws DataAccessException {
+	public void insertList(final List<IndexedDocument> docs) throws DataAccessException {
 
-		final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?)";
+		final String query = "INSERT INTO INDEXED_DOCUMENT (id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
 
-		this.jdbcTemplate.batchUpdate(query, new DocumentPathBatchPstmtSetter(docs));
+		this.jdbcTemplate.batchUpdate(query, new IndexedDocumentBatchPstmtSetter(docs));
 	}
 
-	public DocumentPath findById(final String Id) throws DataAccessException {
+	public IndexedDocument findById(final String Id) throws DataAccessException {
 
-		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,content_type FROM DOCUMENT_PATH WHERE id = ?";
-		final DocumentPath doc = new DocumentPath();
+		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type FROM INDEXED_DOCUMENT WHERE id = ?";
+		final IndexedDocument doc = new IndexedDocument();
 
 		this.jdbcTemplate.query(
 				new PreparedStatementCreator() {
@@ -76,14 +76,14 @@ public class DocumentPathBean implements DocumentPathDao {
 
 						return pstmt;
 					}
-				}, new DocumentPathExtractor(doc));
+				}, new IndexedDocumentExtractor(doc));
 
 		return doc;
 	}
 
-	public DocumentPath findBySum(final String md5sum) throws DataAccessException {
-		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,content_type FROM DOCUMENT_PATH WHERE md5_sum = ?";
-		final DocumentPath doc = new DocumentPath();
+	public IndexedDocument findBySum(final String md5sum) throws DataAccessException {
+		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type FROM INDEXED_DOCUMENT WHERE md5_sum = ?";
+		final IndexedDocument doc = new IndexedDocument();
 
 		this.jdbcTemplate.query(
 				new PreparedStatementCreator() {
@@ -95,24 +95,24 @@ public class DocumentPathBean implements DocumentPathDao {
 
 						return pstmt;
 					}
-				}, new DocumentPathExtractor(doc));
+				}, new IndexedDocumentExtractor(doc));
 
 		return doc;
 	}
 
-	public Set<DocumentPath> fullTextSearch(final String search) throws DataAccessException {
+	public Set<IndexedDocument> fullTextSearch(final String search) throws DataAccessException {
 
 		return null;
 	}
 
 	public void createTable() throws DataAccessException {
-		this.jdbcTemplate.execute(DocumentPath.getCreateTable());
+		this.jdbcTemplate.execute(IndexedDocument.getCreateTable());
 	}
 
 
 	public long rowNum() {
 
-		return (Long) this.jdbcTemplate.query("SELECT COUNT(*) row_num FROM DOCUMENT_PATH", new ResultSetExtractor(){
+		return (Long) this.jdbcTemplate.query("SELECT COUNT(*) row_num FROM INDEXED_DOCUMENT", new ResultSetExtractor(){
 
 			public Object extractData(ResultSet rs) throws SQLException, DataAccessException {
 				long rowNum = 0;
@@ -123,8 +123,7 @@ public class DocumentPathBean implements DocumentPathDao {
 			}});
 	}
 
-	public void deleteData() throws DataAccessException {
-		this.jdbcTemplate.execute("DELETE FROM DOCUMENT_PATH");
+	public void deleteData(final String id) throws DataAccessException {
+		this.jdbcTemplate.execute("DELETE FROM INDEXED_DOCUMENT WHERE id = '" + id + "'");
 	}
-
 }
