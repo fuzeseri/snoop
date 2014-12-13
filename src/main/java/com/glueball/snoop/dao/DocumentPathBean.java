@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -125,6 +126,16 @@ public class DocumentPathBean implements DocumentPathDao {
 
 	public void deleteData() throws DataAccessException {
 		this.jdbcTemplate.execute("DELETE FROM DOCUMENT_PATH");
+	}
+
+	public List<DocumentPath> selectAll() {
+
+		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,content_type FROM DOCUMENT_PATH";
+		final List<DocumentPath> docList = new ArrayList<DocumentPath>();
+
+		this.jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
+
+		return docList;
 	}
 
 }

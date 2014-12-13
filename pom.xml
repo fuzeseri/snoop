@@ -241,6 +241,16 @@
 			<artifactId>h2</artifactId>
 			<version>1.4.182</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers-icu</artifactId>
+			<version>4.10.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-collation</artifactId>
+			<version>3.0.3</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>

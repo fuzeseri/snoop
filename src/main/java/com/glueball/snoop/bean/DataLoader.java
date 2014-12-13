@@ -59,9 +59,9 @@ public class DataLoader implements Runnable {
 	public void run() {
 		try {
 			this.docPathBean.createTable();
+			this.docPathBean.deleteData();
 			Files.walkFileTree(source, visitor);
 			this.docPathBean.insertList(docs);
-			System.out.println("Current row number is: " + this.docPathBean.rowNum());
 		} catch (final IOException e) {
 			LOG.info(e.getMessage());
 		}

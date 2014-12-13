@@ -11,7 +11,9 @@
 		<context:annotation-config/>
 		<context:component-scan base-package="com.glueball.snoop.*" />
 		<import resource="classpath:spring/h2database.xml" />
+		<import resource="classpath:spring/lucene-index.xml" />
 
-		<bean id="documentPath" class="com.glueball.snoop.dao.DocumentPathBean"/>
-		
+		<bean id="documentPath"    class="com.glueball.snoop.dao.DocumentPathBean" />
+		<bean id="indexedDocument" class="com.glueball.snoop.dao.IndexedDocumentBean" />
+
 </beans>

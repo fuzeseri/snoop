@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:beans="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+            				http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+            				http://www.springframework.org/schema/util
+    						http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+		<util:constant id="luceneVersion" static-field="org.apache.lucene.util.Version.LATEST"/>
+
+		<bean id="analyzer" class="org.apache.lucene.analysis.core.SimpleAnalyzer" />
+
+		<bean id="indexPath" class="java.io.File">
+			<constructor-arg type="java.lang.String" value="/home/karesz/workspace/snoop/install/directory" />
+		</bean>
+
+		<bean id="lockFactory" class="org.apache.lucene.store.SimpleFSLockFactory" />
+
+		<bean id="fsDirectory" class="org.apache.lucene.store.SimpleFSDirectory">
+			<constructor-arg index="0" ref="indexPath"/>
+			<!-- constructor-arg index="1" ref="lockFactory"/ -->
+		</bean>
+
+		<bean id="indexWriterConfig" class="org.apache.lucene.index.IndexWriterConfig">
+			<constructor-arg index="0" ref="luceneVersion" />
+			<constructor-arg index="1" ref="analyzer" />			
+		</bean>
+
+		<bean id="indexWriter" class="org.apache.lucene.index.IndexWriter">
+			<constructor-arg index="0" ref="fsDirectory" />
+			<constructor-arg index="1" ref="indexWriterConfig" />
+		</bean>
+
+</beans>

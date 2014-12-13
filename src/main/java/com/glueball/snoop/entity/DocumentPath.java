@@ -80,4 +80,14 @@ public class DocumentPath {
 		this.contentType = contentType;
 	}
 
+	@Override
+	public String toString() {
+		return " id : " + getId() + 
+				" ,md5Sum : " + getMd5Sum() + 
+				" ,fileName : " + getFileName() + 
+				" ,uri : " + getUri() + 
+				" ,path : " + getPath() + 
+				" ,lastModifiedTime : " + getLastModifiedTime() + 
+				" ,contentType : " + getContentType() ;
+	}
 }

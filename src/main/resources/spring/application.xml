@@ -13,7 +13,10 @@
 		<import resource="classpath:spring/data-access.xml" />
 
 		<bean id="dataLoader" class="com.glueball.snoop.bean.DataLoader">
-			<constructor-arg value="/home/karesz" />
+			<constructor-arg value="/" />
 		</bean>
-		
+
+		<bean id="dataIndexer" class="com.glueball.snoop.bean.DataIndexer">
+		</bean>
+
 </beans>

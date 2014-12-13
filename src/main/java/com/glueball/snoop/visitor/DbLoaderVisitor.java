@@ -15,7 +15,7 @@ import com.glueball.snoop.util.MD5;
 
 public class DbLoaderVisitor implements FileVisitor<Path> {
 	
-	private List<String> neededTypes = Arrays.asList(new String[]{".doc", ".xml", ".txt", ".xls", ".odf", ".rtf", ".java"});
+	private List<String> neededTypes = Arrays.asList(new String[]{".doc", ".txt", ".odf", ".rtf", ".pdf"});
 	
 	private final List<DocumentPath> docs;
 	
