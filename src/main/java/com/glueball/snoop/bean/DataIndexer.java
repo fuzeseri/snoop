@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +18,9 @@ import org.apache.lucene.index.IndexWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.glueball.snoop.dao.DocumentPathBean;
-import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.dao.IndexedDocumentBean;
+import com.glueball.snoop.entity.IndexedDocument;
+import com.glueball.snoop.entity.SnoopDocument;
 
 public class DataIndexer implements Runnable {
 
@@ -35,13 +40,16 @@ public class DataIndexer implements Runnable {
 		this.docPathBean = docPathBean;
 	}
 
+	@Autowired
+	private IndexedDocumentBean indexedDocumentBean;
+
+	public void setIndexedDocumentBean(final IndexedDocumentBean indexedDocumentBean) {
+		this.indexedDocumentBean = indexedDocumentBean;
+	}
+	
 	public void run() {
-		try {
-			indexWriter.deleteAll();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		for (final DocumentPath docPath : docPathBean.selectAll()) {
+		final List<IndexedDocument> indexedList = new ArrayList<IndexedDocument>();
+		for (final SnoopDocument docPath : docPathBean.haveToIndex()) {
 			final Document doc = new Document();
 			doc.add(new StringField("id", 			docPath.getId(),       Field.Store.YES));
 			doc.add(new StringField("fileName", 	docPath.getFileName(), Field.Store.YES));
@@ -50,20 +58,24 @@ public class DataIndexer implements Runnable {
 			doc.add(new StringField("contentType", 	docPath.getContentType(), Field.Store.YES));
 			try {
 				doc.add(new TextField("content", new FileReader(new File(docPath.getPath()))));
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
+			} catch (final FileNotFoundException e1) {
+				LOG.info("Can't open file: " + docPath.getPath(), e1);
 			}
 			try {
-				System.out.println("Indexing file: " + docPath.toString());
+				LOG.info("Indexing file: " + docPath.toString());
 				indexWriter.addDocument(doc);
-			} catch (IOException e) {
-				e.printStackTrace();
+				((IndexedDocument) docPath).setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+				indexedList.add((IndexedDocument)docPath);
+			} catch (final IOException e) {
+				LOG.error("Error when add document to index: ", e);
 			}
 		}
 		try {
 			indexWriter.commit();
+			this.indexedDocumentBean.createTable();
+			this.indexedDocumentBean.insertList(indexedList);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error("Error commit index changes: ", e);
 		}
 	}
 

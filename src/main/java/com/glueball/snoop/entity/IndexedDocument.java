@@ -1,18 +1,8 @@
 package com.glueball.snoop.entity;
 
-import java.sql.Timestamp;
 
-public class IndexedDocument {
+public class IndexedDocument extends AbstractSnoopDocument {
 
-	private String id;
-	private String md5Sum;
-	private String fileName;
-	private String uri;
-	private String path;
-	private Timestamp lastModifiedTime;
-	private Timestamp lastIndexedTime;
-	private String contentType;
-	
 	public static String getCreateTable() {
 		return   "CREATE TABLE IF NOT EXISTS INDEXED_DOCUMENT ("
 			   + "id varchar(50),"
@@ -26,68 +16,14 @@ public class IndexedDocument {
 			   + ")";
 	}
 
-	public String getId() {
-		return id;
+	public String toString() {
+		return " id : " + getId() + 
+				" ,md5Sum : " + getMd5Sum() + 
+				" ,fileName : " + getFileName() + 
+				" ,uri : " + getUri() + 
+				" ,path : " + getPath() + 
+				" ,lastModifiedTime : " + getLastModifiedTime() +
+				" ,lastIndexedTime : " + getLastIndexedTime() +
+				" ,contentType : " + getContentType() ;
 	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getMd5Sum() {
-		return md5Sum;
-	}
-
-	public void setMd5Sum(String md5Sum) {
-		this.md5Sum = md5Sum;
-	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
-	public String getUri() {
-		return uri;
-	}
-
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
-	public Timestamp getLastModifiedTime() {
-		return lastModifiedTime;
-	}
-
-	public void setLastModifiedTime(Timestamp lastModifiedTime) {
-		this.lastModifiedTime = lastModifiedTime;
-	}
-
-	public Timestamp getLastIndexedTime() {
-		return lastIndexedTime;
-	}
-
-	public void setLastIndexedTime(Timestamp lastIndexedTime) {
-		this.lastIndexedTime = lastIndexedTime;
-	}
-
-	public String getContentType() {
-		return contentType;
-	}
-
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
 }

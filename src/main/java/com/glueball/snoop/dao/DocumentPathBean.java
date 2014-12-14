@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.entity.IndexedDocument;
 
 public class DocumentPathBean implements DocumentPathDao {
 
@@ -138,4 +139,27 @@ public class DocumentPathBean implements DocumentPathDao {
 		return docList;
 	}
 
+	public List<DocumentPath> haveToIndex() throws DataAccessException {
+
+		final String query = 
+				" SELECT "
+					+ " docp.id id,"
+					+ " docp.md5_sum md5_sum,"
+					+ " docp.file_name file_name,"
+					+ " docp.uri uri,"
+					+ " docp.path path,"
+					+ " docp.last_modified_time last_modified_time,"
+					+ " docp.content_type content_type "
+				+ " FROM "
+					+ " DOCUMENT_PATH docp"
+					+ " LEFT JOIN INDEXED_DOCUMENT idoc ON docp.id = idoc.id "
+				+ " WHERE "
+				+ " idoc.id IS NULL "
+				+ " OR (idoc.id IS NOT NULL AND docp.last_modified_time <> idoc.last_modified_time)";
+
+		final List<DocumentPath> docList = new ArrayList<DocumentPath>();
+		this.jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
+System.out.println("HAveTOinDeX: " + docList.size());
+		return docList;
+	}
 }

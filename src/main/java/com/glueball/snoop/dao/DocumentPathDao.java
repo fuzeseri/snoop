@@ -1,5 +1,6 @@
 package com.glueball.snoop.dao;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.dao.DataAccessException;
@@ -12,5 +13,6 @@ public interface DocumentPathDao extends SnoopDao<DocumentPath> {
 	public Set<DocumentPath> fullTextSearch(String search) throws DataAccessException;
 	public void deleteData() throws DataAccessException;
 	public void createTable() throws DataAccessException;
+	public List<DocumentPath> haveToIndex() throws DataAccessException;
 
 }

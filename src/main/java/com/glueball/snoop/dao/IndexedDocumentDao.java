@@ -12,4 +12,5 @@ public interface IndexedDocumentDao extends SnoopDao<IndexedDocument> {
 	public Set<IndexedDocument> fullTextSearch(String search) throws DataAccessException;
 	public void deleteData(final String id) throws DataAccessException;
 	public void createTable() throws DataAccessException;
+
 }

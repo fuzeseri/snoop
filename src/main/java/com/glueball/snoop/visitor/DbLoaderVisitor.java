@@ -10,6 +10,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.mortbay.log.Log;
+
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.util.MD5;
 
@@ -50,7 +52,7 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 				doc.setUri(file.toUri().toString());
 				doc.setLastModifiedTime(new java.sql.Timestamp(attrs.lastModifiedTime().toMillis()));
 				docs.add(doc);
-				System.out.println(file.toUri());
+				Log.debug("File Path loaded: " + doc.getPath());
 			}
 		}
 		return FileVisitResult.CONTINUE;
