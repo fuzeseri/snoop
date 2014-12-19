@@ -24,6 +24,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/karesz/workspace/glueball-crm/target"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

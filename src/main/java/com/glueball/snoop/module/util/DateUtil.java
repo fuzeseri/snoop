@@ -3,7 +3,7 @@ package com.glueball.snoop.module.util;
 import java.text.ParseException;
 import java.util.Date;
 
-import com.glueball.crm.module.client.model.CrmDate;
+import com.glueball.snoop.entity.CrmDate;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 

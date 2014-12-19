@@ -10,9 +10,6 @@
 			<artifactId>spring-data-mongodb</artifactId>
 			<version>1.0.0.RELEASE</version>
 		</dependency>
-
-
-
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
@@ -251,6 +248,11 @@
 			<artifactId>lucene-collation</artifactId>
 			<version>3.0.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-app</artifactId>
+			<version>1.6</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -261,12 +263,94 @@
 		</repository>
 	</repositories>
 
-
 	<artifactId>snoop</artifactId>
 	<name>snoop</name>
 	<url>www.gluball.com/snoop</url>
 	<organization>
-		<name>GlueBall Ltf.</name>
+		<name>GlueBall Ltd.</name>
 		<url>www.glueball.hu</url>
 	</organization>
+
+      <build>
+      <!--  pluginManagement -->
+		<plugins>
+		    
+		    <!-- plugin>
+		        <groupId>org.eclipse.m2e</groupId>
+		        <artifactId>lifecycle-mapping</artifactId>
+		        <version>1.0.0</version>
+		        <configuration>
+		            <lifecycleMappingMetadata>
+		                <pluginExecutions>
+		    
+		                    <pluginExecution>
+		                        <pluginExecutionFilter>
+		                            <groupId>org.apache.maven.plugins</groupId>
+		                            <artifactId>maven-dependency-plugin</artifactId>
+		                            <versionRange>[1.0.0,)</versionRange>
+		                            <goals>
+		                                <goal>copy-dependencies</goal>
+		                            </goals>
+		                        </pluginExecutionFilter>
+		                        <action>
+		                            <ignore />
+		                        </action>
+		                    </pluginExecution>
+		                </pluginExecutions>
+		            </lifecycleMappingMetadata>
+		        </configuration>
+		    </plugin>
+		   </plugins></pluginManagement>
+      
+        <plugins>
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>compile</phase>
+                <goals>
+                  <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.glueball.snoop.bean.Main</mainClass>
+              				<addClasspath>true</addClasspath>
+            			</manifest>
+					</archive>
+				</configuration>
+			</plugin-->
+			<!-- plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-assembly-plugin</artifactId>
+    <executions>
+      <execution>
+         <goals>
+           <goal>attached</goal>
+         </goals>
+         <phase>package</phase>
+         <configuration>
+           <descriptorRefs>
+             <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <archive>
+            <manifest>
+              <mainClass>com.glueball.snoop.bean.Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+     </execution>
+  </executions>
+</plugin -->
+        </plugins>
+      </build>
 </project>

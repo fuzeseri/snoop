@@ -2,7 +2,7 @@ package com.glueball.snoop.module.common.ui;
 
 import java.util.Date;
 
-import com.glueball.crm.module.client.model.CrmDate;
+import com.glueball.snoop.entity.CrmDate;
 import com.glueball.snoop.module.util.DateUtil;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
