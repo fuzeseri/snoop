@@ -28,6 +28,7 @@ public final class MimeFileextMap {
 			for (final String ext : this.mimeExtMap.get(mimeType)) {
 				if (fileName.endsWith(ext)) {
 					check = true;
+					break;
 				}
 			}
 		}

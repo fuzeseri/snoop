@@ -40,7 +40,7 @@ public class CreateMimes {
 				sb.append("\t\t\t\t<entry key=").append("\"").append(key).append("\">").append(System.lineSeparator());
 				sb.append("\t\t\t\t\t<array>").append(System.lineSeparator());
 				for (final String value : mimes.get(key)) {
-					sb.append("\t\t\t\t\t\t<value>").append("\"").append(value).append("\"").append("</value>").append(System.lineSeparator());
+					sb.append("\t\t\t\t\t\t<value>").append(value).append("</value>").append(System.lineSeparator());
 				}
 				sb.append("\t\t\t\t\t</array>").append(System.lineSeparator());
 				sb.append("\t\t\t\t</entry>").append(System.lineSeparator());
