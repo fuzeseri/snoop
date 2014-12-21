@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.glueball.snoop.dao.DocumentPathBean;
 import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.parser.MimeFileextMap;
 import com.glueball.snoop.parser.ParserMap;
-import com.glueball.snoop.parser.UnavialableParserException;
 import com.glueball.snoop.visitor.DbLoaderVisitor;
 
 public class DataLoader implements Runnable {
@@ -40,8 +40,15 @@ public class DataLoader implements Runnable {
 	@Autowired
 	private ParserMap parserMap;
 
-	public void setParserMap(final ParserMap _parserMap) {
-		this.parserMap = _parserMap;
+	public void setParserMap(final ParserMap parserMap) {
+		this.parserMap = parserMap;
+	}
+
+	@Autowired
+	private MimeFileextMap mimeFileextMap;
+
+	public void setPMimeFileextMap(final MimeFileextMap _mimeFileextMap) {
+		this.mimeFileextMap = _mimeFileextMap;
 	}
 
 	private Path source;
@@ -63,7 +70,7 @@ public class DataLoader implements Runnable {
 	}
 
 	public void run() {
-		this.visitor = new DbLoaderVisitor(docs, parserMap);
+		this.visitor = new DbLoaderVisitor(docs, parserMap, mimeFileextMap);
 		try {
 			this.docPathBean.createTable();
 			this.docPathBean.deleteData();

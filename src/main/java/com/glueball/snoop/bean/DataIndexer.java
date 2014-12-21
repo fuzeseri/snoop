@@ -63,6 +63,9 @@ public class DataIndexer implements Runnable {
 
 		final List<IndexedDocument> indexedList = new ArrayList<IndexedDocument>();
 
+		long haveToIndexSize = docPathBean.haveToIndex().size();
+		long counter = 0;
+
 		for (final SnoopDocument docPath : docPathBean.haveToIndex()) {
 
 			final Document doc = new Document();
@@ -76,6 +79,7 @@ public class DataIndexer implements Runnable {
 			if (!this.parserMap.hasParser(docPath.getContentType())) {
 				LOG.info("Can't find parser for content. File name: " + docPath.getFileName() + " content-type: " + docPath.getContentType());
 			} else {
+				LOG.info("Indexing file: " + docPath.toString());
 				Content content;
 				try {
 					content = this.parserMap.getParser(docPath.getContentType()).parseContent(docPath.getPath());
@@ -94,10 +98,10 @@ public class DataIndexer implements Runnable {
 			}
 
 			try {
-				LOG.info("Indexing file: " + docPath.toString());
 				indexWriter.addDocument(doc);
 				((IndexedDocument) docPath).setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
 				indexedList.add((IndexedDocument)docPath);
+				LOG.info(++counter + " of " + haveToIndexSize + " files currently indexed");
 			} catch (final IOException e) {
 				LOG.error("Error when add document to index: ", e);
 			}

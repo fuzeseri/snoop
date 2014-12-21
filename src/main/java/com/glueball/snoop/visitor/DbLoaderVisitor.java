@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.parser.MimeFileextMap;
 import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.util.MD5;
 
@@ -22,11 +23,14 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 
 	private final ParserMap parserMap;
 
+	private final MimeFileextMap mimeFileextMap;
+
 	private final List<DocumentPath> docs;
 
-	public DbLoaderVisitor(final List<DocumentPath> _docs, final ParserMap _parserMap) {
+	public DbLoaderVisitor(final List<DocumentPath> _docs, final ParserMap _parserMap, final MimeFileextMap _mimeFileextMap) {
 		this.docs = _docs;
 		this.parserMap = _parserMap;
+		this.mimeFileextMap = _mimeFileextMap;
 	}
 
 	public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
@@ -39,13 +43,13 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 			
 			final String contentType =  Files.probeContentType(file);
 
-			if (parserMap.hasParser(contentType)) {
+			if (parserMap.hasParser(contentType) && mimeFileextMap.checkFile(contentType, file.getFileName().toString())) {
 
 				final DocumentPath doc = new DocumentPath();
 
 				try {
 					doc.setId(MD5.md5Digest(file.toUri().toString()));
-				} catch (NoSuchAlgorithmException e) {
+				} catch (final NoSuchAlgorithmException e) {
 					throw new IOException(e);
 				}
 				doc.setMd5Sum("");

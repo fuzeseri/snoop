@@ -12,6 +12,7 @@
 		<context:component-scan base-package="com.glueball.snoop.*" />
 		<import resource="classpath:spring/data-access.xml" />
 		<import resource="classpath:spring/lucene-parser.xml" />
+		<import resource="classpath:spring/mimes.xml" />
 
 		<bean id="dataLoader" class="com.glueball.snoop.bean.DataLoader">
 			<constructor-arg value="/mnt/reaper" />
