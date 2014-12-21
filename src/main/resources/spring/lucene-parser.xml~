@@ -8,51 +8,6 @@
             				http://www.springframework.org/schema/util
     						http://www.springframework.org/schema/util/spring-util-4.0.xsd">	
 	
-	<bean id="luceneTiffParser" class="org.apache.tika.parser.image.TiffParser" />
-	<bean id="lucenePSDParser" class="org.apache.tika.parser.image.PSDParser" />
-	<bean id="luceneImageParser" class="org.apache.tika.parser.image.ImageParser" />
-	<bean id="luceneAudioParser" class="org.apache.tika.parser.audio.AudioParser" />
-	<bean id="luceneMidiParser" class="org.apache.tika.parser.audio.MidiParser" />
-	<bean id="luceneFLVParser" class="org.apache.tika.parser.video.FLVParser" />
-	<bean id="luceneRFC822Parser" class="org.apache.tika.parser.mail.RFC822Parser" />
-	<bean id="luceneOutlookPSTParser" class="org.apache.tika.parser.mbox.OutlookPSTParser" />
-	<bean id="luceneMboxParser" class="org.apache.tika.parser.mbox.MboxParser" />
-	<bean id="luceneClassParser" class="org.apache.tika.parser.asm.ClassParser" />
-	<bean id="luceneExecutableParser" class="org.apache.tika.parser.executable.ExecutableParser" />
-	<bean id="luceneDWGParser" class="org.apache.tika.parser.dwg.DWGParser" />
-	<bean id="luceneOpenDocumentParser" class="org.apache.tika.parser.odf.OpenDocumentParser" />
-	<bean id="luceneJpegParser" class="org.apache.tika.parser.jpeg.JpegParser" />
-	<bean id="luceneMp3Parser" class="org.apache.tika.parser.mp3.Mp3Parser" />
-	<bean id="lucenePDFParser" class="org.apache.tika.parser.pdf.PDFParser" />
-	<bean id="luceneIWorkPackageParser" class="org.apache.tika.parser.iwork.IWorkPackageParser" />
-	<bean id="luceneRTFParser" class="org.apache.tika.parser.rtf.RTFParser" />
-	<bean id="luceneRTFObjDataParser" class="org.apache.tika.parser.rtf.RTFObjDataParser" />
-	<bean id="luceneHtmlParser" class="org.apache.tika.parser.html.HtmlParser" />
-	<bean id="lucenePRTParser" class="org.apache.tika.parser.prt.PRTParser" />
-	<bean id="luceneMP4Parser" class="org.apache.tika.parser.mp4.MP4Parser" />
-	<bean id="lucenePackageParser" class="org.apache.tika.parser.pkg.PackageParser" />
-	<bean id="luceneCompressorParser" class="org.apache.tika.parser.pkg.CompressorParser" />
-	<bean id="luceneIptcAnpaParser" class="org.apache.tika.parser.iptc.IptcAnpaParser" />
-	<bean id="luceneChmParser" class="org.apache.tika.parser.chm.ChmParser" />
-	<bean id="luceneEnviHeaderParser" class="org.apache.tika.parser.envi.EnviHeaderParser" />
-	<bean id="luceneSourceCodeParser" class="org.apache.tika.parser.code.SourceCodeParser" />
-	<bean id="luceneEpubParser" class="org.apache.tika.parser.epub.EpubParser" />
-	<bean id="luceneTXTParser" class="org.apache.tika.parser.txt.TXTParser" />
-	<bean id="luceneOpenOfficeParser" class="org.apache.tika.parser.opendocument.OpenOfficeParser" />
-	<bean id="luceneFeedParser" class="org.apache.tika.parser.feed.FeedParser" />
-	<bean id="luceneDcXMLParser" class="org.apache.tika.parser.xml.DcXMLParser" />
-	<bean id="luceneFictionBookParser" class="org.apache.tika.parser.xml.FictionBookParser" />
-	<bean id="luceneXMLParser" class="org.apache.tika.parser.xml.XMLParser" />
-	<bean id="lucenePkcs7Parser" class="org.apache.tika.parser.crypto.Pkcs7Parser" />
-	<bean id="luceneOOXMLParser" class="org.apache.tika.parser.microsoft.ooxml.OOXMLParser" />
-	<bean id="luceneOfficeParser" class="org.apache.tika.parser.microsoft.OfficeParser" />
-	<bean id="luceneTNEFParser" class="org.apache.tika.parser.microsoft.TNEFParser" />
-	<bean id="luceneMatParser" class="org.apache.tika.parser.mat.MatParser" />
-	<bean id="luceneNetCDFParser" class="org.apache.tika.parser.netcdf.NetCDFParser" />
-	<bean id="luceneAdobeFontMetricParser" class="org.apache.tika.parser.font.AdobeFontMetricParser" />
-	<bean id="luceneTrueTypeParser" class="org.apache.tika.parser.font.TrueTypeParser" />
-	<bean id="luceneHDFParser" class="org.apache.tika.parser.hdf.HDFParser" />
-
 	<bean id="tiffParser" class="com.glueball.snoop.parser.SnoopParserImpl">
 		<property name="luceneParser" ref="luceneTiffParser" />
 	</bean>

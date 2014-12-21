@@ -14,16 +14,18 @@ import org.xml.sax.SAXException;
 
 import com.glueball.snoop.entity.Content;
 
-public abstract class AbstractParser implements SnoopParser {
+public class SnoopParserImpl implements SnoopParser {
 
 	protected final BodyContentHandler handler = new BodyContentHandler(Integer.MAX_VALUE);
 	protected final Metadata metadata = new Metadata();
-	protected final ParseContext context = new ParseContext();
-	
-	protected final Parser parser;
+	protected final ParseContext context = new ParseContext();	
+	protected Parser parser;
 
-	protected AbstractParser(final Parser parser) {
+	protected SnoopParserImpl(final Parser parser) {
 		this.parser = parser;
+	}
+
+	protected SnoopParserImpl() {
 	}
 
 	public Content parseContent(final String _uri) throws IOException, SAXException, TikaException {
@@ -58,6 +60,10 @@ public abstract class AbstractParser implements SnoopParser {
 		}
 
 		return new Content(author, title, handler.toString());
+	}
+
+	public void setLuceneParser(final Parser _parser) {
+		this.parser = _parser;
 	}
 
 }

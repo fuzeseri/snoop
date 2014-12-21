@@ -1,14 +1,16 @@
 package com.glueball.snoop.bean;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Set;
+import java.io.InputStream;
 
 import org.apache.tika.exception.TikaException;
-import org.apache.tika.mime.MediaType;
+import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.Parser;
+import org.apache.tika.parser.odf.OpenDocumentParser;
+import org.apache.tika.parser.pdf.PDFParser;
+import org.apache.tika.parser.pdf.PDFParserConfig;
+import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
 
 public class Main {
@@ -138,7 +140,7 @@ public class Main {
 
 		parser.setPDFParserConfig(pconfig);
 
-		final OpenDocumentParser parser = new OpenDocumentParser();
+		final OpenDocumentParser parser11 = new OpenDocumentParser();
 		//final OpenDocumentParserConfig pconfig = new OpenDocumentParserConfig();
 		
 		final ParseContext context = new ParseContext();
