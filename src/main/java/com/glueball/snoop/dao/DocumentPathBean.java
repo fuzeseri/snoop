@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,9 +17,11 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.DocumentPath;
-import com.glueball.snoop.entity.IndexedDocument;
+
 
 public class DocumentPathBean implements DocumentPathDao {
+
+	private static final Logger LOG = Logger.getLogger(DocumentPathBean.class);
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -111,7 +114,6 @@ public class DocumentPathBean implements DocumentPathDao {
 		this.jdbcTemplate.execute(DocumentPath.getCreateTable());
 	}
 
-
 	public long rowNum() {
 
 		return (Long) this.jdbcTemplate.query("SELECT COUNT(*) row_num FROM DOCUMENT_PATH", new ResultSetExtractor(){
@@ -159,7 +161,9 @@ public class DocumentPathBean implements DocumentPathDao {
 
 		final List<DocumentPath> docList = new ArrayList<DocumentPath>();
 		this.jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
-System.out.println("HAveTOinDeX: " + docList.size());
+
+		LOG.info("HAveTOinDeX: " + docList.size());
+
 		return docList;
 	}
 }

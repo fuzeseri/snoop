@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
-import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.IndexedDocument;
 
 public class IndexedDocumentBatchPstmtSetter implements BatchPreparedStatementSetter {

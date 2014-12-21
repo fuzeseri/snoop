@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -126,5 +125,9 @@ public class IndexedDocumentBean implements IndexedDocumentDao {
 
 	public void deleteData(final String id) throws DataAccessException {
 		this.jdbcTemplate.execute("DELETE FROM INDEXED_DOCUMENT WHERE id = '" + id + "'");
+	}
+
+	public void deleteALL() throws DataAccessException {
+		this.jdbcTemplate.execute("DELETE FROM INDEXED_DOCUMENT");
 	}
 }

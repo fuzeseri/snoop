@@ -26,7 +26,6 @@
 	<bean id="lucenePDFParser" class="org.apache.tika.parser.pdf.PDFParser" />
 	<bean id="luceneIWorkPackageParser" class="org.apache.tika.parser.iwork.IWorkPackageParser" />
 	<bean id="luceneRTFParser" class="org.apache.tika.parser.rtf.RTFParser" />
-	<bean id="luceneRTFObjDataParser" class="org.apache.tika.parser.rtf.RTFObjDataParser" />
 	<bean id="luceneHtmlParser" class="org.apache.tika.parser.html.HtmlParser" />
 	<bean id="lucenePRTParser" class="org.apache.tika.parser.prt.PRTParser" />
 	<bean id="luceneMP4Parser" class="org.apache.tika.parser.mp4.MP4Parser" />
@@ -123,10 +122,6 @@
 
 	<bean id="rtfParser" class="com.glueball.snoop.parser.SnoopParserImpl">
 		<property name="luceneParser" ref="luceneRTFParser" />
-	</bean>
-
-	<bean id="rtfObjDataParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneRTFObjDataParser" />
 	</bean>
 
 	<bean id="htmlParser" class="com.glueball.snoop.parser.SnoopParserImpl">
@@ -229,8 +224,8 @@
 		<property name="luceneParser" ref="luceneHDFParser" />
 	</bean>
 	
-	<bean id="parserMap" class="java.util.HashMap">
-		<costructor-arg>
+	<bean id="parserMap" class="com.glueball.snoop.parser.ParserMap" scope="singleton">
+		<constructor-arg>
 			<map>
 				<entry key="image/tiff" value-ref="tiffParser" />
 				<entry key="image/vnd.adobe.photoshop" value-ref="psdParser" />
@@ -380,6 +375,6 @@
 				<entry key="application/x-font-ttf" value-ref="trueTypeParser" />
 				<entry key="application/x-hdf" value-ref="hdfParser" />
 			</map>
-		</costructor-arg>
+		</constructor-arg>
 	</bean>
 </beans>

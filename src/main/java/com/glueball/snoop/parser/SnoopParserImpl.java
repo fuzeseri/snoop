@@ -45,21 +45,25 @@ public class SnoopParserImpl implements SnoopParser {
 
 	protected Content parse(final InputStream input) throws IOException, SAXException, TikaException {
 
-		parser.parse(input, handler, metadata, context);
-
-		String title  = "";
-		String author = "";
-
-		for (final String name : metadata.names()) {
-			if (name.equalsIgnoreCase("title")) {
-				title = metadata.get(name);
+		try {
+			parser.parse(input, handler, metadata, context);
+	
+			String title  = "";
+			String author = "";
+	
+			for (final String name : metadata.names()) {
+				if (name.equalsIgnoreCase("title")) {
+					title = metadata.get(name);
+				}
+				if (name.equalsIgnoreCase("author")) {
+					author = title = metadata.get(name);
+				}
 			}
-			if (name.equalsIgnoreCase("author")) {
-				author = title = metadata.get(name);
-			}
+	
+			return new Content(author, title, handler.toString());
+		} catch (final RuntimeException e) {
+			throw new TikaException("Can't parse content. " + e.getLocalizedMessage());
 		}
-
-		return new Content(author, title, handler.toString());
 	}
 
 	public void setLuceneParser(final Parser _parser) {

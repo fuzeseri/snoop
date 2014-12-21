@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.glueball.snoop.dao.DocumentPathBean;
 import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.parser.ParserMap;
+import com.glueball.snoop.parser.UnavialableParserException;
 import com.glueball.snoop.visitor.DbLoaderVisitor;
 
 public class DataLoader implements Runnable {
@@ -35,28 +37,33 @@ public class DataLoader implements Runnable {
 		this.docPathBean = docPathBean;
 	}
 
+	@Autowired
+	private ParserMap parserMap;
+
+	public void setParserMap(final ParserMap _parserMap) {
+		this.parserMap = _parserMap;
+	}
+
 	private Path source;
 
 	public void setSource(final Path source) {
 		this.source = source;
-		this.visitor = new DbLoaderVisitor(docs);
+
 	}
 
 	public DataLoader() {
-		this.visitor = new DbLoaderVisitor(docs);
 	}
 
 	public DataLoader(final Path source) {
-		this.visitor = new DbLoaderVisitor(docs);
 		this.source = source;
 	}
 
 	public DataLoader(final String source) {
-		this.visitor = new DbLoaderVisitor(docs);
 		this.source = Paths.get(source);
 	}
 
 	public void run() {
+		this.visitor = new DbLoaderVisitor(docs, parserMap);
 		try {
 			this.docPathBean.createTable();
 			this.docPathBean.deleteData();
