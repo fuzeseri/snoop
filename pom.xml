@@ -205,11 +205,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-analyzers</artifactId>
-			<version>3.6.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers-common</artifactId>
 			<version>4.10.2</version>
 		</dependency>
@@ -242,11 +237,6 @@
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers-icu</artifactId>
 			<version>4.10.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-collation</artifactId>
-			<version>3.0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tika</groupId>

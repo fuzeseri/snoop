@@ -10,7 +10,10 @@
 
 		<util:constant id="luceneVersion" static-field="org.apache.lucene.util.Version.LATEST"/>
 
-		<bean id="analyzer" class="org.apache.lucene.analysis.core.SimpleAnalyzer" />
+		<!-- bean id="analyzer" class="org.apache.lucene.analysis.core.SimpleAnalyzer" / -->
+		<bean id="analyzer" class="org.apache.lucene.analysis.hu.HungarianAnalyzer">
+			<constructor-arg index="0" ref="luceneVersion" />
+		</bean>
 
 		<bean id="indexPath" class="java.io.File">
 			<constructor-arg type="java.lang.String" value="/home/karesz/workspace/snoop/install/directory" />

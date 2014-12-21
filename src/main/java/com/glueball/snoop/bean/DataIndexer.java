@@ -1,7 +1,6 @@
 package com.glueball.snoop.bean;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,7 +58,7 @@ public class DataIndexer implements Runnable {
 
 	public void run() {
 
-		//indexedDocumentBean.deleteALL();
+		indexedDocumentBean.deleteALL();
 
 		final List<IndexedDocument> indexedList = new ArrayList<IndexedDocument>();
 
@@ -86,6 +85,17 @@ public class DataIndexer implements Runnable {
 					doc.add(new StringField("author", content.getAuthor(), Field.Store.YES));
 					doc.add(new StringField("title", content.getTitle(), Field.Store.YES));
 					doc.add(new TextField("content", content.getBody(), Field.Store.NO));
+					
+					try {
+						indexWriter.addDocument(doc);
+						((IndexedDocument) docPath).setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+						indexedList.add((IndexedDocument)docPath);
+						//LOG.info(++counter + " of " + haveToIndexSize + " files currently indexed");
+						System.out.println("File added to index: " + docPath.toString() +"  "+ ++counter + " of " + haveToIndexSize);
+					} catch (final IOException e) {
+						LOG.error("Error when add document to index: ", e);
+					}
+
 				} catch (final UnavialableParserException e) {
 					LOG.error("Can't find parser for file: " + docPath.getPath(), e);
 				} catch (final IOException e) {
@@ -95,15 +105,6 @@ public class DataIndexer implements Runnable {
 				} catch (final TikaException e) {
 					LOG.error("Error parsing file: " + docPath.getPath(), e);
 				}
-			}
-
-			try {
-				indexWriter.addDocument(doc);
-				((IndexedDocument) docPath).setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
-				indexedList.add((IndexedDocument)docPath);
-				LOG.info(++counter + " of " + haveToIndexSize + " files currently indexed");
-			} catch (final IOException e) {
-				LOG.error("Error when add document to index: ", e);
 			}
 		}
 
