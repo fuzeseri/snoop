@@ -12,6 +12,7 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.Term;
 import org.apache.tika.exception.TikaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.SAXException;
@@ -57,9 +58,45 @@ public class DataIndexer implements Runnable {
 		this.parserMap = _parserMap;
 	}
 
-	public void run() {
+	private void removeModifiedDeletedDocsFromIndex() {
 
-		indexedDocumentBean.createTable();
+		final List<String> dbDelete = new ArrayList<String>();
+		try {
+
+			final List<String> toDelete = new ArrayList<String>();
+			toDelete.addAll(indexedDocumentBean.getDeletedDocIds());
+			toDelete.addAll(indexedDocumentBean.getModifiedDocIds());
+
+			for (final String docId : toDelete) {
+
+				try {
+
+					indexWriter.deleteDocuments(new Term("id", docId));
+					dbDelete.add(docId);
+				} catch (final IOException e) {
+
+					LOG.error("ERROR while deleting document from index the");
+					LOG.debug(e.getMessage());
+				}
+			} 
+		} finally {
+
+			try {
+
+				indexWriter.commit();
+				indexedDocumentBean.deleteByIds(dbDelete);				
+			} catch (IOException e) {
+
+				LOG.error("ERROR while trying to commit index changes");
+				LOG.debug(e.getMessage());
+			}
+			LOG.debug("index contains deleted files: " + indexWriter.hasDeletions());
+			LOG.debug("index contains documents: " + indexWriter.maxDoc());
+		}
+	}
+
+	private void doIndex() {
+
 		final List<DocumentPath> haveToIndexList = docPathBean.haveToIndex();
 		final List<IndexedDocument> docPathList = new ArrayList<IndexedDocument>(haveToIndexList.size());
 
@@ -74,11 +111,11 @@ public class DataIndexer implements Runnable {
 
 				if (!this.parserMap.hasParser(docPath.getContentType())) {
 
-					LOG.info("Can't find parser for content. File name: " + docPath.getFileName() + " content-type: " + docPath.getContentType());
+					LOG.debug("Can't find parser for content. File name: " + docPath.getFileName() + " content-type: " + docPath.getContentType());
 					haveToIndexSize--;
 				} else {
 
-					LOG.info("Indexing file: " + docPath.toString());
+					LOG.debug("Indexing file: " + docPath.toString());
 					try {
 						final Content content = this.parserMap.getParser(docPath.getContentType()).parseContent(docPath.getPath());
 						if (content.hasContent()) {
@@ -104,21 +141,30 @@ public class DataIndexer implements Runnable {
 							}
 							indexWriter.addDocument(doc);
 							indexed = true;
-							System.out.println("File added to index: " + docPath.toString() +"  "+ ++counter + " of " + haveToIndexSize);
+
+							LOG.debug("File added to index: " + docPath.toString() +"  "+ ++counter + " of " + haveToIndexSize);
 						} else {
 							haveToIndexSize--;
 						}
 					} catch (final UnavialableParserException e) {
-						LOG.error("Can't find parser for file: " + docPath.getPath() + " - " + e.getMessage());
+
+						LOG.error("Can't find parser for file: " + docPath.getPath());
+						LOG.debug(e.getMessage());
 						haveToIndexSize--;
 					} catch (final IOException e) {
-						LOG.error("Error parsing file: " + docPath.getPath() + " - " + e.getMessage());
+
+						LOG.error("Error parsing file: " + docPath.getPath());
+						LOG.debug(e.getMessage());
 						haveToIndexSize--;
 					} catch (final SAXException e) {
-						LOG.error("Error parsing file: " + docPath.getPath() + " - " + e.getMessage());
+
+						LOG.error("Error parsing file: " + docPath.getPath());
+						LOG.debug(e.getMessage());
 						haveToIndexSize--;
 					} catch (final TikaException e) {
-						LOG.error("Error parsing file: " + docPath.getPath() + " - " + e.getMessage());
+
+						LOG.error("Error parsing file: " + docPath.getPath());
+						LOG.debug(e.getMessage());
 						haveToIndexSize--;
 					}
 				}
@@ -128,12 +174,23 @@ public class DataIndexer implements Runnable {
 				docPathList.add((IndexedDocument) docPath);
 			}
 		} finally {
+
 			try {
+
 				indexWriter.commit();
 				this.indexedDocumentBean.insertList(docPathList);
 			} catch (IOException e) {
-				e.printStackTrace();
+
+				LOG.error("ERROR while trying to commit index changes");
+				LOG.debug(e.getMessage());
 			}
 		}
+	}
+
+	public void run() {
+
+		indexedDocumentBean.createTable();
+		removeModifiedDeletedDocsFromIndex();
+		doIndex();
 	}
 }

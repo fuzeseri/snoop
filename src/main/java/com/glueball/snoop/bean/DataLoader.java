@@ -55,7 +55,6 @@ public class DataLoader implements Runnable {
 
 	public void setSource(final Path source) {
 		this.source = source;
-
 	}
 
 	public DataLoader() {

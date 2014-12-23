@@ -4,9 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,7 +17,9 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.IndexedDocument;
 
-public class IndexedDocumentBean implements IndexedDocumentDao {
+public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDocumentDao {
+
+	private static final Logger LOG = Logger.getLogger(IndexedDocumentBean.class);
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -111,14 +114,8 @@ public class IndexedDocumentBean implements IndexedDocumentDao {
 		return doc;
 	}
 
-	public Set<IndexedDocument> fullTextSearch(final String search) throws DataAccessException {
-
-		return null;
-	}
-
 	public void createTable() throws DataAccessException {
 		this.jdbcTemplate.execute(IndexedDocument.getCreateTable());
-		System.out.println(IndexedDocument.getCreateTable());
 	}
 
 	public long rowNum() {
@@ -140,5 +137,68 @@ public class IndexedDocumentBean implements IndexedDocumentDao {
 
 	public void deleteALL() throws DataAccessException {
 		this.jdbcTemplate.execute("DELETE FROM INDEXED_DOCUMENT");
+	}
+
+	@Override
+	public List<IndexedDocument> selectAll() throws DataAccessException {
+
+		final String query = "SELECT "
+				+ "id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type,index_state "
+				+ "FROM INDEXED_DOCUMENT";
+
+		final List<IndexedDocument> docList = new ArrayList<IndexedDocument>();
+
+		this.jdbcTemplate.query(query, new ListIndexedDocumentExtractor(docList));
+
+		return docList;
+	}
+
+	@Override
+	public List<String> getDeletedDocIds() throws DataAccessException {
+
+		final String query =
+				" SELECT "
+					+ " idoc.id id "
+				+ " FROM "
+					+ " INDEXED_DOCUMENT idoc"
+					+ " LEFT JOIN DOCUMENT_PATH docp ON idoc.id = docp.id "
+				+ " WHERE "
+				+ " docp.id IS NULL ";
+
+		final List<String> idList = new ArrayList<String>();
+		this.jdbcTemplate.query(query, new ListIdExtractor(idList));
+
+		LOG.info("DelETed size: " + idList.size());
+
+		return idList;
+	}
+
+	@Override
+	public List<String> getModifiedDocIds() throws DataAccessException {
+
+		final String query =
+				" SELECT "
+					+ " idoc.id id "
+				+ " FROM "
+					+ " INDEXED_DOCUMENT idoc"
+					+ " INNER JOIN DOCUMENT_PATH docp ON idoc.id = docp.id "
+				+ " WHERE "
+				+ " docp.last_modified_time > idoc.last_modified_time";
+
+		final List<String> idList = new ArrayList<String>();
+		this.jdbcTemplate.query(query, new ListIdExtractor(idList));
+
+		LOG.info("MoDiFIed size: " + idList.size());
+
+		return idList;		
+	}
+
+	@Override
+	public void deleteByIds(final List<String> ids) throws DataAccessException {
+
+		final String query = "DELETE FROM INDEXED_DOCUMENT WHERE id = ?";
+		this.jdbcTemplate.batchUpdate(query,new DeleteDocumentBatchPstmtSetter(ids));
+
+		LOG.info(ids.size() + " records was deleted from INDEXED_DOCUMENT table");
 	}
 }

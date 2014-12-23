@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import com.glueball.snoop.entity.DocumentPath;
 
 
-public class DocumentPathBean implements DocumentPathDao {
+public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao {
 
 	private static final Logger LOG = Logger.getLogger(DocumentPathBean.class);
 
@@ -105,11 +104,6 @@ public class DocumentPathBean implements DocumentPathDao {
 		return doc;
 	}
 
-	public Set<DocumentPath> fullTextSearch(final String search) throws DataAccessException {
-
-		return null;
-	}
-
 	public void createTable() throws DataAccessException {
 		this.jdbcTemplate.execute(DocumentPath.getCreateTable());
 	}
@@ -143,7 +137,7 @@ public class DocumentPathBean implements DocumentPathDao {
 
 	public List<DocumentPath> haveToIndex() throws DataAccessException {
 
-		final String query = 
+		final String query =
 				" SELECT "
 					+ " docp.id id,"
 					+ " docp.md5_sum md5_sum,"
@@ -165,5 +159,15 @@ public class DocumentPathBean implements DocumentPathDao {
 		LOG.info("HAveTOinDeX: " + docList.size());
 
 		return docList;
+	}
+
+	@Override
+	public void deleteData(String id) throws DataAccessException {
+		this.jdbcTemplate.execute("DELETE FROM DOCUMENT_PATH WHERE id = '" + id + "'");
+	}
+
+	@Override
+	public void deleteALL() throws DataAccessException {
+		this.jdbcTemplate.execute("DELETE FROM DOCUMENT_PATH");
 	}
 }
