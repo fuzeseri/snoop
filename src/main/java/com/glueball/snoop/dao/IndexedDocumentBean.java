@@ -27,7 +27,7 @@ public class IndexedDocumentBean implements IndexedDocumentDao {
 
 	public void insertOne(final IndexedDocument doc) throws DataAccessException {
 
-		final String query = "INSERT INTO INDEXED_DOCUMENT (id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
+		final String query = "INSERT INTO INDEXED_DOCUMENT (id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type,index_state) VALUES (?,?,?,?,?,?,?,?,?)";
 
 		this.jdbcTemplate.execute(
 				new PreparedStatementCreator() {
@@ -41,7 +41,10 @@ public class IndexedDocumentBean implements IndexedDocumentDao {
 						pstmt.setString(4, doc.getUri());
 						pstmt.setString(5, doc.getPath());
 						pstmt.setTimestamp(6, doc.getLastModifiedTime());
+						pstmt.setTimestamp(7, doc.getLastIndexedTime());
 						pstmt.setString(8, doc.getContentType());
+						pstmt.setString(9, doc.getIndexState());
+
 						pstmt.executeUpdate();
 
 						return pstmt;
@@ -56,14 +59,19 @@ public class IndexedDocumentBean implements IndexedDocumentDao {
 
 	public void insertList(final List<IndexedDocument> docs) throws DataAccessException {
 
-		final String query = "INSERT INTO INDEXED_DOCUMENT (id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
+		final String query = "INSERT INTO INDEXED_DOCUMENT "
+				+ "(id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type,index_state) "
+				+ "VALUES (?,?,?,?,?,?,?,?,?)";
 
 		this.jdbcTemplate.batchUpdate(query, new IndexedDocumentBatchPstmtSetter(docs));
 	}
 
 	public IndexedDocument findById(final String Id) throws DataAccessException {
 
-		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type FROM INDEXED_DOCUMENT WHERE id = ?";
+		final String query = "SELECT "
+				+ "id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type,index_state "
+				+ "FROM INDEXED_DOCUMENT WHERE id = ?";
+
 		final IndexedDocument doc = new IndexedDocument();
 
 		this.jdbcTemplate.query(
@@ -82,7 +90,10 @@ public class IndexedDocumentBean implements IndexedDocumentDao {
 	}
 
 	public IndexedDocument findBySum(final String md5sum) throws DataAccessException {
-		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type FROM INDEXED_DOCUMENT WHERE md5_sum = ?";
+		final String query = "SELECT "
+				+ "id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,content_type,index_state "
+				+ "FROM INDEXED_DOCUMENT WHERE md5_sum = ?";
+
 		final IndexedDocument doc = new IndexedDocument();
 
 		this.jdbcTemplate.query(
@@ -107,8 +118,8 @@ public class IndexedDocumentBean implements IndexedDocumentDao {
 
 	public void createTable() throws DataAccessException {
 		this.jdbcTemplate.execute(IndexedDocument.getCreateTable());
+		System.out.println(IndexedDocument.getCreateTable());
 	}
-
 
 	public long rowNum() {
 

@@ -27,6 +27,7 @@ public class IndexedDocumentExtractor implements ResultSetExtractor {
 			doc.setLastModifiedTime(rs.getTimestamp("last_modified_time"));
 			doc.setLastIndexedTime(rs.getTimestamp("last_indexed_time"));
 			doc.setContentType(rs.getString("content_type"));
+			doc.setIndexState(rs.getString("index_state"));
 		}
 
 		return rs;

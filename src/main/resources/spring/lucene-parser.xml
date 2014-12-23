@@ -242,7 +242,7 @@
 				<entry key="application/x-midi" value-ref="midiParser" />
 				<entry key="audio/midi" value-ref="midiParser" />
 				<entry key="video/x-flv" value-ref="flvParser" />
-				<entry key="message/rfc822" value-ref="rfc822Parser" />
+				<entry key="message/rfc822" value-ref="txtParser" />
 				<entry key="application/vnd.ms-outlook-pst" value-ref="outlookPSTParser" />
 				<entry key="application/mbox" value-ref="mboxParser" />
 				<entry key="application/java-vm" value-ref="classParser" />

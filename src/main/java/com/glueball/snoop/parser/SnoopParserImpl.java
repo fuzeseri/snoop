@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.cxf.common.util.StringUtils;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
@@ -21,7 +22,7 @@ public class SnoopParserImpl implements SnoopParser {
 	protected final ParseContext context = new ParseContext();	
 	protected Parser parser;
 
-	protected SnoopParserImpl(final Parser parser) {
+	public SnoopParserImpl(final Parser parser) {
 		this.parser = parser;
 	}
 
@@ -50,18 +51,32 @@ public class SnoopParserImpl implements SnoopParser {
 	
 			String title  = "";
 			String author = "";
+			String description = "";
 	
 			for (final String name : metadata.names()) {
-				if (name.equalsIgnoreCase("title")) {
+				if (StringUtils.isEmpty(title) && name.toLowerCase().contains("title")) {
 					title = metadata.get(name);
 				}
-				if (name.equalsIgnoreCase("author")) {
-					author = title = metadata.get(name);
+				if (name.toLowerCase().equals("title")) {
+					title = metadata.get(name);
+				}
+				if (StringUtils.isEmpty(author) && name.toLowerCase().contains("author")) {
+					author = metadata.get(name);
+				}
+				if (name.toLowerCase().equals("author")) {
+					author = metadata.get(name);
+				}
+				if (StringUtils.isEmpty(description) && name.toLowerCase().contains("description")) {
+					description = metadata.get(name);
+				}
+				if (name.toLowerCase().equals("description")) {
+					description = metadata.get(name);
 				}
 			}
-	
-			return new Content(author, title, handler.toString());
+			return new Content(author, title, description, new String(handler.toString().getBytes(), "UTF-8"));
+
 		} catch (final RuntimeException e) {
+
 			throw new TikaException("Can't parse content. " + e.getLocalizedMessage());
 		}
 	}

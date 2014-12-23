@@ -16,7 +16,7 @@
 		</bean>
 
 		<bean id="indexPath" class="java.io.File">
-			<constructor-arg type="java.lang.String" value="/home/karesz/workspace/snoop/install/directory" />
+			<constructor-arg type="java.lang.String" value="${snoop.directory.path}" />
 		</bean>
 
 		<bean id="lockFactory" class="org.apache.lucene.store.SimpleFSLockFactory" />

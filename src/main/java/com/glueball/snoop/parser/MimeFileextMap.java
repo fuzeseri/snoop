@@ -26,7 +26,7 @@ public final class MimeFileextMap {
 		boolean check = false;
 		if (hasMime(mimeType)) {
 			for (final String ext : this.mimeExtMap.get(mimeType)) {
-				if (fileName.endsWith(ext)) {
+				if (fileName.toLowerCase().endsWith(ext.toLowerCase())) {
 					check = true;
 					break;
 				}

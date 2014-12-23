@@ -25,6 +25,7 @@ public class IndexedDocumentBatchPstmtSetter implements BatchPreparedStatementSe
 		pstmt.setTimestamp(6, docs.get(i).getLastModifiedTime());
 		pstmt.setTimestamp(7, docs.get(i).getLastIndexedTime());
 		pstmt.setString(8, docs.get(i).getContentType());
+		pstmt.setString(9, docs.get(i).getIndexState());
 	}
 
 	public int getBatchSize() {
