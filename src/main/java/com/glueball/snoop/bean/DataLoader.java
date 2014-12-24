@@ -22,14 +22,6 @@ public class DataLoader implements Runnable {
 
 	private static final Logger LOG = LogManager.getLogger(DataLoader.class);
 
-	private FileVisitor<Path> visitor;
-
-	public void setVisitor(final FileVisitor<Path> visitor) {
-		this.visitor = visitor;
-	}
-
-	private final List<DocumentPath> docs = new ArrayList<DocumentPath>();
-
 	@Autowired
 	private DocumentPathBean docPathBean;
 
@@ -69,14 +61,17 @@ public class DataLoader implements Runnable {
 	}
 
 	public void run() {
-		this.visitor = new DbLoaderVisitor(docs, parserMap, mimeFileextMap);
+
+		final List<DocumentPath> docs = new ArrayList<DocumentPath>();
+		final FileVisitor<Path> visitor = new DbLoaderVisitor(docs, parserMap, mimeFileextMap);
 		try {
-			this.docPathBean.createTable();
-			this.docPathBean.deleteData();
+
 			Files.walkFileTree(source, visitor);
-			this.docPathBean.insertList(docs);
+			this.docPathBean.refreshDocumentPath(docs);
 		} catch (final IOException e) {
-			LOG.info(e.getMessage());
+
+			LOG.error("IO ERROR when discovering files");
+			LOG.debug(e.getMessage());
 		}
 	}
 

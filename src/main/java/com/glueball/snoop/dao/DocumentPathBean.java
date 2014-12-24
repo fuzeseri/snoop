@@ -14,6 +14,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.glueball.snoop.entity.DocumentPath;
 
@@ -27,6 +30,13 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 	public void setJdbcTemplate(final JdbcTemplate _jdbcTemplate) {
 		this.jdbcTemplate = _jdbcTemplate;
+	}
+
+	@Autowired
+	private TransactionTemplate transactionTemplate;
+
+	public void setTransactionTemplate(final TransactionTemplate _transactionTemplate) {
+		this.transactionTemplate = _transactionTemplate;
 	}
 
 	public void insertOne(final DocumentPath doc) throws DataAccessException {
@@ -150,8 +160,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 					+ " DOCUMENT_PATH docp"
 					+ " LEFT JOIN INDEXED_DOCUMENT idoc ON docp.id = idoc.id "
 				+ " WHERE "
-				+ " idoc.id IS NULL "
-				+ " OR (idoc.id IS NOT NULL AND docp.last_modified_time <> idoc.last_modified_time)";
+				+ " idoc.id IS NULL ";
 
 		final List<DocumentPath> docList = new ArrayList<DocumentPath>();
 		this.jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
@@ -169,5 +178,22 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 	@Override
 	public void deleteALL() throws DataAccessException {
 		this.jdbcTemplate.execute("DELETE FROM DOCUMENT_PATH");
+	}
+
+	@Override
+	public synchronized void refreshDocumentPath(final List<DocumentPath> docs) throws DataAccessException {
+
+			transactionTemplate.setIsolationLevel(TransactionTemplate.ISOLATION_SERIALIZABLE);
+			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+				@Override
+				protected void doInTransactionWithoutResult(final TransactionStatus status) {
+
+					jdbcTemplate.execute(DocumentPath.getCreateTable());
+					jdbcTemplate.execute("DELETE FROM DOCUMENT_PATH");
+					final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?)";
+					jdbcTemplate.batchUpdate(query, new DocumentPathBatchPstmtSetter(docs));
+				}
+			});
 	}
 }
