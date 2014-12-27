@@ -67,12 +67,14 @@ public class DataLoader implements Runnable {
 		try {
 
 			Files.walkFileTree(source, visitor);
-			this.docPathBean.refreshDocumentPath(docs);
+			this.docPathBean.updateDocumentPath(docs);
+			this.docPathBean.updateNewDocuments();
+			this.docPathBean.updateModifiedDocumetns();
+			this.docPathBean.updateDeletedDocuments();
 		} catch (final IOException e) {
 
 			LOG.error("IO ERROR when discovering files");
 			LOG.debug(e.getMessage());
 		}
 	}
-
 }

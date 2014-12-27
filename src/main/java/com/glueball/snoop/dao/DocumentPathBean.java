@@ -19,6 +19,7 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.entity.IndexedDocument;
 
 
 public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao {
@@ -37,6 +38,13 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 	public void setTransactionTemplate(final TransactionTemplate _transactionTemplate) {
 		this.transactionTemplate = _transactionTemplate;
+	}
+
+	@Autowired
+	private IndexedDocumentBean indexedDocumentBean;
+
+	public void setIndexedDocumentBean(final IndexedDocumentBean indexedDocumentBean) {
+		this.indexedDocumentBean = indexedDocumentBean;
 	}
 
 	public void insertOne(final DocumentPath doc) throws DataAccessException {
@@ -72,7 +80,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 		final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?)";
 
-		this.jdbcTemplate.batchUpdate(query, new DocumentPathBatchPstmtSetter(docs));
+		this.jdbcTemplate.batchUpdate(query, new DocumentPathBatchInsertSetter(docs));
 	}
 
 	public DocumentPath findById(final String Id) throws DataAccessException {
@@ -145,30 +153,30 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 		return docList;
 	}
 
-	public List<DocumentPath> haveToIndex() throws DataAccessException {
-
-		final String query =
-				" SELECT "
-					+ " docp.id id,"
-					+ " docp.md5_sum md5_sum,"
-					+ " docp.file_name file_name,"
-					+ " docp.uri uri,"
-					+ " docp.path path,"
-					+ " docp.last_modified_time last_modified_time,"
-					+ " docp.content_type content_type "
-				+ " FROM "
-					+ " DOCUMENT_PATH docp"
-					+ " LEFT JOIN INDEXED_DOCUMENT idoc ON docp.id = idoc.id "
-				+ " WHERE "
-				+ " idoc.id IS NULL ";
-
-		final List<DocumentPath> docList = new ArrayList<DocumentPath>();
-		this.jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
-
-		LOG.info("HAveTOinDeX: " + docList.size());
-
-		return docList;
-	}
+//	public List<DocumentPath> haveToIndex() throws DataAccessException {
+//
+//		final String query =
+//				" SELECT "
+//					+ " docp.id id, "
+//					+ " docp.md5_sum md5_sum, "
+//					+ " docp.file_name file_name, "
+//					+ " docp.uri uri, "
+//					+ " docp.path path, "
+//					+ " docp.last_modified_time last_modified_time, "
+//					+ " docp.content_type content_type "
+//				+ " FROM "
+//					+ " DOCUMENT_PATH docp "
+//					+ " LEFT JOIN INDEXED_DOCUMENT idoc ON docp.id = idoc.id "
+//				+ " WHERE "
+//				+ " idoc.id IS NULL ";
+//
+//		final List<DocumentPath> docList = new ArrayList<DocumentPath>();
+//		this.jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
+//
+//		LOG.info("HAveTOinDeX: " + docList.size());
+//
+//		return docList;
+//	}
 
 	@Override
 	public void deleteData(String id) throws DataAccessException {
@@ -181,19 +189,128 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 	}
 
 	@Override
-	public synchronized void refreshDocumentPath(final List<DocumentPath> docs) throws DataAccessException {
+	public synchronized void updateDocumentPath(final List<DocumentPath> docs) throws DataAccessException {
 
-			transactionTemplate.setIsolationLevel(TransactionTemplate.ISOLATION_SERIALIZABLE);
-			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+		transactionTemplate.setIsolationLevel(TransactionTemplate.ISOLATION_SERIALIZABLE);
+		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
-				@Override
-				protected void doInTransactionWithoutResult(final TransactionStatus status) {
+			@Override
+			protected void doInTransactionWithoutResult(final TransactionStatus status) {
 
-					jdbcTemplate.execute(DocumentPath.getCreateTable());
-					jdbcTemplate.execute("DELETE FROM DOCUMENT_PATH");
-					final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?)";
-					jdbcTemplate.batchUpdate(query, new DocumentPathBatchPstmtSetter(docs));
+				jdbcTemplate.execute(DocumentPath.getCreateTable());
+				jdbcTemplate.execute("DELETE FROM DOCUMENT_PATH");
+				final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?)";
+				jdbcTemplate.batchUpdate(query, new DocumentPathBatchInsertSetter(docs));
+			}
+		});
+	}
+
+	@Override
+	public synchronized void updateNewDocuments() throws DataAccessException {
+
+		transactionTemplate.setIsolationLevel(TransactionTemplate.ISOLATION_SERIALIZABLE);
+		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+			@Override
+			protected void doInTransactionWithoutResult(final TransactionStatus status) {
+
+				jdbcTemplate.execute(IndexedDocument.getCreateTable());
+
+				final String query =
+						" SELECT "
+							+ " docp.id id, "
+							+ " docp.md5_sum md5_sum, "
+							+ " docp.file_name file_name, "
+							+ " docp.uri uri, "
+							+ " docp.path path, "
+							+ " docp.last_modified_time last_modified_time, "
+							+ " docp.content_type content_type "
+						+ " FROM "
+							+ " DOCUMENT_PATH docp "
+							+ " LEFT JOIN INDEXED_DOCUMENT idoc ON docp.id = idoc.id "
+						+ " WHERE "
+						+ " idoc.id IS NULL ";
+
+				final List<DocumentPath> docList = new ArrayList<DocumentPath>();
+				jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
+
+				final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>(docList.size());
+				for (final DocumentPath doc : docList) {
+					final IndexedDocument idoc = (IndexedDocument) doc;
+					idoc.setIndexState(IndexedDocument.INDEX_STATE_NEW);
+					idocList.add(idoc);
 				}
-			});
+				indexedDocumentBean.insertList(idocList);
+			}
+		});
+	}
+
+	@Override
+	public synchronized void updateModifiedDocumetns() throws DataAccessException {
+
+		transactionTemplate.setIsolationLevel(TransactionTemplate.ISOLATION_SERIALIZABLE);
+		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+			@Override
+			protected void doInTransactionWithoutResult(final TransactionStatus status) {
+
+				jdbcTemplate.execute(IndexedDocument.getCreateTable());
+
+				final String query =
+						" SELECT "
+							+ " docp.id id, "
+							+ " docp.md5_sum md5_sum, "
+							+ " docp.file_name file_name, "
+							+ " docp.uri uri, "
+							+ " docp.path path, "
+							+ " docp.last_modified_time last_modified_time, "
+							+ " docp.content_type content_type "
+						+ " FROM "
+							+ " DOCUMENT_PATH docp "
+							+ " INNER JOIN INDEXED_DOCUMENT idoc ON docp.id = idoc.id "
+						+ " WHERE "
+						+ " docp.last_modified_time > idoc.last_modified_time";
+
+				final List<DocumentPath> docList = new ArrayList<DocumentPath>();
+				jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
+
+				final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>(docList.size());
+				for (final DocumentPath doc : docList) {
+					final IndexedDocument idoc = (IndexedDocument) doc;
+					idoc.setIndexState(IndexedDocument.INDEX_STATE_MODIFIED);
+					idoc.setLock(null);
+					idoc.setLockTime(null);
+					idocList.add(idoc);
+				}
+				indexedDocumentBean.insertList(idocList);
+			}
+		});
+	}
+
+	@Override
+	public synchronized void updateDeletedDocuments() throws DataAccessException {
+
+		transactionTemplate.setIsolationLevel(TransactionTemplate.ISOLATION_SERIALIZABLE);
+		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+			@Override
+			protected void doInTransactionWithoutResult(final TransactionStatus status) {
+
+				jdbcTemplate.execute(IndexedDocument.getCreateTable());
+
+				final String query =
+						" UPDATE INDEXED_DOCUMENT SET index_state = '"+ IndexedDocument.INDEX_STATE_DELETED +"', lock = null, lock_time = null "
+						+ " WHERE id IN ( "
+						+ " SELECT "
+							+ " idoc.id id "
+						+ " FROM "
+							+ " INDEXED_DOCUMENT idoc"
+							+ " LEFT JOIN DOCUMENT_PATH docp ON idoc.id = docp.id "
+						+ " WHERE "
+						+ " docp.id IS NULL )";
+
+				jdbcTemplate.execute(query);
+			}
+		});
 	}
 }

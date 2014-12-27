@@ -8,11 +8,11 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
 import com.glueball.snoop.entity.IndexedDocument;
 
-public class IndexedDocumentBatchPstmtSetter implements BatchPreparedStatementSetter {
+public class IndexedDocumentBatchInsertSetter implements BatchPreparedStatementSetter {
 	
 	final List<IndexedDocument> docs;
 	
-	public IndexedDocumentBatchPstmtSetter(final List<IndexedDocument> docs) {
+	public IndexedDocumentBatchInsertSetter(final List<IndexedDocument> docs) {
 		this.docs = docs;
 	}
 
@@ -26,6 +26,8 @@ public class IndexedDocumentBatchPstmtSetter implements BatchPreparedStatementSe
 		pstmt.setTimestamp(7, docs.get(i).getLastIndexedTime());
 		pstmt.setString(8, docs.get(i).getContentType());
 		pstmt.setString(9, docs.get(i).getIndexState());
+		pstmt.setInt(10, docs.get(i).getLock());
+		pstmt.setTimestamp(11, docs.get(i).getLockTime());
 	}
 
 	public int getBatchSize() {

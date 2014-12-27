@@ -31,6 +31,8 @@ public class ListIndexedDocumentExtractor implements ResultSetExtractor {
 			doc.setLastIndexedTime(rs.getTimestamp("last_indexed_time"));
 			doc.setContentType(rs.getString("content_type"));
 			doc.setIndexState(rs.getString("index_state"));
+			doc.setLock(rs.getInt("lock"));
+			doc.setLockTime(rs.getTimestamp("lockTime"));
 			docList.add(doc);
 		}
 		return rs;

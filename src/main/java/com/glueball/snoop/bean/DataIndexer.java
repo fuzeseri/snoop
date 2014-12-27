@@ -37,13 +37,6 @@ public class DataIndexer implements Runnable {
 	}
 
 	@Autowired
-	private DocumentPathBean docPathBean;
-
-	public void setDocPathBean(final DocumentPathBean docPathBean) {
-		this.docPathBean = docPathBean;
-	}
-
-	@Autowired
 	private IndexedDocumentBean indexedDocumentBean;
 
 	public void setIndexedDocumentBean(final IndexedDocumentBean indexedDocumentBean) {
@@ -57,14 +50,10 @@ public class DataIndexer implements Runnable {
 		this.parserMap = _parserMap;
 	}
 
-	private void removeModifiedDeletedDocsFromIndex() {
+	private void removeModifiedDeletedDocsFromIndex(final List<String> toDelete) {
 
 		final List<String> dbDelete = new ArrayList<String>();
 		try {
-
-			final List<String> toDelete = new ArrayList<String>();
-			toDelete.addAll(indexedDocumentBean.getDeletedDocIds());
-			toDelete.addAll(indexedDocumentBean.getModifiedDocIds());
 
 			for (final String docId : toDelete) {
 
@@ -94,37 +83,34 @@ public class DataIndexer implements Runnable {
 		}
 	}
 
-	private void doIndex() {
-
-		final List<DocumentPath> haveToIndexList = docPathBean.haveToIndex();
-		final List<IndexedDocument> docPathList = new ArrayList<IndexedDocument>(haveToIndexList.size());
+	private void doIndex(final List<IndexedDocument> haveToIndexList) {
 
 		try {
 
-			long haveToIndexSize = docPathBean.haveToIndex().size();
+			long haveToIndexSize = haveToIndexList.size();
 			long counter = 0;
 
-			for (final SnoopDocument docPath : haveToIndexList) {
+			for (final IndexedDocument idoc : haveToIndexList) {
 
 				boolean indexed = false;
 
-				if (!this.parserMap.hasParser(docPath.getContentType())) {
+				if (!this.parserMap.hasParser(idoc.getContentType())) {
 
-					LOG.debug("Can't find parser for content. File name: " + docPath.getFileName() + " content-type: " + docPath.getContentType());
+					LOG.debug("Can't find parser for content. File name: " + idoc.getFileName() + " content-type: " + idoc.getContentType());
 					haveToIndexSize--;
 				} else {
 
-					LOG.debug("Indexing file: " + docPath.toString());
+					LOG.debug("Indexing file: " + idoc.toString());
 					try {
-						final Content content = this.parserMap.getParser(docPath.getContentType()).parseContent(docPath.getPath());
+						final Content content = this.parserMap.getParser(idoc.getContentType()).parseContent(idoc.getPath());
 						if (content.hasContent()) {
 
 							final Document doc = new Document();
-							doc.add(new StringField("id", 			docPath.getId(),       Field.Store.YES));
-							doc.add(new StringField("fileName", 	docPath.getFileName(), Field.Store.YES));
-							doc.add(new StringField("path", 		docPath.getPath(),     Field.Store.YES));
-							doc.add(new StringField("uri", 			docPath.getUri(),      Field.Store.YES));
-							doc.add(new StringField("contentType", 	docPath.getContentType(), Field.Store.YES));
+							doc.add(new StringField("id", 			idoc.getId(),       Field.Store.YES));
+							doc.add(new StringField("fileName", 	idoc.getFileName(), Field.Store.YES));
+							doc.add(new StringField("path", 		idoc.getPath(),     Field.Store.YES));
+							doc.add(new StringField("uri", 			idoc.getUri(),      Field.Store.YES));
+							doc.add(new StringField("contentType", 	idoc.getContentType(), Field.Store.YES));
 
 							if (content.hasAuthor()) {
 								doc.add(new StringField("author", content.getAuthor(), Field.Store.YES));
@@ -141,43 +127,42 @@ public class DataIndexer implements Runnable {
 							indexWriter.addDocument(doc);
 							indexed = true;
 
-							LOG.debug("File added to index: " + docPath.toString() +"  "+ ++counter + " of " + haveToIndexSize);
+							LOG.debug("File added to index: " + idoc.toString() +"  "+ ++counter + " of " + haveToIndexSize);
 						} else {
 							haveToIndexSize--;
 						}
 					} catch (final UnavialableParserException e) {
 
-						LOG.error("Can't find parser for file: " + docPath.getPath());
+						LOG.error("Can't find parser for file: " + idoc.getPath());
 						LOG.debug(e.getMessage());
 						haveToIndexSize--;
 					} catch (final IOException e) {
 
-						LOG.error("Error parsing file: " + docPath.getPath());
+						LOG.error("Error parsing file: " + idoc.getPath());
 						LOG.debug(e.getMessage());
 						haveToIndexSize--;
 					} catch (final SAXException e) {
 
-						LOG.error("Error parsing file: " + docPath.getPath());
+						LOG.error("Error parsing file: " + idoc.getPath());
 						LOG.debug(e.getMessage());
 						haveToIndexSize--;
 					} catch (final TikaException e) {
 
-						LOG.error("Error parsing file: " + docPath.getPath());
+						LOG.error("Error parsing file: " + idoc.getPath());
 						LOG.debug(e.getMessage());
 						haveToIndexSize--;
 					}
 				}
 
-				((IndexedDocument) docPath).setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
-				((IndexedDocument) docPath).setIndexState(indexed ? "INDEXED" : "ERROR");
-				docPathList.add((IndexedDocument) docPath);
+				idoc.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+				idoc.setIndexState(indexed ? "INDEXED" : "ERROR");
 			}
 		} finally {
 
 			try {
 
 				indexWriter.commit();
-				this.indexedDocumentBean.insertList(docPathList);
+				this.indexedDocumentBean.updateState(haveToIndexList);
 			} catch (IOException e) {
 
 				LOG.error("ERROR while trying to commit index changes");
@@ -189,7 +174,18 @@ public class DataIndexer implements Runnable {
 	public void run() {
 
 		indexedDocumentBean.createTable();
-		removeModifiedDeletedDocsFromIndex();
-		doIndex();
+		final List<IndexedDocument> haveToIndexList = indexedDocumentBean.haveToIndex();
+
+		final List<String> toRemove = new ArrayList<String>();
+		for (final IndexedDocument idoc : haveToIndexList) {
+			if (   IndexedDocument.INDEX_STATE_DELETED.equals(idoc.getIndexState())
+				|| IndexedDocument.INDEX_STATE_MODIFIED.equals(idoc.getIndexState())
+				|| IndexedDocument.INDEX_STATE_REINDEX.equals(idoc.getIndexState())
+					) {
+				toRemove.add(idoc.getId());
+			}
+		}
+		removeModifiedDeletedDocsFromIndex(toRemove);
+		doIndex(haveToIndexList);
 	}
 }
