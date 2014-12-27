@@ -16,12 +16,9 @@ import org.apache.tika.exception.TikaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.SAXException;
 
-import com.glueball.snoop.dao.DocumentPathBean;
 import com.glueball.snoop.dao.IndexedDocumentBean;
 import com.glueball.snoop.entity.Content;
-import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.IndexedDocument;
-import com.glueball.snoop.entity.SnoopDocument;
 import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.parser.UnavialableParserException;
 
