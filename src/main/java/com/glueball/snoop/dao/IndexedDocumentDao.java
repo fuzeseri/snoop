@@ -13,4 +13,5 @@ public interface IndexedDocumentDao {
 	void deleteByIds(List<String> ids) throws DataAccessException;
 	List<IndexedDocument> haveToIndex() throws DataAccessException;
 	void updateState(List<IndexedDocument> idocList) throws DataAccessException;
+	void unLockUpdateState(List<IndexedDocument> idocList) throws DataAccessException;
 }

@@ -12,7 +12,7 @@ public class IndexedDocument extends AbstractSnoopDocument {
 	public static String INDEX_STATE_REINDEX  = "REINDEX";
 
 	private String    indexState = "";
-	private Integer   lock = null;
+	private Integer   lock = 0;
 	private Timestamp lockTime = null;
 
 	public static String getCreateTable() {
@@ -43,8 +43,8 @@ public class IndexedDocument extends AbstractSnoopDocument {
 				" ,lastIndexedTime : " + getLastIndexedTime() +
 				" ,contentType : " + getContentType() +
 				" ,indexState : " + getIndexState() + 
-				" ,lock integer : " + getLock() +
-				" ,lock_time timestamp : " + getLockTime(); 
+				" ,lock : " + getLock() +
+				" ,lock_time : " + getLockTime(); 
 
 	}
 

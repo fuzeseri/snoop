@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,7 +24,7 @@ import com.glueball.snoop.entity.IndexedDocument;
 
 public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDocumentDao {
 
-	private static final Logger LOG = Logger.getLogger(IndexedDocumentBean.class);
+	private static final Logger LOG = LogManager.getLogger(IndexedDocumentBean.class);
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -59,6 +60,8 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 				+ " last_indexed_time,content_type,index_state,lock,lock_time) "
 				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?) ";
 
+		LOG.debug("Inserting document: " + doc.toString() + " query: " + query);
+
 		this.jdbcTemplate.execute(
 				new PreparedStatementCreator() {
 
@@ -89,6 +92,8 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 						return null;
 					}
 				});
+
+		LOG.debug("Succesfully inserted document: " + doc.toString());
 	}
 
 	public void insertList(final List<IndexedDocument> docs) throws DataAccessException {
@@ -98,7 +103,9 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 				+ " content_type,index_state,lock,lock_time) "
 				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
+		LOG.debug("Inserting " + docs.size() + " documents. query: " + query);
 		this.jdbcTemplate.batchUpdate(query, new IndexedDocumentBatchInsertSetter(docs));
+		LOG.debug(docs.toString() + " documents succesfully inserted.");
 	}
 
 	public IndexedDocument findById(final String Id) throws DataAccessException {
@@ -110,6 +117,7 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 
 		final IndexedDocument doc = new IndexedDocument();
 
+		LOG.debug("Running query: " + query + " with parameter [id : "+ Id +"]");
 		this.jdbcTemplate.query(
 				new PreparedStatementCreator() {
 
@@ -135,6 +143,7 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 
 		final IndexedDocument doc = new IndexedDocument();
 
+		LOG.debug("Running query: " + query + " with parameter [id : "+ md5sum +"]");
 		this.jdbcTemplate.query(
 				new PreparedStatementCreator() {
 
@@ -152,11 +161,13 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 	}
 
 	public void createTable() throws DataAccessException {
+		LOG.debug("Running query: " + IndexedDocument.getCreateTable());
 		this.jdbcTemplate.execute(IndexedDocument.getCreateTable());
 	}
 
 	public long rowNum() {
 
+		LOG.debug("Running query: SELECT COUNT(*) row_num FROM INDEXED_DOCUMENT");
 		return (Long) this.jdbcTemplate.query("SELECT COUNT(*) row_num FROM INDEXED_DOCUMENT", 
 				new ResultSetExtractor(){
 
@@ -170,11 +181,17 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 	}
 
 	public void deleteData(final String id) throws DataAccessException {
-		this.jdbcTemplate.execute("DELETE FROM INDEXED_DOCUMENT WHERE id = '" + id + "'");
+
+		final String query = "DELETE FROM INDEXED_DOCUMENT WHERE id = '" + id + "'";
+		LOG.debug("Running query: " + query);
+		this.jdbcTemplate.execute(query);
 	}
 
 	public void deleteALL() throws DataAccessException {
-		this.jdbcTemplate.execute("DELETE FROM INDEXED_DOCUMENT");
+
+		final String query = "DELETE FROM INDEXED_DOCUMENT";
+		LOG.debug("Running query: " + query);
+		this.jdbcTemplate.execute(query);
 	}
 
 	@Override
@@ -187,58 +204,20 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 
 		final List<IndexedDocument> docList = new ArrayList<IndexedDocument>();
 
+		LOG.debug("Running query: " + query);
 		this.jdbcTemplate.query(query, new ListIndexedDocumentExtractor(docList));
+		LOG.debug(docList.size() + " document selected.");
 
 		return docList;
 	}
-
-//	@Override
-//	public List<String> getDeletedDocIds() throws DataAccessException {
-//
-//		final String query =
-//				" SELECT "
-//					+ " idoc.id id "
-//				+ " FROM "
-//					+ " INDEXED_DOCUMENT idoc"
-//					+ " LEFT JOIN DOCUMENT_PATH docp ON idoc.id = docp.id "
-//				+ " WHERE "
-//				+ " docp.id IS NULL ";
-//
-//		final List<String> idList = new ArrayList<String>();
-//		this.jdbcTemplate.query(query, new ListIdExtractor(idList));
-//
-//		LOG.info("DelETed size: " + idList.size());
-//
-//		return idList;
-//	}
-//
-//	@Override
-//	public List<String> getModifiedDocIds() throws DataAccessException {
-//
-//		final String query =
-//				" SELECT "
-//					+ " idoc.id id "
-//				+ " FROM "
-//					+ " INDEXED_DOCUMENT idoc"
-//					+ " INNER JOIN DOCUMENT_PATH docp ON idoc.id = docp.id "
-//				+ " WHERE "
-//				+ " docp.last_modified_time > idoc.last_modified_time";
-//
-//		final List<String> idList = new ArrayList<String>();
-//		this.jdbcTemplate.query(query, new ListIdExtractor(idList));
-//
-//		LOG.info("MoDiFIed size: " + idList.size());
-//
-//		return idList;		
-//	}
 
 	@Override
 	public void deleteByIds(final List<String> ids) throws DataAccessException {
 
 		final String query = "DELETE FROM INDEXED_DOCUMENT WHERE id = ?";
+		LOG.debug("Running batch delete. Query: " + query + " with " + ids.size() + " ids.");
 		this.jdbcTemplate.batchUpdate(query,new DeleteDocumentBatchPstmtSetter(ids));
-
-		LOG.info(ids.size() + " records was deleted from INDEXED_DOCUMENT table");
+		LOG.debug(ids.size() + " records was deleted from INDEXED_DOCUMENT table");
 	}
 
 	@Override
@@ -253,6 +232,7 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 
 			@Override
 			protected void doInTransactionWithoutResult(TransactionStatus status) {
+
 				final String getQuery = "SELECT id FROM INDEXED_DOCUMENT WHERE index_state IN "
 						+ "("
 						+ "'"+ IndexedDocument.INDEX_STATE_NEW +"',"
@@ -260,12 +240,13 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 						+ "'"+ IndexedDocument.INDEX_STATE_DELETED +"', "
 						+ "'"+ IndexedDocument.INDEX_STATE_REINDEX +"'"
 					    + ") "
-						+ " AND lock IS NULL "
+						+ " AND lock = 0 "
 						+ " LIMIT " + maxDocsPerRound;
 
 				final String updateQuery = "UPDATE INDEXED_DOCUMENT SET lock = "+ lock +", "
 						+ "lock_time = now() WHERE id IN (" + getQuery + ")";
 
+				LOG.debug("Running query: " + updateQuery);
 				jdbcTemplate.execute(updateQuery);
 
 				final String query = "SELECT "
@@ -273,7 +254,9 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 						+ " content_type,index_state,lock,lock_time "
 						+ " FROM INDEXED_DOCUMENT WHERE lock = " + lock;
 
+				LOG.debug("Running query: " + query);
 				jdbcTemplate.query(query, new ListIndexedDocumentExtractor(idocList));
+				LOG.debug(idocList.size() + " documents selected to index.");
 			}
 		});
 
@@ -283,10 +266,26 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 	@Override
 	public void updateState(final List<IndexedDocument> idocList)
 			throws DataAccessException {
+
 		final String query = "UPDATE INDEXED_DOCUMENT SET "
 				+ " last_indexed_time = ?, index_state = ? "
 				+ " WHERE id = ?";
 
+		LOG.debug("Running batch update. Query: " + query + " with " + idocList.size() + " ids.");
 		this.jdbcTemplate.batchUpdate(query, new IndexedDocumentBatchUpdateSetter(idocList));
+		LOG.debug(idocList.size() + " documents successfully updated.");
+	}
+
+	@Override
+	public void unLockUpdateState(List<IndexedDocument> idocList)
+			throws DataAccessException {
+
+		final String query = "UPDATE INDEXED_DOCUMENT SET "
+				+ " last_indexed_time = ?, index_state = ?, lock = 0, lock_time = null "
+				+ " WHERE id = ?";
+
+		LOG.debug("Running batch update. Query: " + query + " with " + idocList.size() + " ids.");
+		this.jdbcTemplate.batchUpdate(query, new IndexedDocumentBatchUpdateSetter(idocList));
+		LOG.debug(idocList.size() + " documents successfully updated.");
 	}
 }

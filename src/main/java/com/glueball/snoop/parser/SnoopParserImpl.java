@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.tika.exception.TikaException;
@@ -13,13 +14,10 @@ import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
 
-import com.glueball.snoop.entity.Content;
+import com.glueball.snoop.entity.Meta;
 
 public class SnoopParserImpl implements SnoopParser {
 
-	protected final BodyContentHandler handler = new BodyContentHandler(Integer.MAX_VALUE);
-	protected final Metadata metadata = new Metadata();
-	protected final ParseContext context = new ParseContext();	
 	protected Parser parser;
 
 	public SnoopParserImpl(final Parser parser) {
@@ -29,25 +27,29 @@ public class SnoopParserImpl implements SnoopParser {
 	protected SnoopParserImpl() {
 	}
 
-	public Content parseContent(final String _uri) throws IOException, SAXException, TikaException {
+	public Meta parseContent(final String _uri, final Writer output) throws IOException, SAXException, TikaException {
 		final File path = new File(_uri);
 		final InputStream is = new FileInputStream(path);
-		return parse(is);
+		return parse(is, output);
 	}
 
-	public Content parseContent(final File path) throws IOException, SAXException, TikaException {
+	public Meta parseContent(final File path, final Writer output) throws IOException, SAXException, TikaException {
 		final InputStream is = new FileInputStream(path);
-		return parse(is);
+		return parse(is, output);
 	}
 
-	public Content parseContent(final InputStream is) throws IOException, SAXException, TikaException {
-		return parse(is);
+	public Meta parseContent(final InputStream is, final Writer output) throws IOException, SAXException, TikaException {
+		return parse(is, output);
 	}
 
-	protected Content parse(final InputStream input) throws IOException, SAXException, TikaException {
+	protected Meta parse(final InputStream input, final Writer output) throws IOException, SAXException, TikaException {
 
 		try {
-			parser.parse(input, handler, metadata, context);
+			final BodyContentHandler content = new BodyContentHandler(output);
+			final Metadata metadata = new Metadata();
+			final ParseContext context = new ParseContext();
+
+			parser.parse(input, content, metadata, context);
 	
 			String title  = "";
 			String author = "";
@@ -73,11 +75,15 @@ public class SnoopParserImpl implements SnoopParser {
 					description = metadata.get(name);
 				}
 			}
-			return new Content(author, title, description, new String(handler.toString().getBytes(), "UTF-8"));
+			return new Meta(author, title, description);
 
 		} catch (final RuntimeException e) {
 
 			throw new TikaException("Can't parse content. " + e.getLocalizedMessage());
+		} finally {
+			if (input != null) {
+				input.close();
+			}
 		}
 	}
 

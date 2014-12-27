@@ -8,9 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.parser.MimeFileextMap;
 import com.glueball.snoop.parser.ParserMap;
@@ -19,7 +18,7 @@ import com.glueball.snoop.util.MD5;
 
 public class DbLoaderVisitor implements FileVisitor<Path> {
 
-	private static final Logger LOG = Logger.getLogger(DbLoaderVisitor.class);
+	private static final Logger LOG = LogManager.getLogger(DbLoaderVisitor.class);
 
 	private final ParserMap parserMap;
 

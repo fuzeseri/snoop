@@ -7,7 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,7 +25,7 @@ import com.glueball.snoop.entity.IndexedDocument;
 
 public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao {
 
-	private static final Logger LOG = Logger.getLogger(DocumentPathBean.class);
+	private static final Logger LOG = LogManager.getLogger(DocumentPathBean.class);
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -50,6 +51,8 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 	public void insertOne(final DocumentPath doc) throws DataAccessException {
 
 		final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?)";
+		
+		LOG.debug("Inserting document: " + doc.toString() + " query: " + query);
 
 		this.jdbcTemplate.execute(
 				new PreparedStatementCreator() {
@@ -74,18 +77,23 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 						return null;
 					}
 				});
+		
+		LOG.debug("Succesfully inserted document: " + doc.toString());
+		
 	}
 
 	public void insertList(final List<DocumentPath> docs) throws DataAccessException {
 
 		final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?)";
-
+		LOG.debug("Inserting " + docs.size() + " documents. query: " + query);
 		this.jdbcTemplate.batchUpdate(query, new DocumentPathBatchInsertSetter(docs));
+		LOG.debug(docs.toString() + " documents succesfully inserted.");
 	}
 
 	public DocumentPath findById(final String Id) throws DataAccessException {
 
 		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,content_type FROM DOCUMENT_PATH WHERE id = ?";
+		LOG.debug("Running query: " + query + " with parameter [id : "+ Id +"]");
 		final DocumentPath doc = new DocumentPath();
 
 		this.jdbcTemplate.query(
@@ -105,6 +113,9 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 	public DocumentPath findBySum(final String md5sum) throws DataAccessException {
 		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,content_type FROM DOCUMENT_PATH WHERE md5_sum = ?";
+
+		LOG.debug("Running query: " + query + " with parameter [id : "+ md5sum +"]");
+
 		final DocumentPath doc = new DocumentPath();
 
 		this.jdbcTemplate.query(
@@ -123,10 +134,13 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 	}
 
 	public void createTable() throws DataAccessException {
+		LOG.debug("Running query: " + DocumentPath.getCreateTable());
 		this.jdbcTemplate.execute(DocumentPath.getCreateTable());
 	}
 
 	public long rowNum() {
+		
+		LOG.debug("Running query: SELECT COUNT(*) row_num FROM DOCUMENT_PATH");
 
 		return (Long) this.jdbcTemplate.query("SELECT COUNT(*) row_num FROM DOCUMENT_PATH", new ResultSetExtractor(){
 
@@ -140,52 +154,38 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 	}
 
 	public void deleteData() throws DataAccessException {
-		this.jdbcTemplate.execute("DELETE FROM DOCUMENT_PATH");
+		
+		final String query = "DELETE FROM DOCUMENT_PATH";
+		LOG.debug("Running query: " + query);
+
+		this.jdbcTemplate.execute(query);
 	}
 
 	public List<DocumentPath> selectAll() {
 
 		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,content_type FROM DOCUMENT_PATH";
+		LOG.debug("Running query: " + query);
 		final List<DocumentPath> docList = new ArrayList<DocumentPath>();
-
 		this.jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
+		LOG.debug(docList.size() + " document selected.");
 
 		return docList;
 	}
 
-//	public List<DocumentPath> haveToIndex() throws DataAccessException {
-//
-//		final String query =
-//				" SELECT "
-//					+ " docp.id id, "
-//					+ " docp.md5_sum md5_sum, "
-//					+ " docp.file_name file_name, "
-//					+ " docp.uri uri, "
-//					+ " docp.path path, "
-//					+ " docp.last_modified_time last_modified_time, "
-//					+ " docp.content_type content_type "
-//				+ " FROM "
-//					+ " DOCUMENT_PATH docp "
-//					+ " LEFT JOIN INDEXED_DOCUMENT idoc ON docp.id = idoc.id "
-//				+ " WHERE "
-//				+ " idoc.id IS NULL ";
-//
-//		final List<DocumentPath> docList = new ArrayList<DocumentPath>();
-//		this.jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
-//
-//		LOG.info("HAveTOinDeX: " + docList.size());
-//
-//		return docList;
-//	}
-
 	@Override
 	public void deleteData(String id) throws DataAccessException {
-		this.jdbcTemplate.execute("DELETE FROM DOCUMENT_PATH WHERE id = '" + id + "'");
+
+		final String query = "DELETE FROM DOCUMENT_PATH WHERE id = '" + id + "'";
+		LOG.debug("Running query: " + query);
+		this.jdbcTemplate.execute(query);
 	}
 
 	@Override
 	public void deleteALL() throws DataAccessException {
-		this.jdbcTemplate.execute("DELETE FROM DOCUMENT_PATH");
+
+		final String query = "DELETE FROM DOCUMENT_PATH";
+		LOG.debug("Running query: " + query);
+		this.jdbcTemplate.execute(query);
 	}
 
 	@Override
@@ -197,10 +197,15 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 			@Override
 			protected void doInTransactionWithoutResult(final TransactionStatus status) {
 
+				LOG.debug("Running query: " + DocumentPath.getCreateTable());
 				jdbcTemplate.execute(DocumentPath.getCreateTable());
-				jdbcTemplate.execute("DELETE FROM DOCUMENT_PATH");
+				final String deleteQuery = "DELETE FROM DOCUMENT_PATH";
+				LOG.debug("Running query: " + deleteQuery);
+				jdbcTemplate.execute(deleteQuery);
 				final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?)";
+				LOG.debug("Running batch insert. Query: " + query + " with " + docs.size() + " documents.");
 				jdbcTemplate.batchUpdate(query, new DocumentPathBatchInsertSetter(docs));
+				LOG.debug(docs.size() + " documents successfully inserted.");
 			}
 		});
 	}
@@ -214,6 +219,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 			@Override
 			protected void doInTransactionWithoutResult(final TransactionStatus status) {
 
+				LOG.debug("Running query: " + IndexedDocument.getCreateTable());
 				jdbcTemplate.execute(IndexedDocument.getCreateTable());
 
 				final String query =
@@ -232,6 +238,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 						+ " idoc.id IS NULL ";
 
 				final List<DocumentPath> docList = new ArrayList<DocumentPath>();
+				LOG.debug("Running query: " + query);
 				jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
 
 				final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>(docList.size());
@@ -254,6 +261,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 			@Override
 			protected void doInTransactionWithoutResult(final TransactionStatus status) {
 
+				LOG.debug("Running query: " + IndexedDocument.getCreateTable());
 				jdbcTemplate.execute(IndexedDocument.getCreateTable());
 
 				final String query =
@@ -272,6 +280,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 						+ " docp.last_modified_time > idoc.last_modified_time";
 
 				final List<DocumentPath> docList = new ArrayList<DocumentPath>();
+				LOG.debug("Running query: " + query);
 				jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
 
 				final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>(docList.size());
@@ -296,10 +305,11 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 			@Override
 			protected void doInTransactionWithoutResult(final TransactionStatus status) {
 
+				LOG.debug("Running query: " + IndexedDocument.getCreateTable());
 				jdbcTemplate.execute(IndexedDocument.getCreateTable());
 
 				final String query =
-						" UPDATE INDEXED_DOCUMENT SET index_state = '"+ IndexedDocument.INDEX_STATE_DELETED +"', lock = null, lock_time = null "
+						" UPDATE INDEXED_DOCUMENT SET index_state = '"+ IndexedDocument.INDEX_STATE_DELETED +"', lock = 0, lock_time = null "
 						+ " WHERE id IN ( "
 						+ " SELECT "
 							+ " idoc.id id "
@@ -309,6 +319,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 						+ " WHERE "
 						+ " docp.id IS NULL )";
 
+				LOG.debug("Running query: " + query);
 				jdbcTemplate.execute(query);
 			}
 		});
