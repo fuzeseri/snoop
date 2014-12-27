@@ -249,7 +249,7 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
 			
-			final long lock = random.nextLong();
+			final int lock = random.nextInt();
 
 			@Override
 			protected void doInTransactionWithoutResult(TransactionStatus status) {

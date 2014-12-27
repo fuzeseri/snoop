@@ -26,8 +26,10 @@ public class IndexedDocumentBatchInsertSetter implements BatchPreparedStatementS
 		pstmt.setTimestamp(7, docs.get(i).getLastIndexedTime());
 		pstmt.setString(8, docs.get(i).getContentType());
 		pstmt.setString(9, docs.get(i).getIndexState());
-		pstmt.setInt(10, docs.get(i).getLock());
-		pstmt.setTimestamp(11, docs.get(i).getLockTime());
+		if (docs.get(i).getLock() != null)
+			pstmt.setInt(10, docs.get(i).getLock());
+		if (docs.get(i).getLockTime() != null)
+			pstmt.setTimestamp(11, docs.get(i).getLockTime());
 	}
 
 	public int getBatchSize() {

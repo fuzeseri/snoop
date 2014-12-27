@@ -52,7 +52,6 @@ public class DataIndexer implements Runnable {
 
 	private void removeModifiedDeletedDocsFromIndex(final List<String> toDelete) {
 
-		final List<String> dbDelete = new ArrayList<String>();
 		try {
 
 			for (final String docId : toDelete) {
@@ -60,7 +59,6 @@ public class DataIndexer implements Runnable {
 				try {
 
 					indexWriter.deleteDocuments(new Term("id", docId));
-					dbDelete.add(docId);
 				} catch (final IOException e) {
 
 					LOG.error("ERROR while deleting document from index the");
@@ -71,8 +69,7 @@ public class DataIndexer implements Runnable {
 
 			try {
 
-				indexWriter.commit();
-				indexedDocumentBean.deleteByIds(dbDelete);				
+				indexWriter.commit();				
 			} catch (IOException e) {
 
 				LOG.error("ERROR while trying to commit index changes");
@@ -151,6 +148,7 @@ public class DataIndexer implements Runnable {
 						LOG.error("Error parsing file: " + idoc.getPath());
 						LOG.debug(e.getMessage());
 						haveToIndexSize--;
+						e.printStackTrace();
 					}
 				}
 

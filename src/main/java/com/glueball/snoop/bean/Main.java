@@ -18,26 +18,14 @@ public class Main {
 
 		final Thread th = new Thread(loader);
 		th.start();
-
-//		final Thread ti1 = new Thread(indexer);
-//		ti1.start();
-
-		final Thread th2 = new Thread(loader);
-		th2.start();
-		th2.join();
-
-		final Thread ti2 = new Thread(indexer);
-		ti2.start();
-
-//		final Thread th3 = new Thread(loader);
-//		th3.start();
-
-		final Thread ti3 = new Thread(indexer);
-		ti3.start();
-
-//		final Thread th4 = new Thread(loader);
-//		th4.start();
-//		th4.join();
+		th.join();
+		
+		for (int i = 0 ; i < 21; i++) {
+			final Thread ith = new Thread(indexer);
+			ith.start();
+			th.join();
+			System.out.println( i + "   threadf starteed");
+		}
 
 	}
 }
