@@ -9,10 +9,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class MainWindow extends CrmContainer {
-	
+
 	@UiField SimplePanel   headPanel;
 	@UiField VerticalPanel hits;
-	
+
 	private static MainWindowUiBinder uiBinder = GWT
 			.create(MainWindowUiBinder.class);
 

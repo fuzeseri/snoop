@@ -19,7 +19,7 @@ public class SnoopRequest<T> {
 
 	public void getEntity(final String url, final String queryString, final SnoopRequestCallback<T> callback) {
 		
-		final Resource resource = new Resource(url);
+		final Resource resource = new Resource(url + "/" + queryString);
 		resource.get().send(new JsonCallback() {
 			public void onSuccess(final Method method, final JSONValue response) {
 				try {

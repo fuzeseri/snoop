@@ -8,8 +8,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class MainApp implements EntryPoint {
 
-	final MainWindow    window = new MainWindow();
-	final SnoopHead	    head   = new SnoopHead(window.getHits());
+	final MainWindow window = new MainWindow();
+	final SnoopHead	 head   = new SnoopHead(window.getHits());
 
 	public void onModuleLoad() {
 		Window.alert("Hello");

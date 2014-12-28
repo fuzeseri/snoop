@@ -1,13 +1,16 @@
-package com.glueball.snoop.entity;
+package com.glueball.snoop.module.main.model;
+
+import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "results")
-public class SearchResult {
+@XmlRootElement(name = "result")
+public class SearchResult implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private String title;
 	private String author;
 	private String description;

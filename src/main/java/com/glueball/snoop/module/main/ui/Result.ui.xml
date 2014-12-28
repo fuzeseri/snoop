@@ -10,7 +10,7 @@
 			<g:HorizontalPanel>
 				<g:Label text='mime logo' />
 				<g:VerticalPanel>
-					<g:Label ui:field="link" />
+					<g:Anchor ui:field="link" />
 					<g:Label ui:field="title" />
 				</g:VerticalPanel>
 				<g:VerticalPanel>

@@ -1,10 +1,9 @@
 package com.glueball.snoop.module.main.ui;
 
-import java.util.List;
-
 import org.fusesource.restygwt.client.JsonEncoderDecoder;
 
-import com.glueball.snoop.entity.SearchResult;
+import com.glueball.snoop.module.main.model.SearchResult;
+import com.glueball.snoop.module.main.model.SearchResults;
 import com.glueball.snoop.module.util.SnoopRequest;
 import com.glueball.snoop.module.util.SnoopRequestCallback;
 import com.glueball.snoop.module.util.URLHelper;
@@ -27,7 +26,7 @@ public class SnoopHead extends Composite {
 	@UiField Image   logo;
 	@UiField TextBox searchBox;
 	@UiField Button  searchButton;
-	
+
 	private final VerticalPanel hits;
 	
 	private static SnoopHeadUiBinder uiBinder = GWT.create(SnoopHeadUiBinder.class);
@@ -36,12 +35,12 @@ public class SnoopHead extends Composite {
 	interface SnoopHeadUiBinder extends UiBinder<Widget, SnoopHead> {
 	}
 
-	interface SearchCodec extends JsonEncoderDecoder<List<SearchResult>> {
+	interface SearchCodec extends JsonEncoderDecoder<SearchResults> {
 	}
 
 	private final SearchCodec codec = GWT.create(SearchCodec.class);
 
-	private final SnoopRequest<List<SearchResult>> req = new SnoopRequest<List<SearchResult>>(codec);
+	private final SnoopRequest<SearchResults> req = new SnoopRequest<SearchResults>(codec);
 
 	public SnoopHead(final VerticalPanel _hits) {
 		this.hits = _hits;
@@ -79,13 +78,13 @@ public class SnoopHead extends Composite {
 
 	private void search(final String keyword) {
 
-		req.getEntity(URLHelper.SEARCH, keyword, new SnoopRequestCallback<List<SearchResult>>() {
+		req.getEntity(URLHelper.SEARCH, keyword, new SnoopRequestCallback<SearchResults>() {
 
 			@Override
-			public void onSuccess(final List<SearchResult> entity) {
+			public void onSuccess(final SearchResults results) {
 
 				hits.clear();
-				for (final SearchResult doc : entity) {
+				for (final SearchResult doc : results) {
 					final Result result = new Result(doc);
 					hits.add(result.asWidget());
 				}

@@ -12,7 +12,8 @@
 		<context:component-scan base-package="com.glueball.snoop.*" />
 
 		<bean id="fileService"   class="com.glueball.snoop.service.FileService"  />
-		<bean id="searchService" class="com.glueball.snoop.service.SearchService"/>
+		<bean id="searchService" class="com.glueball.snoop.service.SearchService" init-method="init">
+		</bean>
 		<bean id="adminService"  class="com.glueball.snoop.service.AdminService" />
 
 </beans>

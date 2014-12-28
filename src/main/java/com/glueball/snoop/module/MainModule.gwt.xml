@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
-
 	<inherits name="com.google.gwt.user.User" />
-	<inherits name='org.fusesource.restygwt.RestyGWT' />
-	<set-configuration-property	name="org.fusesource.restygwt.annotationresolver" value="org.fusesource.restygwt.rebind.ModelChangeAnnotationResolver" />
+	<inherits name='org.fusesource.restygwt.RestyGWT'/>	
+	<set-configuration-property name="org.fusesource.restygwt.annotationresolver" value="org.fusesource.restygwt.rebind.ModelChangeAnnotationResolver"/>
+
 	<source path="main" />
-	<source path="util" />
 	<source path="app" />
 	<source path="ui" />
+	<source path="util" />
 
-	<entry-point class="com.glueball.snoop.module.main.app.MainApp" />
-
+	<entry-point
+		class="com.glueball.snoop.module.main.app.MainApp">
+	</entry-point>
 </module>

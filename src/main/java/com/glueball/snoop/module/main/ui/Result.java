@@ -1,7 +1,7 @@
 package com.glueball.snoop.module.main.ui;
 
 
-import com.glueball.snoop.entity.SearchResult;
+import com.glueball.snoop.module.main.model.SearchResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -32,4 +32,8 @@ public class Result extends Composite {
 		link = new Anchor(res.getFileName(), res.getUri());
 	}
 
+	@Override
+	public Widget asWidget() {
+		return this.widget;
+	}
 }
