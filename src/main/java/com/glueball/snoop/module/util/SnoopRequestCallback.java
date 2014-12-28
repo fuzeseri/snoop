@@ -1,6 +1,6 @@
 package com.glueball.snoop.module.util;
 
-public interface CrmRequestCallback<T> {
+public interface SnoopRequestCallback<T> {
 	
 	public void onSuccess(T entity);
 

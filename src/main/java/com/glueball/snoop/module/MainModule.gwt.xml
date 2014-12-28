@@ -10,6 +10,6 @@
 	<source path="app" />
 	<source path="ui" />
 
-	<entry-point class="com.glueball.crm.module.main.app.MainApp" />
+	<entry-point class="com.glueball.snoop.module.main.app.MainApp" />
 
 </module>

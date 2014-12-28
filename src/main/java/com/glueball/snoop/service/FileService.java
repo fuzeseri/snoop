@@ -28,7 +28,7 @@ public class FileService {
     		"  </head>\n"+
     		"  <body>\n"+
     		"    <iframe src=\"javascript:''\" id=\"__gwt_historyFrame\" tabIndex='-1' style=\"position:absolute;width:0;height:0;border:0\"></iframe>\n"+
-    		"	<script languge=\"javascript\" src=\"com.glueball.crm.module."+module+"Module.nocache.js\"></script>\n"+
+    		"	<script languge=\"javascript\" src=\"com.glueball.snoop.module."+module+"Module.nocache.js\"></script>\n"+
     		"  </body>\n"+
     		"</html>\n";    		
     	return Response.ok(retVal,MediaType.TEXT_HTML).build();
@@ -40,7 +40,7 @@ public class FileService {
     public Response getFile(@PathParam(value="module") String module, 
     						@PathParam(value="filename") String filename) 
     								throws IOException {
-    	String filePath = "com.glueball.crm.module."+module+"Module/"+filename;
+    	String filePath = "com.glueball.snoop.module."+module+"Module/"+filename;
     	String retVal = FileServerUtil.getContent(filePath);
     	return Response.ok(retVal,MediaType.TEXT_HTML).build();
     }

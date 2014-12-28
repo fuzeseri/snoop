@@ -9,7 +9,7 @@
 				<g:SimplePanel ui:field='headPanel' width="100%"/>
 			</g:north>
 			<g:south size="10">
-				<g:Frame ui:field='body'></g:Frame>
+				<g:VerticalPanel ui:field='hits' />
 			</g:south>
 		</g:DockLayoutPanel>
 	</g:HTMLPanel>
