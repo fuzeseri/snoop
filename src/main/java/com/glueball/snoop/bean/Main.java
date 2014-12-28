@@ -1,39 +1,33 @@
 package com.glueball.snoop.bean;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
+import org.apache.cxf.Bus;
+import org.apache.cxf.bus.spring.SpringBusFactory;
+import org.apache.cxf.endpoint.Server;
+import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
+import org.apache.cxf.jaxrs.spring.JAXRSServerFactoryBeanDefinitionParser.SpringJAXRSServerFactoryBean;
 import org.apache.tika.exception.TikaException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.xml.sax.SAXException;
 
 public class Main {
-	
-	private static final List<Thread> thList = new ArrayList<Thread>();
+
+	private static final SpringBusFactory busFactory = new SpringBusFactory();
+	private static final String JETTY_CONTEXT_XML = "src/main/resources/spring/jetty-server.xml";
 
 	public static void main(final String[] args) throws InterruptedException, IOException, SAXException, TikaException {
 
-		final ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:spring/application.xml");
-		final DataLoader loader  = (DataLoader) ctx.getBean("dataLoader");
-		final DataIndexer indexer = (DataIndexer) ctx.getBean("dataIndexer");
+		final Bus bus = busFactory.createBus(JETTY_CONTEXT_XML);
+		//SpringBusFactory.setDefaultBus(bus);
 
-//		final Thread th = new Thread(loader);
-//		th.start();
-//		th.join();
-		loader.run();
-		
-		for (int i = 0; i < 22; i++) {
-			indexer.run();
-//			thList.add(new Thread(indexer));
-		}
-		
-//		for (final Thread th : thList) {
-//			th.start();
-//		}
-//		
-//		while (true) {
-//		}
+		final ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:spring/application.xml");
+		final String address = (String) ctx.getBean("listenAddress");
+		final JAXRSServerFactoryBean jaxRsServerFactory = (SpringJAXRSServerFactoryBean) ctx.getBean("restContainer");
+		jaxRsServerFactory.setBus(bus);
+		jaxRsServerFactory.setAddress(address);
+		final Server server = jaxRsServerFactory.create();
+
 	}
 }

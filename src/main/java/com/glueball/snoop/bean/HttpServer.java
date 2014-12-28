@@ -25,7 +25,6 @@ public class HttpServer {
 		final ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:spring/cxf-servlet.xml");
 		jaxRsServerFactory = (SpringJAXRSServerFactoryBean) ctx.getBean("restContainer");
 		jaxRsServerFactory.setAddress(DEFAULT_HTTP_HOST_PORT);
-
 	}
 
 	public final void start() {

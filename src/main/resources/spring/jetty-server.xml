@@ -13,13 +13,19 @@
             http://cxf.apache.org/schemas/configuration/http-jetty.xsd
             http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
-            
+
+		<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+			<property name="location">
+				<value>config/snoop.properties</value>
+			</property>
+		</bean>
+
   <import resource="classpath:META-INF/cxf/cxf.xml" />
-  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+  <!-- import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" / -->
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
  
   <httpj:engine-factory bus="cxf">
-    <httpj:identifiedTLSServerParameters id="localhost">
+    <httpj:identifiedTLSServerParameters id="${snoop.http.host}">
       <httpj:tlsServerParameters>
         <sec:keyManagers keyPassword="x.1234.abcd">
           <sec:keyStore type="JKS" password="password"
@@ -28,13 +34,13 @@
       </httpj:tlsServerParameters>
     </httpj:identifiedTLSServerParameters>
  
-    <httpj:engine port="9001">
+    <httpj:engine port="${snoop.http.port}">
       <httpj:tlsServerParametersRef id="secure" />
       <httpj:threadingParameters minThreads="5"
                                  maxThreads="15" />
       <httpj:connector>
         <beans:bean class="org.eclipse.jetty.server.bio.SocketConnector">
-           <beans:property name="port" value="9001" />
+           <beans:property name="port" value='${snoop.http.port}' />
         </beans:bean>
       </httpj:connector>
       <httpj:handlers>

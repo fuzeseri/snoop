@@ -3,10 +3,13 @@
 		xmlns:beans="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:task="http://www.springframework.org/schema/task"
         xsi:schemaLocation="http://www.springframework.org/schema/beans
             				http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
             				http://www.springframework.org/schema/context
-          					http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+          					http://www.springframework.org/schema/context/spring-context-4.0.xsd
+          					http://www.springframework.org/schema/task
+        					http://www.springframework.org/schema/task/spring-task-4.0.xsd">
 
 		<context:annotation-config/>
 		<context:component-scan base-package="com.glueball.snoop.*" />
@@ -21,6 +24,8 @@
 		<import resource="classpath:spring/lucene-parser.xml" />
 		<import resource="classpath:spring/mimes.xml" />
 
+		<import resource="classpath:spring/cxf-servlet.xml" />
+
 		<bean id="dataLoader" class="com.glueball.snoop.bean.DataLoader">
 			<constructor-arg value="${snoop.dataloader.path}" />
 		</bean>
@@ -28,4 +33,7 @@
 		<bean id="dataIndexer" class="com.glueball.snoop.bean.DataIndexer">
 		</bean>
 
+		<task:scheduled-tasks>
+			<task:scheduled ref="dataLoader" method="run" cron="*/60 * * * * *" />
+   		</task:scheduled-tasks>
 </beans>
