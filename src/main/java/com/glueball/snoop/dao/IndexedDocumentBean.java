@@ -42,14 +42,10 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 
 	final Random random = new Random();
 
-	int maxDocsPerRound = 100;
+	int maxDoc = 100;
 
-	public int getMaxDocsPerRound() {
-		return maxDocsPerRound;
-	}
-
-	public void setMaxDocsPerRound(int maxDocsPerRound) {
-		this.maxDocsPerRound = maxDocsPerRound;
+	public void setMaxDoc(int maxDocsPerRound) {
+		this.maxDoc = maxDocsPerRound;
 	}
 
 	public void insertOne(final IndexedDocument doc) throws DataAccessException {
@@ -241,7 +237,7 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 						+ "'"+ IndexedDocument.INDEX_STATE_REINDEX +"'"
 					    + ") "
 						+ " AND lock = 0 "
-						+ " LIMIT " + maxDocsPerRound;
+						+ " LIMIT " + maxDoc;
 
 				final String updateQuery = "UPDATE INDEXED_DOCUMENT SET lock = "+ lock +", "
 						+ "lock_time = now() WHERE id IN (" + getQuery + ")";

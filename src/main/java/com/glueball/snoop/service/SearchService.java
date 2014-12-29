@@ -11,14 +11,12 @@ import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
-import org.apache.lucene.queryparser.flexible.core.QueryParserHelper;
-import org.apache.lucene.queryparser.flexible.standard.config.StandardQueryConfigHandler.ConfigurationKeys;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -45,18 +43,18 @@ public class SearchService<QueryParser> {
 	
 	private IndexSearcher indexSearcher;
 
-    @Autowired
-    private Analyzer analyzer;
-    
-	public void setAnalyzer(Analyzer analyzer) {
-		this.analyzer = analyzer;
-	}
+//    @Autowired
+//    private Analyzer analyzer;
+//    
+//	public void setAnalyzer(final Analyzer analyzer) {
+//		this.analyzer = analyzer;
+//	}
 
 	@Autowired
-	private QueryParserHelper queryParserHelper;
+	private MultiFieldQueryParser parser;
 
-	public void setQueryParserHelper(final QueryParserHelper _queryParserHelper) {
-		this.queryParserHelper = _queryParserHelper;
+	public void setParser(final MultiFieldQueryParser parser) {
+		this.parser = parser;
 	}
 
 	public void init() {
@@ -72,9 +70,6 @@ public class SearchService<QueryParser> {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{keyword}")
 	public Response search(@PathParam(value = "keyword") String searchString) {
-
-		this.queryParserHelper.getQueryConfigHandler().set(ConfigurationKeys.ALLOW_LEADING_WILDCARD, true);
-		this.queryParserHelper.getQueryConfigHandler().set(ConfigurationKeys.ANALYZER, this.analyzer);
 
 		if (searchString == null) {
 			searchString = "";
@@ -100,12 +95,12 @@ public class SearchService<QueryParser> {
 	private SearchResults extractResults(final ScoreDoc[] hits, final IndexSearcher indexSearcher) {
 
 		final SearchResults results = new SearchResults();
-		
+
 			for (final ScoreDoc hit : hits) {
-	
+
 			final SearchResult res = new SearchResult();
 			Document doc;
-	
+
 			try {
 
 				doc = indexSearcher.doc(hit.doc);
@@ -126,42 +121,41 @@ public class SearchService<QueryParser> {
 
 	private synchronized void refreshReader() {
 
-	   	IndexReader newReader = null;
-		try {
-			newReader = DirectoryReader.openIfChanged((DirectoryReader) indexReader);
-		} catch (final IOException e2) {
-			LOG.debug(e2.getMessage());
-		}
+		if (this.indexReader == null) {
+			try {
+				this.indexReader = DirectoryReader.open(directory);
+			} catch (IOException e) {
+				LOG.info("Can't open index");
+				LOG.debug(e);
+			}
+		} else {
 
-    	if (newReader != null) {
-    		this.indexReader = newReader;
-    	}
+		   	IndexReader newReader = null;
+			try {
+				newReader = DirectoryReader.openIfChanged((DirectoryReader) indexReader);
+			} catch (final IOException e2) {
+				LOG.debug(e2.getMessage());
+			}
+	
+	    	if (newReader != null) {
+	    		this.indexReader = newReader;
+	    	}
+		}
 
 		this.indexSearcher = new IndexSearcher(indexReader);
 	}
 
 	public synchronized Query createQuery(final String searchString) {
 
-//		String fileNameQuery = "";
-//		if (!StringUtils.isEmpty(searchString)) {
-//			String[] words = searchString.split("\\s");
-//			for (String word : words) {
-//				fileNameQuery += "fileName:" + word + " ";
-//			}
-//		}
-	
 		Query query = new WildcardQuery(new Term("content:"));
-		if (searchString.startsWith("file:")) {
-			final String[] parts = searchString.split(":");
-			query = new WildcardQuery(new Term("fileName", "*" + parts[1].trim() + "*"));
-		} else {
+		try {
 
-			try {
-				query = (Query) queryParserHelper.parse(searchString, "content");
-			} catch (final QueryNodeException e2) {
-				LOG.debug("ERROR when parsing query: " + searchString,e2);			
-			}
+			query = parser.parse(searchString);
+		} catch (final ParseException e) {
+
+			LOG.debug("ERROR when parsing query: " + searchString, e);
 		}
+
 		return query;
 	}
 }

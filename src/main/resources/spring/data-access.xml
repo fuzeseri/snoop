@@ -13,7 +13,9 @@
 		<import resource="classpath:spring/h2database.xml" />
 		<import resource="classpath:spring/lucene-index.xml" />
 
-		<bean id="documentPath"    class="com.glueball.snoop.dao.DocumentPathBean" scope="singleton" />
-		<bean id="indexedDocument" class="com.glueball.snoop.dao.IndexedDocumentBean" scope="singleton" />
+		<bean id="documentPath"    class="com.glueball.snoop.dao.DocumentPathBean"    scope="singleton" />
+		<bean id="indexedDocument" class="com.glueball.snoop.dao.IndexedDocumentBean" scope="singleton">
+			<property name="maxDoc" value="${snoop.dataindexer.maxdoc}" />
+		</bean>
 
 </beans>

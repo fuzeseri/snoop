@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.cxf.common.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
@@ -114,18 +113,19 @@ public class DataIndexer implements Runnable {
 						final Document doc = new Document();
 						doc.add(new StringField("id", 			idoc.getId(),       Field.Store.YES));
 						doc.add(new StringField("fileName", 	idoc.getFileName(), Field.Store.YES));
+						doc.add(new TextField("file", 	idoc.getFileName(), Field.Store.YES));
 						doc.add(new StringField("path", 		idoc.getPath(),     Field.Store.YES));
 						doc.add(new StringField("uri", 			idoc.getUri(),      Field.Store.YES));
 						doc.add(new StringField("contentType", 	idoc.getContentType(), Field.Store.YES));
 
 						if (meta.hasAuthor()) {
-							doc.add(new StringField("author", meta.getAuthor(), Field.Store.YES));
+							doc.add(new TextField("author", meta.getAuthor(), Field.Store.YES));
 						}
 						if (meta.hasTitle()) {
-							doc.add(new StringField("title", meta.getTitle(), Field.Store.YES));							
+							doc.add(new TextField("title", meta.getTitle(), Field.Store.YES));							
 						}
 						if (meta.hasDescription()) {
-							doc.add(new StringField("description", meta.getDescription(), Field.Store.YES));
+							doc.add(new TextField("description", meta.getDescription(), Field.Store.YES));
 						}
 						doc.add(new TextField("content", contentReader));
 
