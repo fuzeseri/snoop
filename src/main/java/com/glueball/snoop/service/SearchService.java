@@ -15,11 +15,15 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
+import org.apache.lucene.queryparser.flexible.core.QueryParserHelper;
+import org.apache.lucene.queryparser.flexible.standard.config.StandardQueryConfigHandler.ConfigurationKeys;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.util.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.glueball.snoop.module.main.model.SearchResult;
@@ -38,12 +42,21 @@ public class SearchService<QueryParser> {
 	}
 
 	private IndexReader indexReader;
+	
+	private IndexSearcher indexSearcher;
 
     @Autowired
     private Analyzer analyzer;
     
 	public void setAnalyzer(Analyzer analyzer) {
 		this.analyzer = analyzer;
+	}
+
+	@Autowired
+	private QueryParserHelper queryParserHelper;
+
+	public void setQueryParserHelper(final QueryParserHelper _queryParserHelper) {
+		this.queryParserHelper = _queryParserHelper;
 	}
 
 	public void init() {
@@ -58,39 +71,43 @@ public class SearchService<QueryParser> {
 	@GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{keyword}")
-	public Response search(@PathParam(value = "keyword") final String searchString) {
+	public Response search(@PathParam(value = "keyword") String searchString) {
 
-    	final SearchResults results = new SearchResults();
+		this.queryParserHelper.getQueryConfigHandler().set(ConfigurationKeys.ALLOW_LEADING_WILDCARD, true);
+		this.queryParserHelper.getQueryConfigHandler().set(ConfigurationKeys.ANALYZER, this.analyzer);
 
-    	IndexReader newReader = null;
-		try {
-			newReader = DirectoryReader.openIfChanged((DirectoryReader) indexReader);
-		} catch (final IOException e2) {
-			LOG.debug(e2.getMessage());
+		if (searchString == null) {
+			searchString = "";
 		}
+		refreshReader();
 
-    	if (newReader != null) {
-    		this.indexReader = newReader;
-    	}
+    	LOG.debug("Searching for: " + searchString);
 
-		final IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+		final Query query = createQuery(searchString);
 
-    	final QueryBuilder queryBuilder = new QueryBuilder(analyzer);
-		final Query query = queryBuilder.createPhraseQuery("content", searchString);
-
-		LOG.debug("Searching for: " + query.toString());
+		LOG.debug("query: " + query);
 
 		ScoreDoc[] hits = new ScoreDoc[]{};
 		try {
-			hits = indexSearcher.search(query, null, 1000).scoreDocs;
-		} catch (IOException e1) {
+			hits = indexSearcher.search(query, null, 100).scoreDocs;
+		} catch (final IOException e1) {
 			LOG.debug(e1.getMessage());
 		}
 
-		final SearchResult res = new SearchResult();
-		for (final ScoreDoc hit : hits) {
+    	return Response.ok(extractResults(hits, indexSearcher), MediaType.APPLICATION_JSON).build();
+    }
+
+	private SearchResults extractResults(final ScoreDoc[] hits, final IndexSearcher indexSearcher) {
+
+		final SearchResults results = new SearchResults();
+		
+			for (final ScoreDoc hit : hits) {
+	
+			final SearchResult res = new SearchResult();
 			Document doc;
+	
 			try {
+
 				doc = indexSearcher.doc(hit.doc);
 				res.setTitle(doc.get("title"));
 				res.setAuthor(doc.get("author"));
@@ -104,6 +121,47 @@ public class SearchService<QueryParser> {
 			}
 		}
 
-    	return Response.ok(results, MediaType.APPLICATION_JSON).build();
-    }
+		return results;
+	}
+
+	private synchronized void refreshReader() {
+
+	   	IndexReader newReader = null;
+		try {
+			newReader = DirectoryReader.openIfChanged((DirectoryReader) indexReader);
+		} catch (final IOException e2) {
+			LOG.debug(e2.getMessage());
+		}
+
+    	if (newReader != null) {
+    		this.indexReader = newReader;
+    	}
+
+		this.indexSearcher = new IndexSearcher(indexReader);
+	}
+
+	public synchronized Query createQuery(final String searchString) {
+
+//		String fileNameQuery = "";
+//		if (!StringUtils.isEmpty(searchString)) {
+//			String[] words = searchString.split("\\s");
+//			for (String word : words) {
+//				fileNameQuery += "fileName:" + word + " ";
+//			}
+//		}
+	
+		Query query = new WildcardQuery(new Term("content:"));
+		if (searchString.startsWith("file:")) {
+			final String[] parts = searchString.split(":");
+			query = new WildcardQuery(new Term("fileName", "*" + parts[1].trim() + "*"));
+		} else {
+
+			try {
+				query = (Query) queryParserHelper.parse(searchString, "content");
+			} catch (final QueryNodeException e2) {
+				LOG.debug("ERROR when parsing query: " + searchString,e2);			
+			}
+		}
+		return query;
+	}
 }

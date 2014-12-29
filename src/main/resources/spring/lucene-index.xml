@@ -36,4 +36,24 @@
 			<constructor-arg index="1" ref="indexWriterConfig" />
 		</bean>
 
+		<bean id="queryParserHelper" class="org.apache.lucene.queryparser.flexible.core.QueryParserHelper">
+			<constructor-arg index="0" ref="queryConfigHandler" />
+			<constructor-arg index="1" ref="syntaxParser" />
+			<constructor-arg index="2" ref="queryNodeProcessor" />
+			<constructor-arg index="3" ref="queryBuilder" />
+		</bean>
+
+		<bean id="queryConfigHandler" class="org.apache.lucene.queryparser.flexible.standard.config.StandardQueryConfigHandler">
+		</bean>
+
+		<bean id="syntaxParser" class="org.apache.lucene.queryparser.flexible.standard.parser.StandardSyntaxParser" />
+		
+		<bean id="queryNodeProcessor" class="org.apache.lucene.queryparser.flexible.standard.processors.StandardQueryNodeProcessorPipeline">
+			<constructor-arg ref="queryConfigHandler" />
+		</bean>
+		
+		<bean id="queryBuilder" class="org.apache.lucene.queryparser.flexible.standard.builders.StandardQueryTreeBuilder">
+			<!-- constructor-arg ref="analyzer" / -->
+		</bean>
+
 </beans>

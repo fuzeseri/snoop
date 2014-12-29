@@ -24,8 +24,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class SnoopHead extends Composite {
 
 	@UiField Image   logo;
-	@UiField TextBox searchBox;
-	@UiField Button  searchButton;
+	public @UiField TextBox searchBox;
+	public @UiField Button  searchButton;
 
 	private final VerticalPanel hits;
 	
@@ -43,6 +43,7 @@ public class SnoopHead extends Composite {
 	private final SnoopRequest<SearchResults> req = new SnoopRequest<SearchResults>(codec);
 
 	public SnoopHead(final VerticalPanel _hits) {
+
 		this.hits = _hits;
 		this.widget = uiBinder.createAndBindUi(this);
 		logo.setAltText("snoop");
@@ -85,6 +86,7 @@ public class SnoopHead extends Composite {
 
 				hits.clear();
 				for (final SearchResult doc : results) {
+
 					final Result result = new Result(doc);
 					hits.add(result.asWidget());
 				}

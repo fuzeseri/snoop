@@ -6,18 +6,29 @@
 	</ui:style>
 	<g:HTMLPanel>
 		<g:HorizontalPanel>
-			<g:SimplePanel width="250px" />
+			<g:SimplePanel width="150px" />
 			<g:HorizontalPanel>
-				<g:Label text='mime logo' />
-				<g:VerticalPanel>
-					<g:Anchor ui:field="link" />
-					<g:Label ui:field="title" />
-				</g:VerticalPanel>
-				<g:VerticalPanel>
-					<g:Label ui:field="author" />
-					<g:Label ui:field="description" />
-				</g:VerticalPanel>
+				<g:Image ui:field="mimeIcon"/>
+				<g:Grid>
+					<g:row>
+						<g:customCell><g:Label text='File:' /></g:customCell>
+						<g:customCell><g:Anchor ui:field="link"  /></g:customCell>
+					</g:row>
+					<g:row>
+						<g:customCell><g:Label text='Title:' /></g:customCell>
+						<g:customCell><g:Label  ui:field="title" /></g:customCell>
+					</g:row>
+					<g:row>
+						<g:customCell><g:Label text='Author:' /></g:customCell>
+						<g:customCell><g:Label ui:field="author" /></g:customCell>
+					</g:row>
+					<g:row>
+						<g:customCell><g:Label text='Description: ' /></g:customCell>
+						<g:customCell><g:Label ui:field="description" /></g:customCell>
+					</g:row>
+				</g:Grid>
 			</g:HorizontalPanel>
 		</g:HorizontalPanel>
+		<g:SimplePanel width="100%" height="30px" />
 	</g:HTMLPanel>
 </ui:UiBinder> 
