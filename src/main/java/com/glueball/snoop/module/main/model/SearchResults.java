@@ -23,12 +23,16 @@ public class SearchResults implements Serializable, Iterable<SearchResult> {
 	public void setResults(List<SearchResult> results) {
 		this.results = results;
 	}
-	
+
 	public void add(final SearchResult res) {
 		results.add(res);
 	}
-	
+
 	public Iterator<SearchResult> iterator() {
 		return results.iterator();
+	}
+
+	public boolean isEmpty() {
+		return results.isEmpty();
 	}
 }

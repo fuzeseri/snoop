@@ -4,6 +4,7 @@ import org.fusesource.restygwt.client.JsonEncoderDecoder;
 
 import com.glueball.snoop.module.main.model.SearchResult;
 import com.glueball.snoop.module.main.model.SearchResults;
+import com.glueball.snoop.module.main.model.ServerMessage;
 import com.glueball.snoop.module.util.SnoopRequest;
 import com.glueball.snoop.module.util.SnoopRequestCallback;
 import com.glueball.snoop.module.util.URLHelper;
@@ -79,7 +80,7 @@ public class SnoopHead extends Composite {
 
 	private void search(final String keyword) {
 
-		req.getEntity(URLHelper.SEARCH, keyword, new SnoopRequestCallback<SearchResults>() {
+		req.request(URLHelper.SEARCH + keyword, new SnoopRequestCallback<SearchResults>() {
 
 			@Override
 			public void onSuccess(final SearchResults results) {
@@ -91,6 +92,14 @@ public class SnoopHead extends Composite {
 					hits.add(result.asWidget());
 				}
 			}
+
+			@Override
+			public void onMessage(final ServerMessage message) {
+
+				hits.clear();
+				hits.add(new Message(message).asWidget());
+			}
+
 		});
 	}
 }

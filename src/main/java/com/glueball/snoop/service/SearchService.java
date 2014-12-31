@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.glueball.snoop.module.main.model.SearchResult;
 import com.glueball.snoop.module.main.model.SearchResults;
+import com.glueball.snoop.module.main.model.ServerMessage;
 
 @Path("/search")
 public class SearchService<QueryParser> {
@@ -71,10 +72,16 @@ public class SearchService<QueryParser> {
     @Path("/{keyword}")
 	public Response search(@PathParam(value = "keyword") String searchString) {
 
+		refreshReader();
+		if (this.indexSearcher == null) {
+
+			return Response.ok(ServerMessage.MESSAGE_INDEX_NOT_READY, MediaType.APPLICATION_JSON).build();
+		}
+
 		if (searchString == null) {
+
 			searchString = "";
 		}
-		refreshReader();
 
     	LOG.debug("Searching for: " + searchString);
 
@@ -84,19 +91,27 @@ public class SearchService<QueryParser> {
 
 		ScoreDoc[] hits = new ScoreDoc[]{};
 		try {
+
 			hits = indexSearcher.search(query, null, 100).scoreDocs;
 		} catch (final IOException e1) {
+
 			LOG.debug(e1.getMessage());
 		}
 
-    	return Response.ok(extractResults(hits, indexSearcher), MediaType.APPLICATION_JSON).build();
+		final SearchResults results = extractResults(hits, indexSearcher);
+		if (results.isEmpty()) {
+
+			return Response.ok(ServerMessage.MESSAGE_NO_HITS, MediaType.APPLICATION_JSON).build();
+		}
+
+    	return Response.ok(results, MediaType.APPLICATION_JSON).build();
     }
 
 	private SearchResults extractResults(final ScoreDoc[] hits, final IndexSearcher indexSearcher) {
 
 		final SearchResults results = new SearchResults();
 
-			for (final ScoreDoc hit : hits) {
+		for (final ScoreDoc hit : hits) {
 
 			final SearchResult res = new SearchResult();
 			Document doc;
@@ -112,6 +127,7 @@ public class SearchService<QueryParser> {
 				res.setContentType(doc.get("contentType"));
 				results.add(res);
 			} catch (final IOException e) {
+
 				LOG.debug(e.getMessage());
 			}
 		}
@@ -122,9 +138,12 @@ public class SearchService<QueryParser> {
 	private synchronized void refreshReader() {
 
 		if (this.indexReader == null) {
+
 			try {
+
 				this.indexReader = DirectoryReader.open(directory);
 			} catch (IOException e) {
+
 				LOG.info("Can't open index");
 				LOG.debug(e);
 			}
@@ -132,12 +151,15 @@ public class SearchService<QueryParser> {
 
 		   	IndexReader newReader = null;
 			try {
+
 				newReader = DirectoryReader.openIfChanged((DirectoryReader) indexReader);
 			} catch (final IOException e2) {
+
 				LOG.debug(e2.getMessage());
 			}
 	
 	    	if (newReader != null) {
+
 	    		this.indexReader = newReader;
 	    	}
 		}

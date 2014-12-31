@@ -38,7 +38,7 @@
    		</task:scheduled-tasks>
 
 		<task:scheduled-tasks>
-			<task:scheduled ref="dataIndexer" method="run" cron="* */5 * * * *" />
+			<task:scheduled ref="dataIndexer" method="run" cron="* 5 * * * *" />
    		</task:scheduled-tasks>
 
 </beans>
