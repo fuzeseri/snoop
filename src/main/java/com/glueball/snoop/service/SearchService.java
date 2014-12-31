@@ -2,6 +2,8 @@ package com.glueball.snoop.service;
 
 import java.io.IOException;
 
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -20,6 +22,8 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.store.Directory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +36,8 @@ import com.glueball.snoop.module.main.model.ServerMessage;
 public class SearchService<QueryParser> {
 	
 	private static Logger LOG = LogManager.getLogger(SearchService.class);
+
+	private static final int MAX_SCORE_DOCS = 1000;
 	
 	@Autowired
 	private Directory directory;
@@ -44,18 +50,17 @@ public class SearchService<QueryParser> {
 	
 	private IndexSearcher indexSearcher;
 
-//    @Autowired
-//    private Analyzer analyzer;
-//    
-//	public void setAnalyzer(final Analyzer analyzer) {
-//		this.analyzer = analyzer;
-//	}
-
 	@Autowired
 	private MultiFieldQueryParser parser;
 
 	public void setParser(final MultiFieldQueryParser parser) {
 		this.parser = parser;
+	}
+
+	private int hitsPerPage = 50;
+	
+	public void setHitsPerPage(int hitsPerPage) {
+		this.hitsPerPage = hitsPerPage;
 	}
 
 	public void init() {
@@ -70,17 +75,14 @@ public class SearchService<QueryParser> {
 	@GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{keyword}")
-	public Response search(@PathParam(value = "keyword") String searchString) {
+	public Response search(
+			@PathParam(value = "keyword") @DefaultValue("") String searchString,
+			@FormParam("page") @DefaultValue("1") int page) {
 
 		refreshReader();
 		if (this.indexSearcher == null) {
 
 			return Response.ok(ServerMessage.MESSAGE_INDEX_NOT_READY, MediaType.APPLICATION_JSON).build();
-		}
-
-		if (searchString == null) {
-
-			searchString = "";
 		}
 
     	LOG.debug("Searching for: " + searchString);
@@ -89,16 +91,24 @@ public class SearchService<QueryParser> {
 
 		LOG.debug("query: " + query);
 
+		final TopScoreDocCollector collector = TopScoreDocCollector.create(MAX_SCORE_DOCS, true);
 		ScoreDoc[] hits = new ScoreDoc[]{};
 		try {
 
-			hits = indexSearcher.search(query, null, 100).scoreDocs;
+			int startIndex = (page - 1) * hitsPerPage;
+			indexSearcher.search(query, collector);
+			final TopDocs topDocs = collector.topDocs(startIndex, hitsPerPage);
+			hits = topDocs.scoreDocs;
 		} catch (final IOException e1) {
 
 			LOG.debug(e1.getMessage());
 		}
 
 		final SearchResults results = extractResults(hits, indexSearcher);
+		results.setTotalHits(collector.getTotalHits());
+		results.setPages(getPages(collector.getTotalHits(), hitsPerPage));
+		results.setCurrentPage(page);
+
 		if (results.isEmpty()) {
 
 			return Response.ok(ServerMessage.MESSAGE_NO_HITS, MediaType.APPLICATION_JSON).build();
@@ -179,5 +189,23 @@ public class SearchService<QueryParser> {
 		}
 
 		return query;
+	}
+
+	private int[] getPages(int totalHits, final int hitsPerPage) {
+
+		if (totalHits > MAX_SCORE_DOCS) {
+
+			totalHits = MAX_SCORE_DOCS;
+		}
+
+		int pagesNum = totalHits < hitsPerPage ? 
+				1 : (( totalHits / hitsPerPage ) + ( totalHits % hitsPerPage == 0 ? 0 : 1));
+
+		int[] pages = new int[pagesNum];
+		for (int i = 0 ; i < pagesNum ; i++) {
+			pages[i] = i + 1;
+		}
+
+		return pages;
 	}
 }

@@ -13,6 +13,7 @@
 
 		<bean id="fileService"   class="com.glueball.snoop.service.FileService"  />
 		<bean id="searchService" class="com.glueball.snoop.service.SearchService" init-method="init">
+			<property name="hitsPerPage" value="${snoop.search.hitsperpage}" />
 		</bean>
 		<bean id="adminService"  class="com.glueball.snoop.service.AdminService" />
 

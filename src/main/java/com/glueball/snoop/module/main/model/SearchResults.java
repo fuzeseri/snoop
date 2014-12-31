@@ -15,6 +15,9 @@ public class SearchResults implements Serializable, Iterable<SearchResult> {
 
 	private static final long serialVersionUID = 1L;
 	private List<SearchResult> results = new ArrayList<SearchResult>();
+	private int totalHits;
+	private int[] pages;
+	private int   currentPage;
 
 	public List<SearchResult> getResults() {
 		return results;
@@ -34,5 +37,29 @@ public class SearchResults implements Serializable, Iterable<SearchResult> {
 
 	public boolean isEmpty() {
 		return results.isEmpty();
+	}
+
+	public int getTotalHits() {
+		return totalHits;
+	}
+
+	public void setTotalHits(int totalHits) {
+		this.totalHits = totalHits;
+	}
+
+	public int[] getPages() {
+		return pages;
+	}
+
+	public void setPages(int[] pages) {
+		this.pages = pages;
+	}
+
+	public int getCurrentPage() {
+		return currentPage;
+	}
+
+	public void setCurrentPage(int currentPage) {
+		this.currentPage = currentPage;
 	}
 }

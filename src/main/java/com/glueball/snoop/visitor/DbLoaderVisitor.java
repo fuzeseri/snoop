@@ -8,8 +8,10 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import org.apache.logging.log4j.Logger;
+
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.parser.MimeFileextMap;
 import com.glueball.snoop.parser.ParserMap;

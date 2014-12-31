@@ -199,10 +199,12 @@ public class DataIndexer implements Runnable {
 
 		final List<String> toRemove = new ArrayList<String>();
 		for (final IndexedDocument idoc : haveToIndexList) {
+
 			if (   IndexedDocument.INDEX_STATE_DELETED.equals(idoc.getIndexState())
 				|| IndexedDocument.INDEX_STATE_MODIFIED.equals(idoc.getIndexState())
 				|| IndexedDocument.INDEX_STATE_REINDEX.equals(idoc.getIndexState())
 					) {
+
 				toRemove.add(idoc.getId());
 			}
 		}

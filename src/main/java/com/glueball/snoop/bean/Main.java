@@ -22,11 +22,13 @@ public class Main {
 		final Bus bus = busFactory.createBus(JETTY_CONTEXT_XML);
 		//SpringBusFactory.setDefaultBus(bus);
 
+		@SuppressWarnings("resource")
 		final ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:spring/application.xml");
 		final String address = (String) ctx.getBean("listenAddress");
 		final JAXRSServerFactoryBean jaxRsServerFactory = (SpringJAXRSServerFactoryBean) ctx.getBean("restContainer");
 		jaxRsServerFactory.setBus(bus);
 		jaxRsServerFactory.setAddress(address);
+		@SuppressWarnings("unused")
 		final Server server = jaxRsServerFactory.create();
 
 	}

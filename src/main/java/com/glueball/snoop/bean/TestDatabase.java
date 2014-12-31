@@ -5,7 +5,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.glueball.snoop.dao.DocumentPathBean;
 import com.glueball.snoop.dao.IndexedDocumentBean;
-import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.IndexedDocument;
 
 public class TestDatabase {

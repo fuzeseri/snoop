@@ -12,16 +12,13 @@ public class ServerMessage implements Serializable {
 
 	public static final int MESSAGE_TYPE_OK    = 0;
 	public static final int MESSAGE_TYPE_ERROR = 1;
-	
+
 	public static final ServerMessage MESSAGE_NO_HITS =
 			new ServerMessage(MESSAGE_TYPE_ERROR, "No documents found int the search term.");
 
 	public static final ServerMessage MESSAGE_INDEX_NOT_READY =
 			new ServerMessage(MESSAGE_TYPE_ERROR, "The index is not ready yet. Please come back later.");
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private int messageType;
@@ -61,7 +58,7 @@ public class ServerMessage implements Serializable {
 
 			return "ERROR";
 		}
-		
+
 		return "";
 	}
 
@@ -71,6 +68,7 @@ public class ServerMessage implements Serializable {
 
 			return "ok.png";
 		}
+
 		if (messageType == MESSAGE_TYPE_ERROR) {
 
 			return "error.png";
