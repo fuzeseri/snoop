@@ -3,7 +3,12 @@ package com.glueball.snoop.parser;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public final class MimeFileextMap {
+
+	private static final Logger LOG = LogManager.getLogger(MimeFileextMap.class);
 
 	private final Map<String, String[]> mimeExtMap = new HashMap<String, String[]>();
 	
@@ -32,6 +37,11 @@ public final class MimeFileextMap {
 				}
 			}
 		}
+
+		if (!check) {
+			LOG.debug("File has no parsable mime-type: " + fileName + " mime-type: " + mimeType );
+		}
+
 		return check;
 	}
 }

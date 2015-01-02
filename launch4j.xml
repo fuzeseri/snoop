@@ -22,6 +22,5 @@
     <jdkPreference>jreOnly</jdkPreference>
     <runtimeBits>64</runtimeBits>
     <maxHeapSize>2048</maxHeapSize>
-    <opt>-Dconfiguration=etc/snoop.properties</opt>
   </jre>
 </launch4jConfig>

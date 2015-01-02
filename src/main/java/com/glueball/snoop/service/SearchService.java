@@ -174,7 +174,10 @@ public class SearchService<QueryParser> {
 	    	}
 		}
 
-		this.indexSearcher = new IndexSearcher(indexReader);
+		if (this.indexReader != null) {
+
+			this.indexSearcher = new IndexSearcher(indexReader);
+		}
 	}
 
 	public synchronized Query createQuery(final String searchString) {

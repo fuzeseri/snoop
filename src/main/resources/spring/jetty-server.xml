@@ -4,13 +4,13 @@
 	xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
 	xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
 	xsi:schemaLocation="http://cxf.apache.org/configuration/security
-              http://cxf.apache.org/schemas/configuration/security.xsd
-            http://cxf.apache.org/transports/http/configuration
-            http://cxf.apache.org/schemas/configuration/http-conf.xsd
-            http://cxf.apache.org/transports/http-jetty/configuration
-            http://cxf.apache.org/schemas/configuration/http-jetty.xsd
-            http://www.springframework.org/schema/beans
-            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+              	http://cxf.apache.org/schemas/configuration/security.xsd
+            	http://cxf.apache.org/transports/http/configuration
+            	http://cxf.apache.org/schemas/configuration/http-conf.xsd
+            	http://cxf.apache.org/transports/http-jetty/configuration
+            	http://cxf.apache.org/schemas/configuration/http-jetty.xsd
+            	http://www.springframework.org/schema/beans
+            	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -49,9 +49,19 @@
 			<httpj:connector>
 				<beans:bean class="org.eclipse.jetty.server.bio.SocketConnector">
 					<beans:property name="port" value='${snoop.http.port:80}' />
+					<beans:property name="reuseAddress" value="true" />
 				</beans:bean>
 			</httpj:connector>
 			<httpj:handlers>
+				<beans:bean class="org.eclipse.jetty.server.handler.ResourceHandler">
+					<beans:property name="directoriesListed" value="false" />
+					<beans:property name="welcomeFiles">
+								<array value-type="java.lang.String">
+							        <value>index.html</value>
+							    </array>
+					</beans:property>
+					<beans:property name="resourceBase" value="web" />
+				</beans:bean>
 				<beans:bean class="org.eclipse.jetty.server.handler.DefaultHandler" />
 			</httpj:handlers>
 			<httpj:sessionSupport>true</httpj:sessionSupport>
@@ -59,4 +69,3 @@
 	</httpj:engine-factory>
 
 </beans>
- 

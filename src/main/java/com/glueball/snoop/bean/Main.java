@@ -20,12 +20,6 @@ public class Main {
 
 	public Main() {
 
-//		final String JETTY_CONTEXT_XML = "file:src"
-//	            + File.separator + "main" 
-//	            + File.separator + "resources" 
-//	            + File.separator + "spring" 
-//	            + File.separator + "jetty-server.xml";
-
 		ctx = new ClassPathXmlApplicationContext("classpath:spring/application.xml");
 		final String address = (String) ctx.getBean("listenAddress");
 
