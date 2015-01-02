@@ -16,7 +16,7 @@
 		</bean>
 
 		<bean id="indexPath" class="java.io.File">
-			<constructor-arg type="java.lang.String" value="${snoop.directory.path}" />
+			<constructor-arg type="java.lang.String" value="${snoop.directory.path:#{ systemProperties['user.dir'] + systemProperties['file.separator'] + 'directory' } }" />
 		</bean>
 
 		<bean id="lockFactory" class="org.apache.lucene.store.SimpleFSLockFactory" />

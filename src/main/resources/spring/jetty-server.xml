@@ -1,11 +1,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:beans="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:sec="http://cxf.apache.org/configuration/security"
-  xmlns:http="http://cxf.apache.org/transports/http/configuration"
-  xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
-  xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
-  xsi:schemaLocation="http://cxf.apache.org/configuration/security
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:sec="http://cxf.apache.org/configuration/security" xmlns:http="http://cxf.apache.org/transports/http/configuration"
+	xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
+	xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+	xsi:schemaLocation="http://cxf.apache.org/configuration/security
               http://cxf.apache.org/schemas/configuration/security.xsd
             http://cxf.apache.org/transports/http/configuration
             http://cxf.apache.org/schemas/configuration/http-conf.xsd
@@ -14,41 +12,51 @@
             http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
-		<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-			<property name="location">
-				<value>config/snoop.properties</value>
-			</property>
-		</bean>
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>file:${configuration:#{ systemProperties['user.dir'] +
+				systemProperties['file.separator'] + 'etc' +
+				systemProperties['file.separator'] + 'snoop.properties' }}</value>
+		</property>
+	</bean>
 
-  <import resource="classpath:META-INF/cxf/cxf.xml" />
-  <!-- import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" / -->
-  <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
- 
-  <httpj:engine-factory bus="cxf">
-    <httpj:identifiedTLSServerParameters id="${snoop.http.host}">
-      <httpj:tlsServerParameters>
-        <sec:keyManagers keyPassword="x.1234.abcd">
-          <sec:keyStore type="JKS" password="password"
-                      file="src/main/resources/keystore.jks"/>
-        </sec:keyManagers>
-      </httpj:tlsServerParameters>
-    </httpj:identifiedTLSServerParameters>
- 
-    <httpj:engine port="${snoop.http.port}">
-      <httpj:tlsServerParametersRef id="secure" />
-      <httpj:threadingParameters minThreads="5"
-                                 maxThreads="15" />
-      <httpj:connector>
-        <beans:bean class="org.eclipse.jetty.server.bio.SocketConnector">
-           <beans:property name="port" value='${snoop.http.port}' />
-        </beans:bean>
-      </httpj:connector>
-      <httpj:handlers>
-        <beans:bean class="org.eclipse.jetty.server.handler.DefaultHandler"/>
-      </httpj:handlers>
-      <httpj:sessionSupport>true</httpj:sessionSupport>
-    </httpj:engine>
-  </httpj:engine-factory>
-  
- </beans>
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+	<bean id="keystorePath" class="java.lang.String">
+		<constructor-arg index="0"
+			value="${snoop.ssl.keystore:#{ systemProperties['user.dir'] + systemProperties['file.separator'] + 'etc' + systemProperties['file.separator'] + 'keystore.jks' }}" />
+	</bean>
+
+	<bean id="keystorePassword" class="java.lang.String">
+		<constructor-arg index="0" value="${snoop.ssl.password:x.1234.abcd}" />
+	</bean>
+
+	<httpj:engine-factory bus="cxf">
+		<httpj:identifiedTLSServerParameters id="${snoop.http.host:localhost}" >
+			<httpj:tlsServerParameters>
+				<sec:keyManagers keyPassword="#{ @keystorePassword.toString() }" >
+					<sec:keyStore type="JKS" password="password" file="#{ @keystorePath.toString() }" />
+				</sec:keyManagers>
+			</httpj:tlsServerParameters>
+		</httpj:identifiedTLSServerParameters>
+
+		<httpj:engine port="${snoop.http.port:80}">
+			<httpj:tlsServerParametersRef id="secure" />
+			<httpj:threadingParameters minThreads="${snoop.http.threadmin:5}"
+				                       maxThreads="${snoop.http.threadmax:15}" />
+			<httpj:connector>
+				<beans:bean class="org.eclipse.jetty.server.bio.SocketConnector">
+					<beans:property name="port" value='${snoop.http.port:80}' />
+				</beans:bean>
+			</httpj:connector>
+			<httpj:handlers>
+				<beans:bean class="org.eclipse.jetty.server.handler.DefaultHandler" />
+			</httpj:handlers>
+			<httpj:sessionSupport>true</httpj:sessionSupport>
+		</httpj:engine>
+	</httpj:engine-factory>
+
+</beans>
  
