@@ -18,9 +18,10 @@
     <path></path>
     <bundledJre64Bit>false</bundledJre64Bit>
     <minVersion>1.7.0</minVersion>
-    <maxVersion>1.7.9_99</maxVersion>
+    <maxVersion></maxVersion>
     <jdkPreference>jreOnly</jdkPreference>
     <runtimeBits>64</runtimeBits>
-    <maxHeapSize>3072</maxHeapSize>
+    <maxHeapSize>2048</maxHeapSize>
+    <opt>-Dconfiguration=etc/snoop.properties</opt>
   </jre>
 </launch4jConfig>

@@ -43,7 +43,7 @@
 		</bean>
 
 		<bean id="listenAddress" class="java.lang.String">
-			<constructor-arg value="http://${snoop.http.host}:${snoop.http.port}/"/>
+			<constructor-arg value="http://${snoop.http.host:localhost}:${snoop.http.port:80}/"/>
 		</bean>
    		
 </beans>

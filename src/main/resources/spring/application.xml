@@ -13,10 +13,10 @@
 
 		<context:annotation-config/>
 		<context:component-scan base-package="com.glueball.snoop.*" />
-		
+
 		<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 			<property name="location">
-				<value>config/snoop.properties</value>
+				<value>file:${configuration:#{ systemProperties['user.dir'] + systemProperties['file.separator'] + 'etc' + systemProperties['file.separator'] + 'snoop.properties' }}</value>
 			</property>
 		</bean>
 

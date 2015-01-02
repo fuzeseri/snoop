@@ -15,7 +15,7 @@
 
 		<bean id="documentPath"    class="com.glueball.snoop.dao.DocumentPathBean"    scope="singleton" />
 		<bean id="indexedDocument" class="com.glueball.snoop.dao.IndexedDocumentBean" scope="singleton">
-			<property name="maxDoc" value="${snoop.dataindexer.maxdoc}" />
+			<property name="maxDoc" value="${snoop.dataindexer.maxdoc:1000}" />
 		</bean>
 
 </beans>
