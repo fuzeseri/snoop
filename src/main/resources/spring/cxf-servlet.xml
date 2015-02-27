@@ -1,49 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-		xmlns:beans="http://www.springframework.org/schema/beans"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:cxf="http://cxf.apache.org/core"
-		xmlns:jaxrs="http://cxf.apache.org/jaxrs"
-		xmlns:mvc="http://www.springframework.org/schema/mvc"
-        xsi:schemaLocation="http://cxf.apache.org/core 
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:cxf="http://cxf.apache.org/core" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://cxf.apache.org/core 
         					http://cxf.apache.org/schemas/core.xsd
                 			http://cxf.apache.org/jaxrs
   							http://cxf.apache.org/schemas/jaxrs.xsd
 							http://www.springframework.org/schema/beans
             				http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-            				http://www.springframework.org/schema/mvc
-                            http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
-		
-		<import resource="classpath:spring/cxf-beans.xml" />
+                            http://www.springframework.org/schema/security
+                            http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
-		<jaxrs:server id="restContainer" address="/rest">
-			<jaxrs:providers>
-   				<ref bean="jsonProvider"/>
-			</jaxrs:providers>
-			<jaxrs:serviceBeans>
-				<ref bean="searchService"/>
-				<ref bean="adminService"/>
-				<ref bean="fileService"/>
-			</jaxrs:serviceBeans>
-			<jaxrs:extensionMappings>
-    			<entry key="json" value="application/json" />
-			</jaxrs:extensionMappings>
-		</jaxrs:server>
-   		
-   		<bean id="jacksonMapper" class="org.codehaus.jackson.map.ObjectMapper">
-  			<property name="serializationConfig.dateFormat">
-    			<bean class="java.text.SimpleDateFormat">
-      				<constructor-arg value="yyyy-MM-dd'T'HH:mm:ss.SZ"/>
-    			</bean>
-  			</property>
-		</bean>
+	<import resource="classpath:spring/cxf-beans.xml" />
 
-		<bean id="jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"> 
-			<property name="mapper" ref="jacksonMapper"/>
-		</bean>
+	<jaxrs:server id="restContainer" address="/rest">
+		<jaxrs:providers>
+			<ref bean="jsonProvider" />
+		</jaxrs:providers>
+		<jaxrs:serviceBeans>
+			<ref bean="searchService" />
+			<ref bean="adminService" />
+			<ref bean="fileService" />
+		</jaxrs:serviceBeans>
+		<jaxrs:extensionMappings>
+			<entry key="json" value="application/json" />
+		</jaxrs:extensionMappings>
+		<!-- jaxrs:inInterceptors>
+			<ref bean="securityInterceptor" />
+		</jaxrs:inInterceptors -->
+	</jaxrs:server>
 
-		<bean id="listenAddress" class="java.lang.String">
-			<constructor-arg value="http://${snoop.http.host:localhost}:${snoop.http.port:80}/"/>
-		</bean>
-   		
+	<bean id="jacksonMapper" class="org.codehaus.jackson.map.ObjectMapper">
+		<property name="serializationConfig.dateFormat">
+			<bean class="java.text.SimpleDateFormat">
+				<constructor-arg value="yyyy-MM-dd'T'HH:mm:ss.SZ" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider">
+		<property name="mapper" ref="jacksonMapper" />
+	</bean>
+
+	<bean id="listenAddress" class="java.lang.String">
+		<constructor-arg
+			value="http://${snoop.http.host:localhost}:${snoop.http.port:80}/" />
+	</bean>
+
+	<!--  bean id="securityInterceptor" class="org.apache.cxf.interceptor.security.basic.BasicAuthAuthorizationInterceptor">
+		<property name="realmName" value="Admin" />
+		<property name="authorizationContext">
+			<bean class="org.apache.cxf.interceptor.security.basic.SimpleBasicAuthAuthorizationContext">
+				<property name="usersMap">
+					<map>
+						<entry key="admin" value="password" />
+					</map>
+				</property>
+			</bean>
+		</property>
+	</bean -->
+
+	<!-- <sec:authentication-manager> -->
+	<!-- <sec:authentication-provider > -->
+	<!-- <sec:user-service id="userService"> -->
+	<!-- <sec:user name="admin" password="password" authorities="admin" /> -->
+	<!-- </sec:user-service> -->
+	<!-- </sec:authentication-provider> -->
+	<!-- </sec:authentication-manager> -->
+
+	<!-- <sec:http create-session="stateless" use-expressions="true"> -->
+	<!-- <sec:intercept-url pattern="/admin/**" -->
+	<!-- access="hasRole('admin')" /> -->
+	<!-- <sec:http-basic /> -->
+	<!-- </sec:http> -->
 </beans>
