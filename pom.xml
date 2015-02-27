@@ -292,6 +292,9 @@
           <execution>
             <configuration>
               <module>com.glueball.snoop.module.MainModule</module>
+              <webappDirectory>
+                target/classes
+              </webappDirectory>
             </configuration>
             <goals>
               <goal>compile</goal>
