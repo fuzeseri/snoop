@@ -23,6 +23,7 @@ public class IndexedDocument extends AbstractSnoopDocument {
 			   + "file_name varchar(1024),"
 			   + "uri varchar(1024),"
 			   + "path varchar(1024),"
+			   + "locaL_path varchar(1024),"
 			   + "last_modified_time timestamp,"
 			   + "last_indexed_time timestamp,"
 			   + "content_type varchar(100),"
@@ -38,7 +39,8 @@ public class IndexedDocument extends AbstractSnoopDocument {
 				" ,md5Sum : " + getMd5Sum() + 
 				" ,fileName : " + getFileName() + 
 				" ,uri : " + getUri() + 
-				" ,path : " + getPath() + 
+				" ,path : " + getPath() +
+				" ,local_path : " + getLocalPath() +
 				" ,lastModifiedTime : " + getLastModifiedTime() +
 				" ,lastIndexedTime : " + getLastIndexedTime() +
 				" ,contentType : " + getContentType() +

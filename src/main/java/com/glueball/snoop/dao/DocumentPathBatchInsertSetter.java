@@ -22,8 +22,9 @@ public class DocumentPathBatchInsertSetter implements BatchPreparedStatementSett
 		pstmt.setString(3, docs.get(i).getFileName());
 		pstmt.setString(4, docs.get(i).getUri());
 		pstmt.setString(5, docs.get(i).getPath());
-		pstmt.setTimestamp(6, docs.get(i).getLastModifiedTime());
-		pstmt.setString(7, docs.get(i).getContentType());
+		pstmt.setString(6, docs.get(i).getLocalPath());
+		pstmt.setTimestamp(7, docs.get(i).getLastModifiedTime());
+		pstmt.setString(8, docs.get(i).getContentType());
 	}
 
 	public int getBatchSize() {

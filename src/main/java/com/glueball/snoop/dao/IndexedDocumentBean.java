@@ -52,9 +52,9 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 
 		final String query = "INSERT INTO "
 				+ " INDEXED_DOCUMENT "
-				+ " (id,md5_sum,file_name,uri,path,last_modified_time, "
+				+ " (id,md5_sum,file_name,uri,path,local_path,last_modified_time, "
 				+ " last_indexed_time,content_type,index_state,lock,lock_time) "
-				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?) ";
+				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ";
 
 		LOG.debug("Inserting document: " + doc.toString() + " query: " + query);
 
@@ -70,6 +70,7 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 						pstmt.setString(3, doc.getFileName());
 						pstmt.setString(4, doc.getUri());
 						pstmt.setString(5, doc.getPath());
+						pstmt.setString(6, doc.getLocalPath());
 						pstmt.setTimestamp(6, doc.getLastModifiedTime());
 						pstmt.setTimestamp(7, doc.getLastIndexedTime());
 						pstmt.setString(8, doc.getContentType());
@@ -95,9 +96,9 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 	public void insertList(final List<IndexedDocument> docs) throws DataAccessException {
 
 		final String query = "INSERT INTO INDEXED_DOCUMENT "
-				+ " (id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,"
+				+ " (id,md5_sum,file_name,uri,path,local_path,last_modified_time,last_indexed_time,"
 				+ " content_type,index_state,lock,lock_time) "
-				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		LOG.debug("Inserting " + docs.size() + " documents. query: " + query);
 		this.jdbcTemplate.batchUpdate(query, new IndexedDocumentBatchInsertSetter(docs));
@@ -107,7 +108,7 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 	public IndexedDocument findById(final String Id) throws DataAccessException {
 
 		final String query = "SELECT "
-				+ " id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,"
+				+ " id,md5_sum,file_name,uri,path,local_path,last_modified_time,last_indexed_time,"
 				+ " content_type,index_state,lock,lock_time,lock,lock_time "
 				+ " FROM INDEXED_DOCUMENT WHERE id = ?";
 
@@ -133,7 +134,7 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 	public IndexedDocument findBySum(final String md5sum) throws DataAccessException {
 
 		final String query = "SELECT "
-				+ " id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,"
+				+ " id,md5_sum,file_name,uri,path,local_path,last_modified_time,last_indexed_time,"
 				+ " content_type,index_state,lock,lock_time "
 				+ " FROM INDEXED_DOCUMENT WHERE md5_sum = ?";
 
@@ -194,7 +195,7 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 	public List<IndexedDocument> selectAll() throws DataAccessException {
 
 		final String query = "SELECT "
-				+ " id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,"
+				+ " id,md5_sum,file_name,uri,path,local_path,last_modified_time,last_indexed_time,"
 				+ " content_type,index_state,lock,lock_time "
 				+ " FROM INDEXED_DOCUMENT ";
 
@@ -246,7 +247,7 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 				jdbcTemplate.execute(updateQuery);
 
 				final String query = "SELECT "
-						+ " id,md5_sum,file_name,uri,path,last_modified_time,last_indexed_time,"
+						+ " id,md5_sum,file_name,uri,path,local_path,last_modified_time,last_indexed_time,"
 						+ " content_type,index_state,lock,lock_time "
 						+ " FROM INDEXED_DOCUMENT WHERE lock = " + lock;
 

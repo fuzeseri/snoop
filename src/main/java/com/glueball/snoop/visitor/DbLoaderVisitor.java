@@ -9,10 +9,12 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import org.apache.cxf.common.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.entity.NetworkShare;
 import com.glueball.snoop.parser.MimeFileextMap;
 import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.util.MD5;
@@ -28,10 +30,14 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 
 	private final List<DocumentPath> docs;
 
-	public DbLoaderVisitor(final List<DocumentPath> _docs, final ParserMap _parserMap, final MimeFileextMap _mimeFileextMap) {
+	private final NetworkShare share;
+
+	public DbLoaderVisitor(final List<DocumentPath> _docs, final ParserMap _parserMap, final MimeFileextMap _mimeFileextMap,
+			final NetworkShare _share) {
 		this.docs = _docs;
 		this.parserMap = _parserMap;
 		this.mimeFileextMap = _mimeFileextMap;
+		this.share = _share;
 	}
 
 	public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
@@ -49,14 +55,23 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 				final DocumentPath doc = new DocumentPath();
 
 				try {
+
 					doc.setId(MD5.md5Digest(file.toUri().toString()));
 				} catch (final NoSuchAlgorithmException e) {
+
 					throw new IOException(e);
 				}
+
 				doc.setMd5Sum("");
 				doc.setFileName(file.getFileName().toString());
 				doc.setContentType(contentType);
-				doc.setPath(file.toAbsolutePath().toString());
+				doc.setLocalPath(file.toAbsolutePath().toString());
+
+				final String remotePath = !StringUtils.isEmpty(share.getLocalPath()) ?
+						file.toAbsolutePath().toString().replace(share.getLocalPath(), share.getRemotePath()) :
+							file.toAbsolutePath().toString();
+
+				doc.setPath(remotePath);
 				doc.setUri(file.toUri().toString());
 				doc.setLastModifiedTime(new java.sql.Timestamp(attrs.lastModifiedTime().toMillis()));
 				docs.add(doc);

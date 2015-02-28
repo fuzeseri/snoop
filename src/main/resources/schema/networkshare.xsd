@@ -1,0 +1,36 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://snoop.glueball.com/share"
+    xmlns:tns="http://snoop.glueball.com/share"
+    attributeFormDefault="unqualified"
+    elementFormDefault="qualified"
+    version="1.0">
+ 
+    <xsd:element name="NetworkShare" type="tns:NetworkShare"/>
+ 
+    <xsd:complexType name="NetworkShare">
+        <xsd:sequence>
+            <xsd:element name="name">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="255"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="localPath">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="2048"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="remotePath">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="2048"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="aktiv" type="xsd:boolean" nillable="false" default="true" />
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

@@ -50,7 +50,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 	public void insertOne(final DocumentPath doc) throws DataAccessException {
 
-		final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?)";
+		final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,local_path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
 		
 		LOG.debug("Inserting document: " + doc.toString() + " query: " + query);
 
@@ -65,8 +65,9 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 						pstmt.setString(3, doc.getFileName());
 						pstmt.setString(4, doc.getUri());
 						pstmt.setString(5, doc.getPath());
-						pstmt.setTimestamp(6, doc.getLastModifiedTime());
-						pstmt.setString(7, doc.getContentType());
+						pstmt.setString(6, doc.getLocalPath());
+						pstmt.setTimestamp(7, doc.getLastModifiedTime());
+						pstmt.setString(8, doc.getContentType());
 						pstmt.executeUpdate();
 
 						return pstmt;
@@ -84,7 +85,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 	public void insertList(final List<DocumentPath> docs) throws DataAccessException {
 
-		final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?)";
+		final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,local_path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
 		LOG.debug("Inserting " + docs.size() + " documents. query: " + query);
 		this.jdbcTemplate.batchUpdate(query, new DocumentPathBatchInsertSetter(docs));
 		LOG.debug(docs.toString() + " documents succesfully inserted.");
@@ -92,7 +93,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 	public DocumentPath findById(final String Id) throws DataAccessException {
 
-		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,content_type FROM DOCUMENT_PATH WHERE id = ?";
+		final String query = "SELECT id,md5_sum,file_name,uri,path,local_path,last_modified_time,content_type FROM DOCUMENT_PATH WHERE id = ?";
 		LOG.debug("Running query: " + query + " with parameter [id : "+ Id +"]");
 		final DocumentPath doc = new DocumentPath();
 
@@ -112,7 +113,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 	}
 
 	public DocumentPath findBySum(final String md5sum) throws DataAccessException {
-		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,content_type FROM DOCUMENT_PATH WHERE md5_sum = ?";
+		final String query = "SELECT id,md5_sum,file_name,uri,path,local_path,last_modified_time,content_type FROM DOCUMENT_PATH WHERE md5_sum = ?";
 
 		LOG.debug("Running query: " + query + " with parameter [id : "+ md5sum +"]");
 
@@ -163,7 +164,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 	public List<DocumentPath> selectAll() {
 
-		final String query = "SELECT id,md5_sum,file_name,uri,path,last_modified_time,content_type FROM DOCUMENT_PATH";
+		final String query = "SELECT id,md5_sum,file_name,uri,path,local_path,last_modified_time,content_type FROM DOCUMENT_PATH";
 		LOG.debug("Running query: " + query);
 		final List<DocumentPath> docList = new ArrayList<DocumentPath>();
 		this.jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
@@ -202,7 +203,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 				final String deleteQuery = "DELETE FROM DOCUMENT_PATH";
 				LOG.debug("Running query: " + deleteQuery);
 				jdbcTemplate.execute(deleteQuery);
-				final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?)";
+				final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,locaL_path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
 				LOG.debug("Running batch insert. Query: " + query + " with " + docs.size() + " documents.");
 				jdbcTemplate.batchUpdate(query, new DocumentPathBatchInsertSetter(docs));
 				LOG.debug(docs.size() + " documents successfully inserted.");
@@ -229,6 +230,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 							+ " docp.file_name file_name, "
 							+ " docp.uri uri, "
 							+ " docp.path path, "
+							+ " docp.local_path local_path,"
 							+ " docp.last_modified_time last_modified_time, "
 							+ " docp.content_type content_type "
 						+ " FROM "
@@ -271,6 +273,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 							+ " docp.file_name file_name, "
 							+ " docp.uri uri, "
 							+ " docp.path path, "
+							+ " docp.local_path local_path, "
 							+ " docp.last_modified_time last_modified_time, "
 							+ " docp.content_type content_type "
 						+ " FROM "

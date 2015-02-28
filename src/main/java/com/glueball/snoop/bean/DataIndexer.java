@@ -106,14 +106,14 @@ public class DataIndexer implements Runnable {
 					try {
 												
 						contentWriter = new StringWriter();
-						final Meta meta = this.parserMap.getParser(idoc.getContentType()).parseContent(idoc.getPath(), contentWriter);
+						final Meta meta = this.parserMap.getParser(idoc.getContentType()).parseContent(idoc.getLocalPath(), contentWriter);
 						final String c = contentWriter.toString();
 						contentReader = new StringReader(c);
 
 						final Document doc = new Document();
 						doc.add(new StringField("id", 			idoc.getId(),       Field.Store.YES));
 						doc.add(new StringField("fileName", 	idoc.getFileName(), Field.Store.YES));
-						doc.add(new TextField("file", 	idoc.getFileName(), Field.Store.YES));
+						doc.add(new   TextField("file", 		idoc.getFileName(), Field.Store.YES));
 						doc.add(new StringField("path", 		idoc.getPath(),     Field.Store.YES));
 						doc.add(new StringField("uri", 			idoc.getUri(),      Field.Store.YES));
 						doc.add(new StringField("contentType", 	idoc.getContentType(), Field.Store.YES));
@@ -156,7 +156,9 @@ public class DataIndexer implements Runnable {
 						e.printStackTrace();
 					} finally {
 						if (contentReader != null) {
+
 							try {
+
 								contentReader.close();
 							} catch (final IOException e) {
 								LOG.error("IOExcetion when trying to close PipedInputStream", e.getMessage());
@@ -164,7 +166,9 @@ public class DataIndexer implements Runnable {
 							}
 						}
 						if (contentWriter != null) {
+
 							try {
+
 								contentWriter.close();
 							} catch (final IOException e) {
 								LOG.error("IOExcetion when trying to close PipedOutputStream", e.getMessage());

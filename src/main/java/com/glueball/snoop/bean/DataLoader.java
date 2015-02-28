@@ -1,5 +1,6 @@
 package com.glueball.snoop.bean;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -8,12 +9,19 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
+import org.apache.cxf.common.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.glueball.snoop.dao.DocumentPathBean;
 import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.entity.NetworkShare;
+import com.glueball.snoop.entity.NetworkShares;
 import com.glueball.snoop.parser.MimeFileextMap;
 import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.visitor.DbLoaderVisitor;
@@ -43,38 +51,62 @@ public class DataLoader implements Runnable {
 		this.mimeFileextMap = _mimeFileextMap;
 	}
 
-	private Path source;
+	private String sharesXml;
 
-	public void setSource(final Path source) {
-		this.source = source;
+	public void setSharesXml(final String source) {
+		this.sharesXml = source;
 	}
 
 	public DataLoader() {
 	}
 
-	public DataLoader(final Path source) {
-		this.source = source;
-	}
-
-	public DataLoader(final String source) {
-		this.source = Paths.get(source);
+	public DataLoader(final String _sharesXml) {
+		this.sharesXml = _sharesXml;
 	}
 
 	public void run() {
 
-		final List<DocumentPath> docs = new ArrayList<DocumentPath>();
-		final FileVisitor<Path> visitor = new DbLoaderVisitor(docs, parserMap, mimeFileextMap);
+		for (final NetworkShare share : getShares()) {
+
+			LOG.info("Loading netwok share: " + share.getName());
+			LOG.info("Remote path: " + share.getRemotePath());
+			LOG.info("Local  path: " + share.getLocalPath());
+
+			final List<DocumentPath> docs = new ArrayList<DocumentPath>();
+			final FileVisitor<Path> visitor = new DbLoaderVisitor(docs, parserMap, mimeFileextMap, share);
+
+			try {
+
+				final String path = !StringUtils.isEmpty(share.getLocalPath()) ? share.getLocalPath() : share.getRemotePath();
+
+				Files.walkFileTree(Paths.get(path), visitor);
+				this.docPathBean.updateDocumentPath(docs);
+				this.docPathBean.updateNewDocuments();
+				this.docPathBean.updateModifiedDocumetns();
+				this.docPathBean.updateDeletedDocuments();
+			} catch (final IOException e) {
+
+				LOG.error("IO ERROR when discovering files");
+				LOG.debug(e.getMessage());
+			}
+		}
+	}
+
+	private List<NetworkShare> getShares() {
+
+		final List<NetworkShare> shares = new ArrayList<NetworkShare>();
 		try {
 
-			Files.walkFileTree(source, visitor);
-			this.docPathBean.updateDocumentPath(docs);
-			this.docPathBean.updateNewDocuments();
-			this.docPathBean.updateModifiedDocumetns();
-			this.docPathBean.updateDeletedDocuments();
-		} catch (final IOException e) {
+			final JAXBContext jaxbContext = JAXBContext.newInstance(NetworkShares.class);
+			final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			final NetworkShares netShares = (NetworkShares) jaxbUnmarshaller.unmarshal(new File(sharesXml));
+			shares.addAll(netShares.getShares());
+		} catch (JAXBException e) {
 
-			LOG.error("IO ERROR when discovering files");
+			LOG.error("IO ERROR when unmarshalling shares.xml");
 			LOG.debug(e.getMessage());
 		}
+
+	    return shares;
 	}
 }

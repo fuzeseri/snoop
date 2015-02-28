@@ -9,10 +9,11 @@ public abstract class AbstractSnoopDocument implements SnoopDocument {
 	protected String fileName;
 	protected String uri;
 	protected String path;
+	protected String localPath;
 	protected Timestamp lastModifiedTime;
 	protected Timestamp lastIndexedTime;
 	protected String contentType;
-	
+
 	public String getId() {
 		return id;
 	}
@@ -51,6 +52,14 @@ public abstract class AbstractSnoopDocument implements SnoopDocument {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public String getLocalPath() {
+		return localPath;
+	}
+
+	public void setLocalPath(String localPath) {
+		this.localPath = localPath;
 	}
 
 	public Timestamp getLastModifiedTime() {

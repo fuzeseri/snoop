@@ -27,18 +27,18 @@
 		<import resource="classpath:spring/cxf-servlet.xml" />
 
 		<bean id="dataLoader" class="com.glueball.snoop.bean.DataLoader">
-			<constructor-arg value="${snoop.dataloader.path}" />
+			<constructor-arg value="${snoop.sharesxml.path}" />
 		</bean>
 
 		<bean id="dataIndexer" class="com.glueball.snoop.bean.DataIndexer">
 		</bean>
 
 		<task:scheduled-tasks>
-			<task:scheduled ref="dataLoader" method="run" cron="*/60 * * * * *" />
+			<task:scheduled ref="dataLoader" method="run"  cron="*/60 * * * * *" />
    		</task:scheduled-tasks>
 
 		<task:scheduled-tasks>
-			<task:scheduled ref="dataIndexer" method="run" cron="* 1 * * * *" />
+			<task:scheduled ref="dataIndexer" method="run" cron="*/60 * * * * *" />
    		</task:scheduled-tasks>
 
 </beans>

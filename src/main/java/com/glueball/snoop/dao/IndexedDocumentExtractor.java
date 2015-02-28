@@ -24,6 +24,7 @@ public class IndexedDocumentExtractor implements ResultSetExtractor {
 			doc.setFileName(rs.getString("file_name"));
 			doc.setUri(rs.getString("uri"));
 			doc.setPath(rs.getString("path"));
+			doc.setLocalPath(rs.getString("local_path"));
 			doc.setLastModifiedTime(rs.getTimestamp("last_modified_time"));
 			doc.setLastIndexedTime(rs.getTimestamp("last_indexed_time"));
 			doc.setContentType(rs.getString("content_type"));
