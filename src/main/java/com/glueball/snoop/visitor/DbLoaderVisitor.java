@@ -5,6 +5,7 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -62,7 +63,7 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 					throw new IOException(e);
 				}
 
-				doc.setMd5Sum("");
+				doc.setShareName(share.getName());
 				doc.setFileName(file.getFileName().toString());
 				doc.setContentType(contentType);
 				doc.setLocalPath(file.toAbsolutePath().toString());
@@ -72,7 +73,7 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 							file.toAbsolutePath().toString();
 
 				doc.setPath(remotePath);
-				doc.setUri(file.toUri().toString());
+				doc.setUri(Paths.get(remotePath).toUri().toString());
 				doc.setLastModifiedTime(new java.sql.Timestamp(attrs.lastModifiedTime().toMillis()));
 				docs.add(doc);
 

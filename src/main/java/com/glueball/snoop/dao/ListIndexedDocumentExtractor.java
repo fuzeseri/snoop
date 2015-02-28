@@ -23,7 +23,7 @@ public class ListIndexedDocumentExtractor implements ResultSetExtractor {
 
 			final IndexedDocument doc = new IndexedDocument();
 			doc.setId(rs.getString("id"));
-			doc.setMd5Sum(rs.getString("md5_sum"));
+			doc.setShareName(rs.getString("share_name"));
 			doc.setFileName(rs.getString("file_name"));
 			doc.setUri(rs.getString("uri"));
 			doc.setPath(rs.getString("path"));

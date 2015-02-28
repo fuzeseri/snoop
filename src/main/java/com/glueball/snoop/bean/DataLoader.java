@@ -82,8 +82,8 @@ public class DataLoader implements Runnable {
 				Files.walkFileTree(Paths.get(path), visitor);
 				this.docPathBean.updateDocumentPath(docs);
 				this.docPathBean.updateNewDocuments();
-				this.docPathBean.updateModifiedDocumetns();
-				this.docPathBean.updateDeletedDocuments();
+				this.docPathBean.updateModifiedDocuments();
+				this.docPathBean.updateDeletedDocuments(share.getName());
 			} catch (final IOException e) {
 
 				LOG.error("IO ERROR when discovering files");

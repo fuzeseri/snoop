@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 public abstract class AbstractSnoopDocument implements SnoopDocument {
 
 	protected String id;
-	protected String md5Sum;
+	protected String shareName;
 	protected String fileName;
 	protected String uri;
 	protected String path;
@@ -20,14 +20,6 @@ public abstract class AbstractSnoopDocument implements SnoopDocument {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getMd5Sum() {
-		return md5Sum;
-	}
-
-	public void setMd5Sum(String md5Sum) {
-		this.md5Sum = md5Sum;
 	}
 
 	public String getFileName() {
@@ -86,4 +78,11 @@ public abstract class AbstractSnoopDocument implements SnoopDocument {
 		this.lastIndexedTime = lastIndexedTime;
 	}
 
+	public String getShareName() {
+		return shareName;
+	}
+
+	public void setShareName(String shareName) {
+		this.shareName = shareName;
+	}
 }

@@ -7,7 +7,7 @@ public class DocumentPath extends IndexedDocument {
 	public static String getCreateTable() {
 		return   "CREATE TABLE IF NOT EXISTS DOCUMENT_PATH ("
 			   + "id varchar(50),"
-			   + "md5_sum varchar(255),"
+			   + "share_name varchar(1024),"
 			   + "file_name varchar(1024),"
 			   + "uri varchar(1024),"
 			   + "path varchar(1024),"
@@ -20,11 +20,11 @@ public class DocumentPath extends IndexedDocument {
 	@Override
 	public String toString() {
 		return " id : " + getId() + 
-				" ,md5Sum : " + getMd5Sum() + 
+				" ,shareName : " + getShareName() + 
 				" ,fileName : " + getFileName() + 
 				" ,uri : " + getUri() + 
 				" ,path : " + getPath() +
-				" ,local_path : " + getLocalPath() +
+				" ,localPath : " + getLocalPath() +
 				" ,lastModifiedTime : " + getLastModifiedTime() + 
 				" ,contentType : " + getContentType() ;
 	}

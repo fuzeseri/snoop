@@ -18,7 +18,7 @@ public class IndexedDocumentBatchInsertSetter implements BatchPreparedStatementS
 
 	public void setValues(final PreparedStatement pstmt, int i) throws SQLException {
 		pstmt.setString(1, docs.get(i).getId());
-		pstmt.setString(2, docs.get(i).getMd5Sum());
+		pstmt.setString(2, docs.get(i).getShareName());
 		pstmt.setString(3, docs.get(i).getFileName());
 		pstmt.setString(4, docs.get(i).getUri());
 		pstmt.setString(5, docs.get(i).getPath());

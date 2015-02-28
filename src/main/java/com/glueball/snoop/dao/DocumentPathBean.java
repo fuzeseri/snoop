@@ -50,7 +50,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 	public void insertOne(final DocumentPath doc) throws DataAccessException {
 
-		final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,local_path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
+		final String query = "INSERT INTO DOCUMENT_PATH (id,share_name,file_name,uri,path,local_path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
 		
 		LOG.debug("Inserting document: " + doc.toString() + " query: " + query);
 
@@ -61,7 +61,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 						final PreparedStatement pstmt = conn.prepareStatement(query);
 						pstmt.setString(1, doc.getId());
-						pstmt.setString(2, doc.getMd5Sum());
+						pstmt.setString(2, doc.getShareName());
 						pstmt.setString(3, doc.getFileName());
 						pstmt.setString(4, doc.getUri());
 						pstmt.setString(5, doc.getPath());
@@ -85,7 +85,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 	public void insertList(final List<DocumentPath> docs) throws DataAccessException {
 
-		final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,local_path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
+		final String query = "INSERT INTO DOCUMENT_PATH (id,share_name,file_name,uri,path,local_path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
 		LOG.debug("Inserting " + docs.size() + " documents. query: " + query);
 		this.jdbcTemplate.batchUpdate(query, new DocumentPathBatchInsertSetter(docs));
 		LOG.debug(docs.toString() + " documents succesfully inserted.");
@@ -93,7 +93,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 	public DocumentPath findById(final String Id) throws DataAccessException {
 
-		final String query = "SELECT id,md5_sum,file_name,uri,path,local_path,last_modified_time,content_type FROM DOCUMENT_PATH WHERE id = ?";
+		final String query = "SELECT id,share_name,file_name,uri,path,local_path,last_modified_time,content_type FROM DOCUMENT_PATH WHERE id = ?";
 		LOG.debug("Running query: " + query + " with parameter [id : "+ Id +"]");
 		final DocumentPath doc = new DocumentPath();
 
@@ -113,7 +113,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 	}
 
 	public DocumentPath findBySum(final String md5sum) throws DataAccessException {
-		final String query = "SELECT id,md5_sum,file_name,uri,path,local_path,last_modified_time,content_type FROM DOCUMENT_PATH WHERE md5_sum = ?";
+		final String query = "SELECT id,share_name,file_name,uri,path,local_path,last_modified_time,content_type FROM DOCUMENT_PATH WHERE md5_sum = ?";
 
 		LOG.debug("Running query: " + query + " with parameter [id : "+ md5sum +"]");
 
@@ -164,7 +164,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 	public List<DocumentPath> selectAll() {
 
-		final String query = "SELECT id,md5_sum,file_name,uri,path,local_path,last_modified_time,content_type FROM DOCUMENT_PATH";
+		final String query = "SELECT id,share_name,file_name,uri,path,local_path,last_modified_time,content_type FROM DOCUMENT_PATH";
 		LOG.debug("Running query: " + query);
 		final List<DocumentPath> docList = new ArrayList<DocumentPath>();
 		this.jdbcTemplate.query(query, new ListDocumentPathExtractor(docList));
@@ -203,7 +203,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 				final String deleteQuery = "DELETE FROM DOCUMENT_PATH";
 				LOG.debug("Running query: " + deleteQuery);
 				jdbcTemplate.execute(deleteQuery);
-				final String query = "INSERT INTO DOCUMENT_PATH (id,md5_sum,file_name,uri,path,locaL_path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
+				final String query = "INSERT INTO DOCUMENT_PATH (id,share_name,file_name,uri,path,local_path,last_modified_time,content_type) VALUES (?,?,?,?,?,?,?,?)";
 				LOG.debug("Running batch insert. Query: " + query + " with " + docs.size() + " documents.");
 				jdbcTemplate.batchUpdate(query, new DocumentPathBatchInsertSetter(docs));
 				LOG.debug(docs.size() + " documents successfully inserted.");
@@ -226,7 +226,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 				final String query =
 						" SELECT "
 							+ " docp.id id, "
-							+ " docp.md5_sum md5_sum, "
+							+ " docp.share_name share_name, "
 							+ " docp.file_name file_name, "
 							+ " docp.uri uri, "
 							+ " docp.path path, "
@@ -255,7 +255,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 	}
 
 	@Override
-	public synchronized void updateModifiedDocumetns() throws DataAccessException {
+	public synchronized void updateModifiedDocuments() throws DataAccessException {
 
 		transactionTemplate.setIsolationLevel(TransactionTemplate.ISOLATION_SERIALIZABLE);
 		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
@@ -269,7 +269,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 				final String query =
 						" SELECT "
 							+ " docp.id id, "
-							+ " docp.md5_sum md5_sum, "
+							+ " docp.share_name share_name, "
 							+ " docp.file_name file_name, "
 							+ " docp.uri uri, "
 							+ " docp.path path, "
@@ -300,7 +300,7 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 	}
 
 	@Override
-	public synchronized void updateDeletedDocuments() throws DataAccessException {
+	public synchronized void updateDeletedDocuments(final String shareName) throws DataAccessException {
 
 		transactionTemplate.setIsolationLevel(TransactionTemplate.ISOLATION_SERIALIZABLE);
 		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
@@ -320,7 +320,8 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 							+ " INDEXED_DOCUMENT idoc"
 							+ " LEFT JOIN DOCUMENT_PATH docp ON idoc.id = docp.id "
 						+ " WHERE "
-						+ " docp.id IS NULL )";
+						+ " idoc.share_name = '" + shareName + "' "
+						+ " AND docp.id IS NULL )";
 
 				LOG.debug("Running query: " + query);
 				jdbcTemplate.execute(query);

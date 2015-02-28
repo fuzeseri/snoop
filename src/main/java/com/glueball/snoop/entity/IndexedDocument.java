@@ -19,7 +19,7 @@ public class IndexedDocument extends AbstractSnoopDocument {
 
 		return   "CREATE TABLE IF NOT EXISTS INDEXED_DOCUMENT ("
 			   + "id varchar(50),"
-			   + "md5_sum varchar(255),"
+			   + "share_name varchar(1024),"
 			   + "file_name varchar(1024),"
 			   + "uri varchar(1024),"
 			   + "path varchar(1024),"
@@ -35,12 +35,12 @@ public class IndexedDocument extends AbstractSnoopDocument {
 
 	public String toString() {
 
-		return " id : " + getId() + 
-				" ,md5Sum : " + getMd5Sum() + 
-				" ,fileName : " + getFileName() + 
+		return " id : " + getId() +  
+				" ,fileName : " + getFileName() +
+				" ,shareName : " + getShareName() +
 				" ,uri : " + getUri() + 
 				" ,path : " + getPath() +
-				" ,local_path : " + getLocalPath() +
+				" ,localPath : " + getLocalPath() +
 				" ,lastModifiedTime : " + getLastModifiedTime() +
 				" ,lastIndexedTime : " + getLastIndexedTime() +
 				" ,contentType : " + getContentType() +

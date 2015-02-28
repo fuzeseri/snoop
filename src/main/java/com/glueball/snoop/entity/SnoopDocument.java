@@ -8,9 +8,9 @@ public interface SnoopDocument {
 
 	public void setId(String id);
 
-	public String getMd5Sum();
+	public String getShareName();
 
-	public void setMd5Sum(String md5Sum);
+	public void setShareName(String shareName);
 
 	public String getFileName();
 
@@ -35,5 +35,9 @@ public interface SnoopDocument {
 	public Timestamp getLastIndexedTime();
 
 	public void setLastIndexedTime(Timestamp lastIndexedTime);
+
+	public String getLocalPath();
+
+	public void setLocalPath(String localPath);
 
 }
