@@ -10,6 +10,7 @@ public class IndexedDocument extends AbstractSnoopDocument {
 	public static String INDEX_STATE_DELETED  = "DELETED";
 	public static String INDEX_STATE_INDEXED  = "INDEXED";
 	public static String INDEX_STATE_REINDEX  = "REINDEX";
+	public static String INDEX_STATE_ERROR    = "ERROR";
 
 	private String    indexState = "";
 	private Integer   lock = 0;

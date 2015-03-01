@@ -179,7 +179,7 @@ public class DataIndexer implements Runnable {
 				}
 
 				idoc.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
-				idoc.setIndexState(indexed ? "INDEXED" : "ERROR");
+				idoc.setIndexState(indexed ? IndexedDocument.INDEX_STATE_INDEXED : IndexedDocument.INDEX_STATE_ERROR);
 			}
 		} finally {
 
