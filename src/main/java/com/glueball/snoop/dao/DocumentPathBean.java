@@ -137,6 +137,9 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 	public void createTable() throws DataAccessException {
 		LOG.debug("Running query: " + DocumentPath.getCreateTable());
 		this.jdbcTemplate.execute(DocumentPath.getCreateTable());
+		LOG.debug("Running query: " + DocumentPath.getCreateIndex());
+		for (final String q : DocumentPath.getCreateIndex())
+			this.jdbcTemplate.execute(q);
 	}
 
 	public long rowNum() {
@@ -200,6 +203,9 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 				LOG.debug("Running query: " + DocumentPath.getCreateTable());
 				jdbcTemplate.execute(DocumentPath.getCreateTable());
+				LOG.debug("Running query: " + DocumentPath.getCreateIndex());
+				for (final String q : DocumentPath.getCreateIndex())
+					jdbcTemplate.execute(q);
 				final String deleteQuery = "DELETE FROM DOCUMENT_PATH";
 				LOG.debug("Running query: " + deleteQuery);
 				jdbcTemplate.execute(deleteQuery);
@@ -222,6 +228,9 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 				LOG.debug("Running query: " + IndexedDocument.getCreateTable());
 				jdbcTemplate.execute(IndexedDocument.getCreateTable());
+				LOG.debug("Running query: " + IndexedDocument.getCreateIndex());
+				for (final String q : IndexedDocument.getCreateIndex())
+					jdbcTemplate.execute(q);
 
 				final String query =
 						" SELECT "
@@ -265,6 +274,9 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 				LOG.debug("Running query: " + IndexedDocument.getCreateTable());
 				jdbcTemplate.execute(IndexedDocument.getCreateTable());
+				LOG.debug("Running query: " + IndexedDocument.getCreateIndex());
+				for (final String q : IndexedDocument.getCreateIndex())
+					jdbcTemplate.execute(q);
 
 				final String query =
 						" SELECT "
@@ -310,6 +322,9 @@ public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao
 
 				LOG.debug("Running query: " + IndexedDocument.getCreateTable());
 				jdbcTemplate.execute(IndexedDocument.getCreateTable());
+				LOG.debug("Running query: " + IndexedDocument.getCreateIndex());
+				for (final String q : IndexedDocument.getCreateIndex())
+					jdbcTemplate.execute(q);
 
 				final String query =
 						" UPDATE INDEXED_DOCUMENT SET index_state = '"+ IndexedDocument.INDEX_STATE_DELETED +"', lock = 0, lock_time = null "

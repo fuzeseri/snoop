@@ -158,8 +158,12 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 	}
 
 	public void createTable() throws DataAccessException {
+
 		LOG.debug("Running query: " + IndexedDocument.getCreateTable());
 		this.jdbcTemplate.execute(IndexedDocument.getCreateTable());
+		LOG.debug("Running query: " + IndexedDocument.getCreateIndex());
+		for (final String q : IndexedDocument.getCreateIndex())
+			this.jdbcTemplate.execute(q);
 	}
 
 	public long rowNum() {

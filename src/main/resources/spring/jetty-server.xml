@@ -37,8 +37,11 @@
 		<httpj:identifiedTLSServerParameters id="${snoop.http.host:localhost}" >
 			<httpj:tlsServerParameters>
 				<sec:keyManagers keyPassword="#{ @keystorePassword.toString() }" >
-					<sec:keyStore type="JKS" password="password" file="#{ @keystorePath.toString() }" />
+					<sec:keyStore type="JKS" password="#{ @keystorePassword.toString() }" file="#{ @keystorePath.toString() }" />
 				</sec:keyManagers>
+				<sec:trustManagers>
+                	<sec:keyStore type="JKS" password="#{ @keystorePassword.toString() }" file="#{ @keystorePath.toString() }" />
+            	</sec:trustManagers>
 			</httpj:tlsServerParameters>
 		</httpj:identifiedTLSServerParameters>
 
