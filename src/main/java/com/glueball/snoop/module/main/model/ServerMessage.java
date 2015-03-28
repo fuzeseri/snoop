@@ -6,8 +6,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "server_message")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ServerMessage implements Serializable {
 
 	public static final int MESSAGE_TYPE_OK    = 0;
@@ -18,6 +21,9 @@ public class ServerMessage implements Serializable {
 
 	public static final ServerMessage MESSAGE_INDEX_NOT_READY =
 			new ServerMessage(MESSAGE_TYPE_ERROR, "The index is not ready yet. Please come back later.");
+
+	public static final ServerMessage MESSAGE_CANT_OPEN_INDEX =
+			new ServerMessage(MESSAGE_TYPE_ERROR, "Error opening index.");
 
 	private static final long serialVersionUID = 1L;
 

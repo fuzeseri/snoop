@@ -17,6 +17,7 @@ import org.apache.cxf.common.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import com.glueball.snoop.dao.DocumentPathBean;
 import com.glueball.snoop.entity.DocumentPath;
@@ -26,7 +27,7 @@ import com.glueball.snoop.parser.MimeFileextMap;
 import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.visitor.DbLoaderVisitor;
 
-public class DataLoader implements Runnable {
+public class DataLoader { //implements Runnable {
 
 	private static final Logger LOG = LogManager.getLogger(DataLoader.class);
 
@@ -64,7 +65,9 @@ public class DataLoader implements Runnable {
 		this.sharesXml = _sharesXml;
 	}
 
-	public void run() {
+	//public void run() {
+	@Scheduled(fixedDelay = 5 * 60 * 1000)
+	public void load() {
 
 		for (final NetworkShare share : getShares()) {
 

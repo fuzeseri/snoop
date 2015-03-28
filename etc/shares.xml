@@ -12,4 +12,10 @@
         <remotePath>//laptop/dokumentumok/MySQL</remotePath>
         <aktiv>true</aktiv>
     </share>
+    <share>
+        <name>laptop-ebooks</name>
+        <localPath>/home/karesz/dokumentumok/ebooks</localPath>
+        <remotePath>//laptop/dokumentumok/ebooks</remotePath>
+        <aktiv>true</aktiv>
+    </share>
 </shares>

@@ -19,6 +19,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.tika.exception.TikaException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.xml.sax.SAXException;
 
 import com.glueball.snoop.dao.IndexedDocumentBean;
@@ -27,7 +28,7 @@ import com.glueball.snoop.entity.Meta;
 import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.parser.UnavialableParserException;
 
-public class DataIndexer implements Runnable {
+public class DataIndexer { //implements Runnable {
 
 	private static final Logger LOG = LogManager.getLogger(DataIndexer.class);
 
@@ -196,7 +197,9 @@ public class DataIndexer implements Runnable {
 		}
 	}
 
-	public void run() {
+	//public void run() {
+	@Scheduled(fixedDelay = 10 * 60 * 1000)
+	public void index() {
 
 		indexedDocumentBean.createTable();
 		final List<IndexedDocument> haveToIndexList = indexedDocumentBean.haveToIndex();

@@ -26,19 +26,21 @@
 
 		<import resource="classpath:spring/cxf-servlet.xml" />
 
-		<bean id="dataLoader" class="com.glueball.snoop.bean.DataLoader">
+		<task:annotation-driven />
+
+		<bean id="dataLoader" class="com.glueball.snoop.bean.DataLoader" scope="singleton">
 			<constructor-arg value="${snoop.sharesxml.path}" />
 		</bean>
 
-		<bean id="dataIndexer" class="com.glueball.snoop.bean.DataIndexer">
+		<bean id="dataIndexer" class="com.glueball.snoop.bean.DataIndexer" scope="singleton">
 		</bean>
 
-		<task:scheduled-tasks>
-			<task:scheduled ref="dataLoader" method="run"  cron="*/60 * * * * *" />
+		<!-- task:scheduled-tasks>
+			<task:scheduled ref="dataLoader" method="run"  cron="${snoop.dataloader.cron:'* */10 * * * *'}" />
    		</task:scheduled-tasks>
 
 		<task:scheduled-tasks>
-			<task:scheduled ref="dataIndexer" method="run" cron="*/60 * * * * *" />
-   		</task:scheduled-tasks>
+			<task:scheduled ref="dataIndexer" method="run" cron="*${snoop.dataindexer.cron:'* */15 * * * *'}" />
+   		</task:scheduled-tasks -->
 
 </beans>

@@ -30,7 +30,7 @@
 	</bean>
 
 	<bean id="keystorePassword" class="java.lang.String">
-		<constructor-arg index="0" value="${snoop.ssl.password:x.1234.abcd}" />
+		<constructor-arg index="0" value="${snoop.ssl.password}" />
 	</bean>
 
 	<httpj:engine-factory bus="cxf">
@@ -47,8 +47,8 @@
 
 		<httpj:engine port="${snoop.http.port:80}">
 			<httpj:tlsServerParametersRef id="secure" />
-			<httpj:threadingParameters minThreads="${snoop.http.threadmin:5}"
-				                       maxThreads="${snoop.http.threadmax:15}" />
+			<httpj:threadingParameters minThreads="${snoop.http.threadmin:10}"
+				                       maxThreads="${snoop.http.threadmax:5000}" />
 			<httpj:connector>
 				<beans:bean class="org.eclipse.jetty.server.bio.SocketConnector">
 					<beans:property name="port" value='${snoop.http.port:80}' />

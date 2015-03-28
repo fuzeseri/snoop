@@ -21,7 +21,7 @@
 
 		<bean id="lockFactory" class="org.apache.lucene.store.SimpleFSLockFactory" />
 
-		<bean id="fsDirectory" class="org.apache.lucene.store.SimpleFSDirectory">
+		<bean id="fsDirectory" class="org.apache.lucene.store.NIOFSDirectory">
 			<constructor-arg index="0" ref="indexPath"/>
 			<!-- constructor-arg index="1" ref="lockFactory"/ -->
 		</bean>
@@ -36,7 +36,16 @@
 			<constructor-arg index="1" ref="indexWriterConfig" />
 		</bean>
 
-		<bean id="queryParser" class="org.apache.lucene.queryparser.classic.MultiFieldQueryParser">
+		<!--  >bean id="parserProxyFactory" class="org.springframework.aop.framework.ProxyFactoryBean">
+			<property name="proxyTargetClass" value="true" />
+			<property name="targetSource" ref="parserTargetSource" />
+		</bean>
+
+		<bean id="parserTargetSource" class="org.springframework.aop.target.ThreadLocalTargetSource" destroy-method="destroy">
+			<property name="targetBeanName" value="queryParser" />
+		</bean -->
+
+		<bean id="queryParser" class="org.apache.lucene.queryparser.classic.MultiFieldQueryParser" scope="singleton">
 			<constructor-arg index="0">
 				<array value-type="java.lang.String">
 			        <value>content</value>

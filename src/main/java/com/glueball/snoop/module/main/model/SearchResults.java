@@ -9,15 +9,26 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "results")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchResults implements Serializable, Iterable<SearchResult> {
 
 	private static final long serialVersionUID = 1L;
-	private List<SearchResult> results = new ArrayList<SearchResult>();
+	private List<SearchResult> results;
 	private int totalHits;
 	private int[] pages;
 	private int   currentPage;
+
+	public SearchResults() {
+		results = new ArrayList<SearchResult>();
+	}
+
+	public SearchResults(int size) {
+		results = new ArrayList<SearchResult>(size);
+	}
 
 	public List<SearchResult> getResults() {
 		return results;
