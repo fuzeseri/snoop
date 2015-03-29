@@ -28,9 +28,18 @@ public class SnoopParserImpl implements SnoopParser {
 	}
 
 	public Meta parseContent(final String _uri, final Writer output) throws IOException, SAXException, TikaException {
-		final File path = new File(_uri);
-		final InputStream is = new FileInputStream(path);
-		return parse(is, output);
+
+		InputStream is = null;
+		try {
+
+			final File path = new File(_uri);
+			is = new FileInputStream(path);
+
+			return parse(is, output);
+		} finally {
+
+			is.close();
+		}
 	}
 
 	public Meta parseContent(final File path, final Writer output) throws IOException, SAXException, TikaException {

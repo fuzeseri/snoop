@@ -69,9 +69,7 @@ public class SearchService<QueryParser> {
 
 		try {
 
-			//this.context = new ClassPathXmlApplicationContext("classpath:spring/lucene-index.xml");
-			this.indexReader   = DirectoryReader.open(directory);
-			this.indexSearcher = new IndexSearcher(this.indexReader);
+			refreshReader();
 		} catch (final IOException e) {
 
 			LOG.info("No directroy available");
@@ -161,7 +159,7 @@ public class SearchService<QueryParser> {
 		return results;
 	}
 
-	private synchronized void refreshReader() throws IOException {
+	private void refreshReader() throws IOException {
 
 		if (this.indexReader == null) {
 

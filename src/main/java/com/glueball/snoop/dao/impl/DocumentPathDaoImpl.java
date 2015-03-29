@@ -1,6 +1,5 @@
 package com.glueball.snoop.dao.impl;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -71,20 +69,16 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
 
 		final DocumentPath doc = new DocumentPath();
 
-		this.jdbcTemplate.query(
+		this.jdbcTemplate.query(DocumentPath.SELECT_BY_ID_QUERY,
+				new PreparedStatementSetter() {
 
-		new PreparedStatementCreator() {
+					@Override
+					public void setValues(final PreparedStatement ps)
+							throws SQLException {
 
-			public PreparedStatement createPreparedStatement(
-					final Connection conn) throws SQLException {
-
-				final PreparedStatement pstmt = conn
-						.prepareStatement(DocumentPath.SELECT_BY_ID_QUERY);
-				pstmt.setString(1, Id);
-
-				return pstmt;
-			}
-		}, new DocumentPathExtractor(doc));
+						ps.setString(1, Id);
+					}
+				}, new DocumentPathExtractor(doc));
 		return doc;
 	}
 
@@ -97,20 +91,16 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
 
 		final DocumentPath doc = new DocumentPath();
 
-		this.jdbcTemplate.query(
+		this.jdbcTemplate.query(DocumentPath.SELECT_BY_SUM_QUERY,
+				new PreparedStatementSetter() {
 
-		new PreparedStatementCreator() {
+					@Override
+					public void setValues(final PreparedStatement ps)
+							throws SQLException {
 
-			public PreparedStatement createPreparedStatement(
-					final Connection conn) throws SQLException {
-
-				final PreparedStatement pstmt = conn
-						.prepareStatement(DocumentPath.SELECT_BY_SUM_QUERY);
-				pstmt.setString(1, md5sum);
-
-				return pstmt;
-			}
-		}, new DocumentPathExtractor(doc));
+						ps.setString(1, md5sum);
+					}
+				}, new DocumentPathExtractor(doc));
 		return doc;
 	}
 

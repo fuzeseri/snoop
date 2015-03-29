@@ -1,6 +1,5 @@
 package com.glueball.snoop.dao.impl;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -74,18 +72,17 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
 		LOG.debug("Running query: " + IndexedDocument.SELECT_BY_ID_QUERY
 				+ " with parameter [ id : " + id + "]");
 
-		this.jdbcTemplate.query(new PreparedStatementCreator() {
+		this.jdbcTemplate.query(IndexedDocument.SELECT_BY_ID_QUERY,
+				new PreparedStatementSetter() {
 
-			public PreparedStatement createPreparedStatement(
-					final Connection conn) throws SQLException {
+					@Override
+					public void setValues(final PreparedStatement ps)
+							throws SQLException {
 
-				final PreparedStatement pstmt = conn
-						.prepareStatement(IndexedDocument.SELECT_BY_ID_QUERY);
-				pstmt.setString(1, id);
+						ps.setString(1, id);
+					}
 
-				return pstmt;
-			}
-		}, new IndexedDocumentExtractor(doc));
+				}, new IndexedDocumentExtractor(doc));
 		return doc;
 	}
 
@@ -98,18 +95,16 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
 				+ IndexedDocument.SELECT_BY_SHARE_NAME_QUERY
 				+ " with parameter [ shareName : " + share + "]");
 
-		this.jdbcTemplate.query(new PreparedStatementCreator() {
+		this.jdbcTemplate.query(IndexedDocument.SELECT_BY_SHARE_NAME_QUERY,
+				new PreparedStatementSetter() {
 
-			public PreparedStatement createPreparedStatement(
-					final Connection conn) throws SQLException {
+					@Override
+					public void setValues(final PreparedStatement ps)
+							throws SQLException {
 
-				final PreparedStatement pstmt = conn
-						.prepareStatement(IndexedDocument.SELECT_BY_SHARE_NAME_QUERY);
-				pstmt.setString(1, share);
-
-				return pstmt;
-			}
-		}, new ListIndexedDocumentExtractor(docList));
+						ps.setString(1, share);
+					}
+				}, new ListIndexedDocumentExtractor(docList));
 
 		LOG.debug(docList.size() + " document selected.");
 
