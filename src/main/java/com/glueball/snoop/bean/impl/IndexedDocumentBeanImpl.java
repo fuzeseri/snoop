@@ -30,7 +30,7 @@ public class IndexedDocumentBeanImpl implements IndexedDocumentBean {
 	}
 
 	@Override
-	public List<IndexedDocument> haveToIndex(final long docNum) {
+	public List<IndexedDocument> haveToIndex(final int docNum) {
 
 		final long lock = dao.lockDocuments(docNum);
 		return dao.getByLock(lock);

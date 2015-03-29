@@ -8,7 +8,7 @@ public interface IndexedDocumentDao extends SnoopDao<IndexedDocument> {
 
 	List<IndexedDocument> findByShareName(final String share);
 	void deleteByIds(final List<String> ids);
-	long lockDocuments(final long docNum);
+	long lockDocuments(final int docNum);
 	List<IndexedDocument> getByLock(final long lock);
 	void updateState(final List<IndexedDocument> idocList);
 	void unLockUpdateState(final List<IndexedDocument> idocList);

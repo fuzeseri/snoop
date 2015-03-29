@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -19,6 +20,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.dao.IndexedDocumentDao;
 import com.glueball.snoop.dao.extractor.IndexedDocumentExtractor;
+import com.glueball.snoop.dao.extractor.ListIdExtractor;
 import com.glueball.snoop.dao.extractor.ListIndexedDocumentExtractor;
 import com.glueball.snoop.dao.setter.DeleteDocumentBatchPstmtSetter;
 import com.glueball.snoop.dao.setter.IndexedDocumentBatchInsertSetter;
@@ -206,25 +208,45 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
 	}
 
 	@Override
-	public long lockDocuments(final long docNum) {
+	public long lockDocuments(final int docNum) {
 
-		final long lock = random.nextLong();
+		final int lock = random.nextInt();
 
-		LOG.debug("Running query: " + IndexedDocument.LOCK_DOCUMENTS_QUERY);
+		LOG.debug("Running query: "
+				+ IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY);
 
-		final int rows = jdbcTemplate.update(
-				IndexedDocument.LOCK_DOCUMENTS_QUERY,
+		final List<String> ids = new ArrayList<String>((int) docNum);
+		jdbcTemplate.query(IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY,
 				new PreparedStatementSetter() {
 
 					@Override
-					public void setValues(final PreparedStatement ps)
+					public void setValues(PreparedStatement ps)
+							throws SQLException {
+
+						ps.setInt(1, docNum);
+					}
+				}, new ListIdExtractor(ids));
+
+		LOG.debug("Running query: " + IndexedDocument.LOCK_DOCUMENTS_QUERY);
+
+		jdbcTemplate.batchUpdate(IndexedDocument.LOCK_DOCUMENTS_QUERY,
+				new BatchPreparedStatementSetter() {
+
+					@Override
+					public void setValues(final PreparedStatement ps, int i)
 							throws SQLException {
 
 						ps.setLong(1, lock);
-						ps.setLong(2, docNum);
+						ps.setString(2, ids.get(i));
+					}
+
+					@Override
+					public int getBatchSize() {
+
+						return ids.size();
 					}
 				});
-		LOG.debug(rows + " documents successfully locked");
+		LOG.debug(ids.size() + " documents successfully locked");
 
 		return lock;
 	}

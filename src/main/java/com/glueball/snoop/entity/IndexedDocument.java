@@ -44,11 +44,10 @@ public class IndexedDocument extends AbstractSnoopDocument {
 			+ " WHERE index_state NOT IN ('"
 			+ INDEX_STATE_INDEXED
 			+ "','"
-			+ INDEX_STATE_ERROR + "') AND lock = 0 ";
+			+ INDEX_STATE_ERROR + "') AND lock = 0 LIMIT ?";
 
 	public static final String LOCK_DOCUMENTS_QUERY = "UPDATE INDEXED_DOCUMENT "
-			+ " SET lock = ?, lock_time = now() WHERE id IN ("
-			+ GET_INDEXABLE_DOCUMENTS_QUERY + ")";
+			+ " SET lock = ?, lock_time = now() WHERE id = ?";
 
 	public static final String SELECT_BY_LOCK_QUERY = "SELECT "
 			+ " id,share_name,file_name,uri,path,local_path,last_modified_time,last_indexed_time,"

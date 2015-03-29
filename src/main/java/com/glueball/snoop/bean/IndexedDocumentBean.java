@@ -8,5 +8,5 @@ public interface IndexedDocumentBean {
 
 	void unLockUpdateState(final List<IndexedDocument> haveToIndexList);
 
-	List<IndexedDocument> haveToIndex(final long docNum);
+	List<IndexedDocument> haveToIndex(final int docNum);
 }
