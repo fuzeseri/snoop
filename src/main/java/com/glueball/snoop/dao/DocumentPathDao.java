@@ -8,7 +8,6 @@ import com.glueball.snoop.entity.DocumentPath;
 
 public interface DocumentPathDao {
 	
-	//List<DocumentPath> haveToIndex() throws DataAccessException;
 	void updateDocumentPath(List<DocumentPath> docs) throws DataAccessException;
 	void updateNewDocuments() throws DataAccessException;
 	void updateModifiedDocuments() throws DataAccessException;

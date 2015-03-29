@@ -22,18 +22,18 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.glueball.snoop.entity.IndexedDocument;
 
-public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDocumentDao {
+public final class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDocumentDao {
 
 	private static final Logger LOG = LogManager.getLogger(IndexedDocumentBean.class);
 
-	@Autowired
+	@Autowired(required=true)
 	private JdbcTemplate jdbcTemplate;
 
 	public void setJdbcTemplate(final JdbcTemplate _jdbcTemplate) {
 		this.jdbcTemplate = _jdbcTemplate;
 	}
 
-	@Autowired
+	@Autowired(required=true)
 	private TransactionTemplate transactionTemplate;
 
 	public void setTransactionTemplate(final TransactionTemplate _transactionTemplate) {
@@ -44,7 +44,7 @@ public class IndexedDocumentBean implements SnoopDao<IndexedDocument>, IndexedDo
 
 	int maxDoc = 100;
 
-	public void setMaxDoc(int maxDocsPerRound) {
+	public void setMaxDoc(final int maxDocsPerRound) {
 		this.maxDoc = maxDocsPerRound;
 	}
 

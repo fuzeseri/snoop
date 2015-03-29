@@ -23,28 +23,28 @@ import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.IndexedDocument;
 
 
-public class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao {
+public final class DocumentPathBean implements SnoopDao<DocumentPath>, DocumentPathDao {
 
 	private static final Logger LOG = LogManager.getLogger(DocumentPathBean.class);
 
-	@Autowired
+	@Autowired(required=true)
 	private JdbcTemplate jdbcTemplate;
 
 	public void setJdbcTemplate(final JdbcTemplate _jdbcTemplate) {
 		this.jdbcTemplate = _jdbcTemplate;
 	}
 
-	@Autowired
+	@Autowired(required=true)
 	private TransactionTemplate transactionTemplate;
 
-	public void setTransactionTemplate(final TransactionTemplate _transactionTemplate) {
+	public final void setTransactionTemplate(final TransactionTemplate _transactionTemplate) {
 		this.transactionTemplate = _transactionTemplate;
 	}
 
-	@Autowired
+	@Autowired(required=true)
 	private IndexedDocumentBean indexedDocumentBean;
 
-	public void setIndexedDocumentBean(final IndexedDocumentBean indexedDocumentBean) {
+	public final void setIndexedDocumentBean(final IndexedDocumentBean indexedDocumentBean) {
 		this.indexedDocumentBean = indexedDocumentBean;
 	}
 
