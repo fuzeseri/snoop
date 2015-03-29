@@ -28,270 +28,270 @@ import com.glueball.snoop.entity.IndexedDocument;
 
 public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
 
-	private static final Logger LOG = LogManager
-			.getLogger(IndexedDocumentDaoImpl.class);
+    private static final Logger LOG = LogManager
+	    .getLogger(IndexedDocumentDaoImpl.class);
 
-	@Autowired(required = true)
-	private JdbcTemplate jdbcTemplate;
+    @Autowired(required = true)
+    private JdbcTemplate jdbcTemplate;
 
-	public void setJdbcTemplate(final JdbcTemplate _jdbcTemplate) {
-		this.jdbcTemplate = _jdbcTemplate;
+    public void setJdbcTemplate(final JdbcTemplate _jdbcTemplate) {
+	this.jdbcTemplate = _jdbcTemplate;
+    }
+
+    private static final Random random = new Random();
+
+    @Override
+    public void insertOne(final IndexedDocument doc) {
+
+	LOG.debug("Inserting document: " + doc.toString() + " query: "
+		+ IndexedDocument.INSERT_DOCUMENT_QUERY);
+
+	this.jdbcTemplate.update(IndexedDocument.INSERT_DOCUMENT_QUERY,
+		new IndexedDocumentInsertSetter(doc));
+
+	LOG.debug("Succesfully inserted document: " + doc.toString());
+    }
+
+    @Override
+    public void insertList(final List<IndexedDocument> docs) {
+
+	LOG.debug("Inserting " + docs.size() + " documents. query: "
+		+ IndexedDocument.INSERT_DOCUMENT_QUERY);
+
+	this.jdbcTemplate.batchUpdate(IndexedDocument.INSERT_DOCUMENT_QUERY,
+		new IndexedDocumentBatchInsertSetter(docs));
+
+	LOG.debug(docs.toString() + " documents succesfully inserted.");
+    }
+
+    @Override
+    public IndexedDocument findById(final String id) {
+
+	final IndexedDocument doc = new IndexedDocument();
+
+	LOG.debug("Running query: " + IndexedDocument.SELECT_BY_ID_QUERY
+		+ " with parameter [ id : " + id + "]");
+
+	this.jdbcTemplate.query(IndexedDocument.SELECT_BY_ID_QUERY,
+		new PreparedStatementSetter() {
+
+		    @Override
+		    public void setValues(final PreparedStatement ps)
+			    throws SQLException {
+
+			ps.setString(1, id);
+		    }
+
+		}, new IndexedDocumentExtractor(doc));
+	return doc;
+    }
+
+    @Override
+    public List<IndexedDocument> findByShareName(final String share) {
+
+	final List<IndexedDocument> docList = new ArrayList<IndexedDocument>();
+
+	LOG.debug("Running query: "
+		+ IndexedDocument.SELECT_BY_SHARE_NAME_QUERY
+		+ " with parameter [ shareName : " + share + "]");
+
+	this.jdbcTemplate.query(IndexedDocument.SELECT_BY_SHARE_NAME_QUERY,
+		new PreparedStatementSetter() {
+
+		    @Override
+		    public void setValues(final PreparedStatement ps)
+			    throws SQLException {
+
+			ps.setString(1, share);
+		    }
+		}, new ListIndexedDocumentExtractor(docList));
+
+	LOG.debug(docList.size() + " document selected.");
+
+	return docList;
+    }
+
+    @Override
+    public void createTable() {
+
+	LOG.debug("Running query: " + IndexedDocument.CREATE_TABLE_QUERY);
+
+	this.jdbcTemplate.execute(IndexedDocument.CREATE_TABLE_QUERY);
+
+	LOG.debug("Running query: " + IndexedDocument.CREATE_INDEX_QUERY);
+
+	for (final String q : IndexedDocument.CREATE_INDEX_QUERY) {
+	    this.jdbcTemplate.execute(q);
 	}
+    }
 
-	private static final Random random = new Random();
+    @Override
+    public long rowNum() {
 
-	@Override
-	public void insertOne(final IndexedDocument doc) {
+	LOG.debug("Running query: " + IndexedDocument.SELECT_ROW_NUM_QUERY);
 
-		LOG.debug("Inserting document: " + doc.toString() + " query: "
-				+ IndexedDocument.INSERT_DOCUMENT_QUERY);
+	return (Long) this.jdbcTemplate.query(
+		IndexedDocument.SELECT_ROW_NUM_QUERY,
+		new ResultSetExtractor<Long>() {
 
-		this.jdbcTemplate.update(IndexedDocument.INSERT_DOCUMENT_QUERY,
-				new IndexedDocumentInsertSetter(doc));
+		    public Long extractData(final ResultSet rs)
+			    throws SQLException, DataAccessException {
 
-		LOG.debug("Succesfully inserted document: " + doc.toString());
-	}
+			long rowNum = 0;
+			if (rs.next()) {
+			    rowNum = rs.getLong(1);
+			}
+			return rowNum;
+		    }
+		});
+    }
 
-	@Override
-	public void insertList(final List<IndexedDocument> docs) {
+    @Override
+    public void deleteById(final String id) {
 
-		LOG.debug("Inserting " + docs.size() + " documents. query: "
-				+ IndexedDocument.INSERT_DOCUMENT_QUERY);
+	LOG.debug("Running query: " + IndexedDocument.DELETE_BY_ID_QUERY);
 
-		this.jdbcTemplate.batchUpdate(IndexedDocument.INSERT_DOCUMENT_QUERY,
-				new IndexedDocumentBatchInsertSetter(docs));
+	this.jdbcTemplate.update(IndexedDocument.DELETE_BY_ID_QUERY,
+		new PreparedStatementSetter() {
 
-		LOG.debug(docs.toString() + " documents succesfully inserted.");
-	}
+		    @Override
+		    public void setValues(final PreparedStatement ps)
+			    throws SQLException {
 
-	@Override
-	public IndexedDocument findById(final String id) {
+			ps.setString(1, id);
+		    }
+		});
+	LOG.debug("Ducument id : " + id + " successfully deleted.");
+    }
 
-		final IndexedDocument doc = new IndexedDocument();
+    @Override
+    public void truncateTable() {
 
-		LOG.debug("Running query: " + IndexedDocument.SELECT_BY_ID_QUERY
-				+ " with parameter [ id : " + id + "]");
+	LOG.debug("Running query: " + IndexedDocument.TRUNCATE_TABLE_QUERY);
 
-		this.jdbcTemplate.query(IndexedDocument.SELECT_BY_ID_QUERY,
-				new PreparedStatementSetter() {
+	this.jdbcTemplate.execute(IndexedDocument.TRUNCATE_TABLE_QUERY);
 
-					@Override
-					public void setValues(final PreparedStatement ps)
-							throws SQLException {
+	LOG.debug("Table INDEXED_DOCUENT has successfully truncated.");
+    }
 
-						ps.setString(1, id);
-					}
+    @Override
+    public List<IndexedDocument> selectAll() throws DataAccessException {
 
-				}, new IndexedDocumentExtractor(doc));
-		return doc;
-	}
+	final List<IndexedDocument> docList = new ArrayList<IndexedDocument>();
 
-	@Override
-	public List<IndexedDocument> findByShareName(final String share) {
+	LOG.debug("Running query: " + IndexedDocument.SELECT_ALL_QUERY);
+	this.jdbcTemplate.query(IndexedDocument.SELECT_ALL_QUERY,
+		new ListIndexedDocumentExtractor(docList));
 
-		final List<IndexedDocument> docList = new ArrayList<IndexedDocument>();
+	LOG.debug(docList.size() + " document selected.");
 
-		LOG.debug("Running query: "
-				+ IndexedDocument.SELECT_BY_SHARE_NAME_QUERY
-				+ " with parameter [ shareName : " + share + "]");
+	return docList;
+    }
 
-		this.jdbcTemplate.query(IndexedDocument.SELECT_BY_SHARE_NAME_QUERY,
-				new PreparedStatementSetter() {
+    @Override
+    public void deleteByIds(final List<String> ids) {
 
-					@Override
-					public void setValues(final PreparedStatement ps)
-							throws SQLException {
+	LOG.debug("Running batch delete. Query: "
+		+ IndexedDocument.DELETE_BY_ID_QUERY + " with " + ids.size()
+		+ " ids.");
 
-						ps.setString(1, share);
-					}
-				}, new ListIndexedDocumentExtractor(docList));
+	this.jdbcTemplate.batchUpdate(IndexedDocument.DELETE_BY_ID_QUERY,
+		new DeleteDocumentBatchPstmtSetter(ids));
 
-		LOG.debug(docList.size() + " document selected.");
+	LOG.debug(ids.size()
+		+ " records was deleted from INDEXED_DOCUMENT table");
+    }
 
-		return docList;
-	}
+    @Override
+    public long lockDocuments(final int docNum) {
 
-	@Override
-	public void createTable() {
+	final int lock = random.nextInt();
 
-		LOG.debug("Running query: " + IndexedDocument.CREATE_TABLE_QUERY);
+	LOG.debug("Running query: "
+		+ IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY);
 
-		this.jdbcTemplate.execute(IndexedDocument.CREATE_TABLE_QUERY);
+	final List<String> ids = new ArrayList<String>((int) docNum);
+	jdbcTemplate.query(IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY,
+		new PreparedStatementSetter() {
 
-		LOG.debug("Running query: " + IndexedDocument.CREATE_INDEX_QUERY);
+		    @Override
+		    public void setValues(PreparedStatement ps)
+			    throws SQLException {
 
-		for (final String q : IndexedDocument.CREATE_INDEX_QUERY) {
-			this.jdbcTemplate.execute(q);
-		}
-	}
+			ps.setInt(1, docNum);
+		    }
+		}, new ListIdExtractor(ids));
 
-	@Override
-	public long rowNum() {
+	LOG.debug("Running query: " + IndexedDocument.LOCK_DOCUMENTS_QUERY);
 
-		LOG.debug("Running query: " + IndexedDocument.SELECT_ROW_NUM_QUERY);
+	jdbcTemplate.batchUpdate(IndexedDocument.LOCK_DOCUMENTS_QUERY,
+		new BatchPreparedStatementSetter() {
 
-		return (Long) this.jdbcTemplate.query(
-				IndexedDocument.SELECT_ROW_NUM_QUERY,
-				new ResultSetExtractor<Long>() {
+		    @Override
+		    public void setValues(final PreparedStatement ps, int i)
+			    throws SQLException {
 
-					public Long extractData(final ResultSet rs)
-							throws SQLException, DataAccessException {
+			ps.setLong(1, lock);
+			ps.setString(2, ids.get(i));
+		    }
 
-						long rowNum = 0;
-						if (rs.next()) {
-							rowNum = rs.getLong(1);
-						}
-						return rowNum;
-					}
-				});
-	}
+		    @Override
+		    public int getBatchSize() {
 
-	@Override
-	public void deleteById(final String id) {
+			return ids.size();
+		    }
+		});
+	LOG.debug(ids.size() + " documents successfully locked");
 
-		LOG.debug("Running query: " + IndexedDocument.DELETE_BY_ID_QUERY);
+	return lock;
+    }
 
-		this.jdbcTemplate.update(IndexedDocument.DELETE_BY_ID_QUERY,
-				new PreparedStatementSetter() {
+    @Override
+    public List<IndexedDocument> getByLock(final long lock) {
 
-					@Override
-					public void setValues(final PreparedStatement ps)
-							throws SQLException {
+	final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
 
-						ps.setString(1, id);
-					}
-				});
-		LOG.debug("Ducument id : " + id + " successfully deleted.");
-	}
+	LOG.debug("Running query: " + IndexedDocument.SELECT_BY_LOCK_QUERY);
 
-	@Override
-	public void truncateTable() {
+	jdbcTemplate.query(IndexedDocument.SELECT_BY_LOCK_QUERY,
+		new PreparedStatementSetter() {
 
-		LOG.debug("Running query: " + IndexedDocument.TRUNCATE_TABLE_QUERY);
+		    @Override
+		    public void setValues(final PreparedStatement ps)
+			    throws SQLException {
+			ps.setLong(1, lock);
+		    }
+		}, new ListIndexedDocumentExtractor(idocList));
 
-		this.jdbcTemplate.execute(IndexedDocument.TRUNCATE_TABLE_QUERY);
+	LOG.debug(idocList.size() + " documents selected to index.");
 
-		LOG.debug("Table INDEXED_DOCUENT has successfully truncated.");
-	}
+	return idocList;
+    }
 
-	@Override
-	public List<IndexedDocument> selectAll() throws DataAccessException {
+    @Override
+    public void updateState(final List<IndexedDocument> idocList) {
 
-		final List<IndexedDocument> docList = new ArrayList<IndexedDocument>();
+	LOG.debug("Running batch update. Query: "
+		+ IndexedDocument.UPDATE_STATE_QUERY + " with "
+		+ idocList.size() + " ids.");
 
-		LOG.debug("Running query: " + IndexedDocument.SELECT_ALL_QUERY);
-		this.jdbcTemplate.query(IndexedDocument.SELECT_ALL_QUERY,
-				new ListIndexedDocumentExtractor(docList));
+	this.jdbcTemplate.batchUpdate(IndexedDocument.UPDATE_STATE_QUERY,
+		new IndexedDocumentBatchUpdateSetter(idocList));
 
-		LOG.debug(docList.size() + " document selected.");
+	LOG.debug(idocList.size() + " documents successfully updated.");
+    }
 
-		return docList;
-	}
+    @Override
+    public void unLockUpdateState(final List<IndexedDocument> idocList) {
 
-	@Override
-	public void deleteByIds(final List<String> ids) {
+	LOG.debug("Running batch update. Query: "
+		+ IndexedDocument.UNLOCK_UPDATE_STATE_QUERY + " with "
+		+ idocList.size() + " ids.");
 
-		LOG.debug("Running batch delete. Query: "
-				+ IndexedDocument.DELETE_BY_ID_QUERY + " with " + ids.size()
-				+ " ids.");
+	this.jdbcTemplate.batchUpdate(
+		IndexedDocument.UNLOCK_UPDATE_STATE_QUERY,
+		new IndexedDocumentBatchUpdateSetter(idocList));
 
-		this.jdbcTemplate.batchUpdate(IndexedDocument.DELETE_BY_ID_QUERY,
-				new DeleteDocumentBatchPstmtSetter(ids));
-
-		LOG.debug(ids.size()
-				+ " records was deleted from INDEXED_DOCUMENT table");
-	}
-
-	@Override
-	public long lockDocuments(final int docNum) {
-
-		final int lock = random.nextInt();
-
-		LOG.debug("Running query: "
-				+ IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY);
-
-		final List<String> ids = new ArrayList<String>((int) docNum);
-		jdbcTemplate.query(IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY,
-				new PreparedStatementSetter() {
-
-					@Override
-					public void setValues(PreparedStatement ps)
-							throws SQLException {
-
-						ps.setInt(1, docNum);
-					}
-				}, new ListIdExtractor(ids));
-
-		LOG.debug("Running query: " + IndexedDocument.LOCK_DOCUMENTS_QUERY);
-
-		jdbcTemplate.batchUpdate(IndexedDocument.LOCK_DOCUMENTS_QUERY,
-				new BatchPreparedStatementSetter() {
-
-					@Override
-					public void setValues(final PreparedStatement ps, int i)
-							throws SQLException {
-
-						ps.setLong(1, lock);
-						ps.setString(2, ids.get(i));
-					}
-
-					@Override
-					public int getBatchSize() {
-
-						return ids.size();
-					}
-				});
-		LOG.debug(ids.size() + " documents successfully locked");
-
-		return lock;
-	}
-
-	@Override
-	public List<IndexedDocument> getByLock(final long lock) {
-
-		final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
-
-		LOG.debug("Running query: " + IndexedDocument.SELECT_BY_LOCK_QUERY);
-
-		jdbcTemplate.query(IndexedDocument.SELECT_BY_LOCK_QUERY,
-				new PreparedStatementSetter() {
-
-					@Override
-					public void setValues(final PreparedStatement ps)
-							throws SQLException {
-						ps.setLong(1, lock);
-					}
-				}, new ListIndexedDocumentExtractor(idocList));
-
-		LOG.debug(idocList.size() + " documents selected to index.");
-
-		return idocList;
-	}
-
-	@Override
-	public void updateState(final List<IndexedDocument> idocList) {
-
-		LOG.debug("Running batch update. Query: "
-				+ IndexedDocument.UPDATE_STATE_QUERY + " with "
-				+ idocList.size() + " ids.");
-
-		this.jdbcTemplate.batchUpdate(IndexedDocument.UPDATE_STATE_QUERY,
-				new IndexedDocumentBatchUpdateSetter(idocList));
-
-		LOG.debug(idocList.size() + " documents successfully updated.");
-	}
-
-	@Override
-	public void unLockUpdateState(final List<IndexedDocument> idocList) {
-
-		LOG.debug("Running batch update. Query: "
-				+ IndexedDocument.UNLOCK_UPDATE_STATE_QUERY + " with "
-				+ idocList.size() + " ids.");
-
-		this.jdbcTemplate.batchUpdate(
-				IndexedDocument.UNLOCK_UPDATE_STATE_QUERY,
-				new IndexedDocumentBatchUpdateSetter(idocList));
-
-		LOG.debug(idocList.size() + " documents successfully updated.");
-	}
+	LOG.debug(idocList.size() + " documents successfully updated.");
+    }
 }

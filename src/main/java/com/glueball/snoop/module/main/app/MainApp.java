@@ -9,18 +9,18 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class MainApp implements EntryPoint {
 
-	final MainWindow window = new MainWindow();
-	final SnoopHead	 head   = new SnoopHead(window.getHits());
+    final MainWindow window = new MainWindow();
+    final SnoopHead head = new SnoopHead(window.getHits());
 
-	public void onModuleLoad() {
+    public void onModuleLoad() {
 
-		window.getHeadPanel().add(head.asWidget());
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-	        public void execute () {
-	            head.searchBox.setFocus(true);
-	        }
-		});
-		RootPanel.get().add(window.asWidget());
-	}
+	window.getHeadPanel().add(head.asWidget());
+	Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+	    public void execute() {
+		head.searchBox.setFocus(true);
+	    }
+	});
+	RootPanel.get().add(window.asWidget());
+    }
 
 }

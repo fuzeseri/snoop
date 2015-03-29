@@ -11,39 +11,42 @@ import org.springframework.core.io.ClassPathResource;
 
 public class Main {
 
-	private static final SpringBusFactory busFactory = new SpringBusFactory();
+    private static final SpringBusFactory busFactory = new SpringBusFactory();
 
-	private final ApplicationContext ctx;
-	private final Bus bus;
-	private final JAXRSServerFactoryBean jaxRsServerFactory;
-	private Server server;
+    private final ApplicationContext ctx;
+    private final Bus bus;
+    private final JAXRSServerFactoryBean jaxRsServerFactory;
+    private Server server;
 
-	public Main() {
+    public Main() {
 
-		ctx = new ClassPathXmlApplicationContext("classpath:spring/application.xml");
-		final String address = (String) ctx.getBean("listenAddress");
+	ctx = new ClassPathXmlApplicationContext(
+		"classpath:spring/application.xml");
+	final String address = (String) ctx.getBean("listenAddress");
 
-		bus = busFactory.createBus(new ClassPathResource("spring/jetty-server.xml").getPath());
-		
-		jaxRsServerFactory = (SpringJAXRSServerFactoryBean) ctx.getBean("restContainer");
-		jaxRsServerFactory.setBus(bus);
-		jaxRsServerFactory.setAddress(address);
-	}
+	bus = busFactory.createBus(new ClassPathResource(
+		"spring/jetty-server.xml").getPath());
 
-	public static void main(final String[] args) {
+	jaxRsServerFactory = (SpringJAXRSServerFactoryBean) ctx
+		.getBean("restContainer");
+	jaxRsServerFactory.setBus(bus);
+	jaxRsServerFactory.setAddress(address);
+    }
 
-		final Main main = new Main();
-		main.start();
-	}
+    public static void main(final String[] args) {
 
-	public void start() {
+	final Main main = new Main();
+	main.start();
+    }
 
-		this.server = jaxRsServerFactory.create();
-	}
+    public void start() {
 
-	public void stop() {
+	this.server = jaxRsServerFactory.create();
+    }
 
-		this.server.destroy();
-		System.exit(1);
-	}
+    public void stop() {
+
+	this.server.destroy();
+	System.exit(1);
+    }
 }

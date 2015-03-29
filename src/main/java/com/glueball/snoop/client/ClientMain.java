@@ -12,55 +12,60 @@ import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import com.glueball.snoop.module.main.model.SearchResults;
 
 public class ClientMain {
-	
-	public static void main(final String[] args) throws InterruptedException {
 
-		final List<Object> providers = new ArrayList<Object>();
-		providers.add( new JacksonJsonProvider() );
+    public static void main(final String[] args) throws InterruptedException {
 
-	    //final WebClient client = WebClient.create( "http://localhost:8080/", providers);
-	    
-	    long start = System.currentTimeMillis();
+	final List<Object> providers = new ArrayList<Object>();
+	providers.add(new JacksonJsonProvider());
 
-	    final Random rand = new Random(1000);
-	    
-	    final List<Thread> ths = new ArrayList<Thread>();
-	    for (int ind = 0; ind < 300; ind++) {
+	// final WebClient client = WebClient.create( "http://localhost:8080/",
+	// providers);
 
-	    	final Thread th = new Thread(new Runnable() {
+	long start = System.currentTimeMillis();
 
-				@Override
-				public void run() {
+	final Random rand = new Random(1000);
 
-				    for (int i = 0; i < 50; i++) {
-				    	
-				    	try {
-							Thread.sleep(500 + rand.nextInt(500));
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+	final List<Thread> ths = new ArrayList<Thread>();
+	for (int ind = 0; ind < 300; ind++) {
 
-				    	final WebClient client = WebClient.create( "http://localhost:8080/", providers);
-				    	final SearchResults results = client.path( "search/java" ).query("page=1").accept(MediaType.APPLICATION_JSON).get( SearchResults.class );
-				    	System.out.println(i);
-				    	client.close();
-				    }					
-				}
-	    	});
-	    	th.setName("CleintThread-" + ind);
-	    	th.start();
-	    	ths.add(th);
-	    }
+	    final Thread th = new Thread(new Runnable() {
 
-	    for (final Thread th : ths) th.join();
-	    
-	    System.out.println("Runtime: " + ( System.currentTimeMillis() - start ));
-	    /*
-	    for (final SearchResult result : results) {
+		@Override
+		public void run() {
 
-	    	System.out.println(result.toString());
-	    }
-	    */
+		    for (int i = 0; i < 50; i++) {
+
+			try {
+			    Thread.sleep(500 + rand.nextInt(500));
+			} catch (InterruptedException e) {
+			    // TODO Auto-generated catch block
+			    e.printStackTrace();
+			}
+
+			final WebClient client = WebClient.create(
+				"http://localhost:8080/", providers);
+			final SearchResults results = client
+				.path("search/java").query("page=1")
+				.accept(MediaType.APPLICATION_JSON)
+				.get(SearchResults.class);
+			System.out.println(i);
+			client.close();
+		    }
+		}
+	    });
+	    th.setName("CleintThread-" + ind);
+	    th.start();
+	    ths.add(th);
 	}
+
+	for (final Thread th : ths)
+	    th.join();
+
+	System.out.println("Runtime: " + (System.currentTimeMillis() - start));
+	/*
+	 * for (final SearchResult result : results) {
+	 * 
+	 * System.out.println(result.toString()); }
+	 */
+    }
 }

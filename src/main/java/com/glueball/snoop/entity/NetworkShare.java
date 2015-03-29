@@ -8,52 +8,52 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "share", namespace="http://snoop.glueball.com/share")
+@XmlRootElement(name = "share", namespace = "http://snoop.glueball.com/share")
 public class NetworkShare implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@XmlElement(namespace="http://snoop.glueball.com/share")
-	private String  name;
+    @XmlElement(namespace = "http://snoop.glueball.com/share")
+    private String name;
 
-	@XmlElement(namespace="http://snoop.glueball.com/share")
-	private String  localPath;
+    @XmlElement(namespace = "http://snoop.glueball.com/share")
+    private String localPath;
 
-	@XmlElement(namespace="http://snoop.glueball.com/share")
-	private String  remotePath;
+    @XmlElement(namespace = "http://snoop.glueball.com/share")
+    private String remotePath;
 
-	@XmlElement(namespace="http://snoop.glueball.com/share")
-	private boolean aktiv = true;
+    @XmlElement(namespace = "http://snoop.glueball.com/share")
+    private boolean aktiv = true;
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+	return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+	this.name = name;
+    }
 
-	public String getLocalPath() {
-		return localPath;
-	}
+    public String getLocalPath() {
+	return localPath;
+    }
 
-	public void setLocalPath(String localPath) {
-		this.localPath = localPath;
-	}
+    public void setLocalPath(String localPath) {
+	this.localPath = localPath;
+    }
 
-	public String getRemotePath() {
-		return remotePath;
-	}
+    public String getRemotePath() {
+	return remotePath;
+    }
 
-	public void setRemotePath(String remotePath) {
-		this.remotePath = remotePath;
-	}
+    public void setRemotePath(String remotePath) {
+	this.remotePath = remotePath;
+    }
 
-	public boolean isAktiv() {
-		return aktiv;
-	}
+    public boolean isAktiv() {
+	return aktiv;
+    }
 
-	public void setAktiv(boolean aktiv) {
-		this.aktiv = aktiv;
-	}
+    public void setAktiv(boolean aktiv) {
+	this.aktiv = aktiv;
+    }
 }

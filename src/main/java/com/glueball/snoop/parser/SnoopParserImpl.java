@@ -18,86 +18,91 @@ import com.glueball.snoop.entity.Meta;
 
 public class SnoopParserImpl implements SnoopParser {
 
-	protected Parser parser;
+    protected Parser parser;
 
-	public SnoopParserImpl(final Parser parser) {
-		this.parser = parser;
+    public SnoopParserImpl(final Parser parser) {
+	this.parser = parser;
+    }
+
+    protected SnoopParserImpl() {
+    }
+
+    public Meta parseContent(final String _uri, final Writer output)
+	    throws IOException, SAXException, TikaException {
+
+	try (final InputStream is = new FileInputStream(new File(_uri))) {
+
+	    return parse(is, output);
 	}
+    }
 
-	protected SnoopParserImpl() {
+    public Meta parseContent(final File path, final Writer output)
+	    throws IOException, SAXException, TikaException {
+
+	try (final InputStream is = new FileInputStream(path)) {
+
+	    return parse(is, output);
 	}
+    }
 
-	public Meta parseContent(final String _uri, final Writer output) throws IOException, SAXException, TikaException {
+    public Meta parseContent(final InputStream is, final Writer output)
+	    throws IOException, SAXException, TikaException {
 
-		InputStream is = null;
-		try {
+	return parse(is, output);
+    }
 
-			final File path = new File(_uri);
-			is = new FileInputStream(path);
+    protected Meta parse(final InputStream input, final Writer output)
+	    throws IOException, SAXException, TikaException {
 
-			return parse(is, output);
-		} finally {
+	try {
+	    final BodyContentHandler content = new BodyContentHandler(output);
+	    final Metadata metadata = new Metadata();
+	    final ParseContext context = new ParseContext();
 
-			is.close();
+	    parser.parse(input, content, metadata, context);
+
+	    String title = "";
+	    String author = "";
+	    String description = "";
+
+	    for (final String name : metadata.names()) {
+		if (StringUtils.isEmpty(title)
+			&& name.toLowerCase().contains("title")) {
+		    title = metadata.get(name);
 		}
-	}
-
-	public Meta parseContent(final File path, final Writer output) throws IOException, SAXException, TikaException {
-		final InputStream is = new FileInputStream(path);
-		return parse(is, output);
-	}
-
-	public Meta parseContent(final InputStream is, final Writer output) throws IOException, SAXException, TikaException {
-		return parse(is, output);
-	}
-
-	protected Meta parse(final InputStream input, final Writer output) throws IOException, SAXException, TikaException {
-
-		try {
-			final BodyContentHandler content = new BodyContentHandler(output);
-			final Metadata metadata = new Metadata();
-			final ParseContext context = new ParseContext();
-
-			parser.parse(input, content, metadata, context);
-	
-			String title  = "";
-			String author = "";
-			String description = "";
-	
-			for (final String name : metadata.names()) {
-				if (StringUtils.isEmpty(title) && name.toLowerCase().contains("title")) {
-					title = metadata.get(name);
-				}
-				if (name.toLowerCase().equals("title")) {
-					title = metadata.get(name);
-				}
-				if (StringUtils.isEmpty(author) && name.toLowerCase().contains("author")) {
-					author = metadata.get(name);
-				}
-				if (name.toLowerCase().equals("author")) {
-					author = metadata.get(name);
-				}
-				if (StringUtils.isEmpty(description) && name.toLowerCase().contains("description")) {
-					description = metadata.get(name);
-				}
-				if (name.toLowerCase().equals("description")) {
-					description = metadata.get(name);
-				}
-			}
-			return new Meta(author, title, description);
-
-		} catch (final RuntimeException e) {
-
-			throw new TikaException("Can't parse content. " + e.getLocalizedMessage());
-		} finally {
-			if (input != null) {
-				input.close();
-			}
+		if (name.toLowerCase().equals("title")) {
+		    title = metadata.get(name);
 		}
-	}
+		if (StringUtils.isEmpty(author)
+			&& name.toLowerCase().contains("author")) {
+		    author = metadata.get(name);
+		}
+		if (name.toLowerCase().equals("author")) {
+		    author = metadata.get(name);
+		}
+		if (StringUtils.isEmpty(description)
+			&& name.toLowerCase().contains("description")) {
+		    description = metadata.get(name);
+		}
+		if (name.toLowerCase().equals("description")) {
+		    description = metadata.get(name);
+		}
+	    }
+	    return new Meta(author, title, description);
 
-	public void setLuceneParser(final Parser _parser) {
-		this.parser = _parser;
+	} catch (final RuntimeException e) {
+
+	    throw new TikaException("Can't parse content. "
+		    + e.getLocalizedMessage());
+	} finally {
+	    if (input != null) {
+		input.close();
+	    }
 	}
+    }
+
+    public void setLuceneParser(final Parser _parser) {
+	this.parser = _parser;
+    }
 
 }

@@ -9,20 +9,20 @@ import javax.ws.rs.core.Response;
 
 @Path("/admin")
 public class AdminService {
-	
-	@GET
+
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/hello/{name}")
-	public Response hello(@PathParam("name") String name) {
-		
-		return Response.ok("Hello " + name, MediaType.APPLICATION_JSON).build();
-	}
+    public Response hello(@PathParam("name") String name) {
 
-	@GET
+	return Response.ok("Hello " + name, MediaType.APPLICATION_JSON).build();
+    }
+
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/ping")
-	public Response ping() {
-		
-		return Response.ok("pong", MediaType.APPLICATION_JSON).build();
-	}
+    public Response ping() {
+
+	return Response.ok("pong", MediaType.APPLICATION_JSON).build();
+    }
 }

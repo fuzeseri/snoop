@@ -4,40 +4,40 @@ import java.sql.Timestamp;
 
 public interface SnoopDocument {
 
-	public String getId();
+    public String getId();
 
-	public void setId(String id);
+    public void setId(String id);
 
-	public String getShareName();
+    public String getShareName();
 
-	public void setShareName(String shareName);
+    public void setShareName(String shareName);
 
-	public String getFileName();
+    public String getFileName();
 
-	public void setFileName(String fileName);
+    public void setFileName(String fileName);
 
-	public String getUri();
+    public String getUri();
 
-	public void setUri(String uri);
+    public void setUri(String uri);
 
-	public String getPath();
+    public String getPath();
 
-	public void setPath(String path);
+    public void setPath(String path);
 
-	public Timestamp getLastModifiedTime();
+    public Timestamp getLastModifiedTime();
 
-	public void setLastModifiedTime(Timestamp lastModifiedTime);
+    public void setLastModifiedTime(Timestamp lastModifiedTime);
 
-	public String getContentType();
+    public String getContentType();
 
-	public void setContentType(String contentType);
+    public void setContentType(String contentType);
 
-	public Timestamp getLastIndexedTime();
+    public Timestamp getLastIndexedTime();
 
-	public void setLastIndexedTime(Timestamp lastIndexedTime);
+    public void setLastIndexedTime(Timestamp lastIndexedTime);
 
-	public String getLocalPath();
+    public String getLocalPath();
 
-	public void setLocalPath(String localPath);
+    public void setLocalPath(String localPath);
 
 }

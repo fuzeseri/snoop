@@ -1,6 +1,5 @@
 package com.glueball.snoop.module.main.ui;
 
-
 import com.glueball.snoop.module.main.model.SearchResult;
 import com.glueball.snoop.module.util.URLHelper;
 import com.google.gwt.core.client.GWT;
@@ -16,54 +15,59 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Result extends Composite {
-	
-	@UiField Label  title;
-	@UiField Label  author;
-	@UiField Label  description;
-	@UiField Anchor link;
-	@UiField Image  mimeIcon;
 
-	private static ResultUiBinder uiBinder = GWT.create(ResultUiBinder.class);
+    @UiField
+    Label title;
+    @UiField
+    Label author;
+    @UiField
+    Label description;
+    @UiField
+    Anchor link;
+    @UiField
+    Image mimeIcon;
 
-	interface ResultUiBinder extends UiBinder<Widget, Result> {
-	}
+    private static ResultUiBinder uiBinder = GWT.create(ResultUiBinder.class);
 
-	private final Widget widget;
+    interface ResultUiBinder extends UiBinder<Widget, Result> {
+    }
 
-	private final SearchResult result;
+    private final Widget widget;
 
-	public Result(final SearchResult res) {
+    private final SearchResult result;
 
-		this.widget = uiBinder.createAndBindUi(this);
-		this.result = res;
-		init();
-	}
+    public Result(final SearchResult res) {
 
-	private void init() {
+	this.widget = uiBinder.createAndBindUi(this);
+	this.result = res;
+	init();
+    }
 
-		final String fileExt = this.result.getFileName().substring(
-							this.result.getFileName().lastIndexOf(".") + 1, 
-							this.result.getFileName().length()
-						).toLowerCase();
+    private void init() {
 
-		mimeIcon.setAltText(fileExt);
-		mimeIcon.setUrl(URLHelper.getImageUrl(fileExt + ".png"));
+	final String fileExt = this.result
+		.getFileName()
+		.substring(this.result.getFileName().lastIndexOf(".") + 1,
+			this.result.getFileName().length()).toLowerCase();
 
-		title.setText(this.result.getTitle());
-		author.setText(this.result.getAuthor());
-		description.setText(this.result.getDescription());
-		link.setHref(this.result.getUri());
-		link.setText(this.result.getFileName());
-	}
+	mimeIcon.setAltText(fileExt);
+	mimeIcon.setUrl(URLHelper.getImageUrl(fileExt + ".png"));
 
-	@Override
-	public Widget asWidget() {
-		return this.widget;
-	}
+	title.setText(this.result.getTitle());
+	author.setText(this.result.getAuthor());
+	description.setText(this.result.getDescription());
+	link.setHref(this.result.getUri());
+	link.setText(this.result.getFileName());
+    }
 
-	@UiHandler("link")
-	public void linkClickHandler(final ClickEvent event) {
+    @Override
+    public Widget asWidget() {
+	return this.widget;
+    }
 
-		Window.Location.replace(this.result.getUri());
-	}
+    @UiHandler("link")
+    public void linkClickHandler(final ClickEvent event) {
+
+	Window.Location.replace(this.result.getUri());
+    }
 }

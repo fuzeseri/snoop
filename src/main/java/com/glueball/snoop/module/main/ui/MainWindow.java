@@ -10,25 +10,27 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class MainWindow extends CrmContainer {
 
-	@UiField SimplePanel   headPanel;
-	@UiField VerticalPanel hits;
+    @UiField
+    SimplePanel headPanel;
+    @UiField
+    VerticalPanel hits;
 
-	private static MainWindowUiBinder uiBinder = GWT
-			.create(MainWindowUiBinder.class);
+    private static MainWindowUiBinder uiBinder = GWT
+	    .create(MainWindowUiBinder.class);
 
-	interface MainWindowUiBinder extends UiBinder<Widget, MainWindow> {
-	}
+    interface MainWindowUiBinder extends UiBinder<Widget, MainWindow> {
+    }
 
-	public MainWindow() {
-		initWidget(uiBinder.createAndBindUi(this));
-	}
+    public MainWindow() {
+	initWidget(uiBinder.createAndBindUi(this));
+    }
 
-	public SimplePanel getHeadPanel() {
-		return headPanel;
-	}
+    public SimplePanel getHeadPanel() {
+	return headPanel;
+    }
 
-	public VerticalPanel getHits() {
-		return hits;
-	}
+    public VerticalPanel getHits() {
+	return hits;
+    }
 
 }

@@ -16,61 +16,61 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchResults implements Serializable, Iterable<SearchResult> {
 
-	private static final long serialVersionUID = 1L;
-	private List<SearchResult> results;
-	private int totalHits;
-	private int[] pages;
-	private int   currentPage;
+    private static final long serialVersionUID = 1L;
+    private List<SearchResult> results;
+    private int totalHits;
+    private int[] pages;
+    private int currentPage;
 
-	public SearchResults() {
-		results = new ArrayList<SearchResult>();
-	}
+    public SearchResults() {
+	results = new ArrayList<SearchResult>();
+    }
 
-	public SearchResults(int size) {
-		results = new ArrayList<SearchResult>(size);
-	}
+    public SearchResults(int size) {
+	results = new ArrayList<SearchResult>(size);
+    }
 
-	public List<SearchResult> getResults() {
-		return results;
-	}
+    public List<SearchResult> getResults() {
+	return results;
+    }
 
-	public void setResults(List<SearchResult> results) {
-		this.results = results;
-	}
+    public void setResults(List<SearchResult> results) {
+	this.results = results;
+    }
 
-	public void add(final SearchResult res) {
-		results.add(res);
-	}
+    public void add(final SearchResult res) {
+	results.add(res);
+    }
 
-	public Iterator<SearchResult> iterator() {
-		return results.iterator();
-	}
+    public Iterator<SearchResult> iterator() {
+	return results.iterator();
+    }
 
-	public boolean isEmpty() {
-		return results.isEmpty();
-	}
+    public boolean isEmpty() {
+	return results.isEmpty();
+    }
 
-	public int getTotalHits() {
-		return totalHits;
-	}
+    public int getTotalHits() {
+	return totalHits;
+    }
 
-	public void setTotalHits(int totalHits) {
-		this.totalHits = totalHits;
-	}
+    public void setTotalHits(int totalHits) {
+	this.totalHits = totalHits;
+    }
 
-	public int[] getPages() {
-		return pages;
-	}
+    public int[] getPages() {
+	return pages;
+    }
 
-	public void setPages(int[] pages) {
-		this.pages = pages;
-	}
+    public void setPages(int[] pages) {
+	this.pages = pages;
+    }
 
-	public int getCurrentPage() {
-		return currentPage;
-	}
+    public int getCurrentPage() {
+	return currentPage;
+    }
 
-	public void setCurrentPage(int currentPage) {
-		this.currentPage = currentPage;
-	}
+    public void setCurrentPage(int currentPage) {
+	this.currentPage = currentPage;
+    }
 }

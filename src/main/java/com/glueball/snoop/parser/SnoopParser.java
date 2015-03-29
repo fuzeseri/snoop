@@ -14,9 +14,15 @@ import com.glueball.snoop.entity.Meta;
 
 public interface SnoopParser {
 
-	Meta parseContent(String _uri, Writer out) throws IOException, SAXException, TikaException;
-	Meta parseContent(File path, Writer out)   throws IOException, SAXException, TikaException;
-	Meta parseContent(InputStream is, Writer out) throws IOException, SAXException, TikaException;
-	@Required
-	void setLuceneParser(final Parser parser);
+    Meta parseContent(String _uri, Writer out) throws IOException,
+	    SAXException, TikaException;
+
+    Meta parseContent(File path, Writer out) throws IOException, SAXException,
+	    TikaException;
+
+    Meta parseContent(InputStream is, Writer out) throws IOException,
+	    SAXException, TikaException;
+
+    @Required
+    void setLuceneParser(final Parser parser);
 }

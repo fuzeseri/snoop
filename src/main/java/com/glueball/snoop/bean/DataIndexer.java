@@ -29,199 +29,227 @@ import com.glueball.snoop.parser.UnavialableParserException;
 
 public class DataIndexer {
 
-	private static final Logger LOG = LogManager.getLogger(DataIndexer.class);
+    private static final Logger LOG = LogManager.getLogger(DataIndexer.class);
 
-	@Autowired
-	private IndexWriter indexWriter;
+    @Autowired
+    private IndexWriter indexWriter;
 
-	public void setIndexWriter(IndexWriter indexWriter) {
-		this.indexWriter = indexWriter;
-	}
+    public void setIndexWriter(IndexWriter indexWriter) {
+	this.indexWriter = indexWriter;
+    }
 
-	@Autowired
-	private IndexedDocumentBean indexedDocumentBean;
+    @Autowired
+    private IndexedDocumentBean indexedDocumentBean;
 
-	public void setIndexedDocumentBean(final IndexedDocumentBean indexedDocumentBean) {
-		this.indexedDocumentBean = indexedDocumentBean;
-	}
+    public void setIndexedDocumentBean(
+	    final IndexedDocumentBean indexedDocumentBean) {
+	this.indexedDocumentBean = indexedDocumentBean;
+    }
 
-	@Autowired
-	private ParserMap parserMap;
+    @Autowired
+    private ParserMap parserMap;
 
-	public void setParserMap(final ParserMap _parserMap) {
-		this.parserMap = _parserMap;
-	}
+    public void setParserMap(final ParserMap _parserMap) {
+	this.parserMap = _parserMap;
+    }
 
-	private int maxDoc = 100;
+    private int maxDoc = 100;
 
-	public void setMaxDoc(int maxDoc) {
-		this.maxDoc = maxDoc;
-	}
+    public void setMaxDoc(int maxDoc) {
+	this.maxDoc = maxDoc;
+    }
 
-	private void removeModifiedDeletedDocsFromIndex(final List<String> toDelete) {
+    private void removeModifiedDeletedDocsFromIndex(final List<String> toDelete) {
 
-		try {
+	try {
 
-			for (final String docId : toDelete) {
-
-				try {
-
-					indexWriter.deleteDocuments(new Term("id", docId));
-				} catch (final IOException e) {
-
-					LOG.error("ERROR while deleting document from index the");
-					LOG.debug(e.getMessage());
-				}
-			} 
-		} finally {
-
-			try {
-
-				indexWriter.commit();				
-			} catch (IOException e) {
-
-				LOG.error("ERROR while trying to commit index changes");
-				LOG.debug(e.getMessage());
-			}
-			LOG.debug("index contains deleted files: " + indexWriter.hasDeletions());
-			LOG.debug("index contains documents: " + indexWriter.maxDoc());
-		}
-	}
-
-	private void doIndex(final List<IndexedDocument> haveToIndexList) {
+	    for (final String docId : toDelete) {
 
 		try {
 
-			long haveToIndexSize = haveToIndexList.size();
-			long counter = 0;
+		    indexWriter.deleteDocuments(new Term("id", docId));
+		} catch (final IOException e) {
 
-			for (final IndexedDocument idoc : haveToIndexList) {
-
-				boolean indexed = false;
-
-				if (!this.parserMap.hasParser(idoc.getContentType())) {
-
-					LOG.debug("Can't find parser for content. File name: " + idoc.getFileName() + " content-type: " + idoc.getContentType());
-					haveToIndexSize--;
-				} else {
-
-					LOG.debug("Indexing file: " + idoc.toString());
-
-					Writer contentWriter = null;
-					Reader contentReader = null;
-					try {
-
-						contentWriter = new StringWriter();
-						final Meta meta = this.parserMap.getParser(idoc.getContentType()).parseContent(idoc.getLocalPath(), contentWriter);
-						final String c = contentWriter.toString();
-						contentReader = new StringReader(c);
-
-						final Document doc = new Document();
-						doc.add(new StringField("id", 			idoc.getId(),       Field.Store.YES));
-						doc.add(new StringField("fileName", 	idoc.getFileName(), Field.Store.YES));
-						doc.add(new   TextField("file", 		idoc.getFileName(), Field.Store.YES));
-						doc.add(new StringField("path", 		idoc.getPath(),     Field.Store.YES));
-						doc.add(new StringField("uri", 			idoc.getUri(),      Field.Store.YES));
-						doc.add(new StringField("contentType", 	idoc.getContentType(), Field.Store.YES));
-
-						if (meta.hasAuthor()) {
-							doc.add(new TextField("author", meta.getAuthor(), Field.Store.YES));
-						}
-						if (meta.hasTitle()) {
-							doc.add(new TextField("title", meta.getTitle(), Field.Store.YES));							
-						}
-						if (meta.hasDescription()) {
-							doc.add(new TextField("description", meta.getDescription(), Field.Store.YES));
-						}
-						doc.add(new TextField("content", contentReader));
-
-						indexWriter.addDocument(doc);
-						indexed = true;
-
-						LOG.debug("File added to index: " + idoc.toString() +"  "+ ++counter + " of " + haveToIndexSize);
-					} catch (final UnavialableParserException e) {
-
-						LOG.error("Can't find parser for file: " + idoc.getPath());
-						LOG.debug(e.getMessage());
-						haveToIndexSize--;
-					} catch (final IOException e) {
-
-						LOG.error("Error parsing file: " + idoc.getPath());
-						LOG.debug(e.getMessage());
-						haveToIndexSize--;
-					} catch (final SAXException e) {
-
-						LOG.error("Error parsing file: " + idoc.getPath());
-						LOG.debug(e.getMessage());
-						haveToIndexSize--;
-					} catch (final TikaException e) {
-
-						LOG.error("Error parsing file: " + idoc.getPath());
-						LOG.debug(e.getMessage());
-						haveToIndexSize--;
-						e.printStackTrace();
-					} finally {
-						if (contentReader != null) {
-
-							try {
-
-								contentReader.close();
-							} catch (final IOException e) {
-								LOG.error("IOExcetion when trying to close PipedInputStream", e.getMessage());
-								LOG.debug(e);
-							}
-						}
-						if (contentWriter != null) {
-
-							try {
-
-								contentWriter.close();
-							} catch (final IOException e) {
-								LOG.error("IOExcetion when trying to close PipedOutputStream", e.getMessage());
-								LOG.debug(e);
-							}
-						}
-					}
-				}
-
-				idoc.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
-				idoc.setIndexState(indexed ? IndexedDocument.INDEX_STATE_INDEXED : IndexedDocument.INDEX_STATE_ERROR);
-			}
-		} finally {
-
-			try {
-
-				indexWriter.commit();
-			} catch (IOException e) {
-
-				LOG.error("ERROR while trying to commit index changes");
-				LOG.debug(e.getMessage());
-			}
-			this.indexedDocumentBean.unLockUpdateState(haveToIndexList);
+		    LOG.error("ERROR while deleting document from index the");
+		    LOG.debug(e.getMessage());
 		}
+	    }
+	} finally {
+
+	    try {
+
+		indexWriter.commit();
+	    } catch (IOException e) {
+
+		LOG.error("ERROR while trying to commit index changes");
+		LOG.debug(e.getMessage());
+	    }
+	    LOG.debug("index contains deleted files: "
+		    + indexWriter.hasDeletions());
+	    LOG.debug("index contains documents: " + indexWriter.maxDoc());
 	}
+    }
 
-	@Scheduled(fixedDelay = 10 * 60 * 1000)
-	public void index() {
+    private void doIndex(final List<IndexedDocument> haveToIndexList) {
 
-		final List<IndexedDocument> haveToIndexList = new ArrayList<IndexedDocument>(maxDoc);
+	try {
 
-		final List<String> toRemove = new ArrayList<String>();
-		for (final IndexedDocument idoc : indexedDocumentBean.haveToIndex(maxDoc)) {
+	    long haveToIndexSize = haveToIndexList.size();
+	    long counter = 0;
 
-			if (   IndexedDocument.INDEX_STATE_DELETED.equals(idoc.getIndexState())
-				|| IndexedDocument.INDEX_STATE_MODIFIED.equals(idoc.getIndexState())
-				|| IndexedDocument.INDEX_STATE_REINDEX.equals(idoc.getIndexState())
-					) {
+	    for (final IndexedDocument idoc : haveToIndexList) {
 
-				toRemove.add(idoc.getId());
-				if (IndexedDocument.INDEX_STATE_DELETED.equals(idoc.getIndexState())) {
+		boolean indexed = false;
 
-					haveToIndexList.add(idoc);
-				}
+		if (!this.parserMap.hasParser(idoc.getContentType())) {
+
+		    LOG.debug("Can't find parser for content. File name: "
+			    + idoc.getFileName() + " content-type: "
+			    + idoc.getContentType());
+		    haveToIndexSize--;
+		} else {
+
+		    LOG.debug("Indexing file: " + idoc.toString());
+
+		    Writer contentWriter = null;
+		    Reader contentReader = null;
+		    try {
+
+			contentWriter = new StringWriter();
+			final Meta meta = this.parserMap.getParser(
+				idoc.getContentType()).parseContent(
+				idoc.getLocalPath(), contentWriter);
+			final String c = contentWriter.toString();
+			contentReader = new StringReader(c);
+
+			final Document doc = new Document();
+			doc.add(new StringField("id", idoc.getId(),
+				Field.Store.YES));
+			doc.add(new StringField("fileName", idoc.getFileName(),
+				Field.Store.YES));
+			doc.add(new TextField("file", idoc.getFileName(),
+				Field.Store.YES));
+			doc.add(new StringField("path", idoc.getPath(),
+				Field.Store.YES));
+			doc.add(new StringField("uri", idoc.getUri(),
+				Field.Store.YES));
+			doc.add(new StringField("contentType", idoc
+				.getContentType(), Field.Store.YES));
+
+			if (meta.hasAuthor()) {
+			    doc.add(new TextField("author", meta.getAuthor(),
+				    Field.Store.YES));
 			}
+			if (meta.hasTitle()) {
+			    doc.add(new TextField("title", meta.getTitle(),
+				    Field.Store.YES));
+			}
+			if (meta.hasDescription()) {
+			    doc.add(new TextField("description", meta
+				    .getDescription(), Field.Store.YES));
+			}
+			doc.add(new TextField("content", contentReader));
+
+			indexWriter.addDocument(doc);
+			indexed = true;
+
+			LOG.debug("File added to index: " + idoc.toString()
+				+ "  " + ++counter + " of " + haveToIndexSize);
+		    } catch (final UnavialableParserException e) {
+
+			LOG.error("Can't find parser for file: "
+				+ idoc.getPath());
+			LOG.debug(e.getMessage());
+			haveToIndexSize--;
+		    } catch (final IOException e) {
+
+			LOG.error("Error parsing file: " + idoc.getPath());
+			LOG.debug(e.getMessage());
+			haveToIndexSize--;
+		    } catch (final SAXException e) {
+
+			LOG.error("Error parsing file: " + idoc.getPath());
+			LOG.debug(e.getMessage());
+			haveToIndexSize--;
+		    } catch (final TikaException e) {
+
+			LOG.error("Error parsing file: " + idoc.getPath());
+			LOG.debug(e.getMessage());
+			haveToIndexSize--;
+			e.printStackTrace();
+		    } finally {
+			if (contentReader != null) {
+
+			    try {
+
+				contentReader.close();
+			    } catch (final IOException e) {
+				LOG.error(
+					"IOExcetion when trying to close PipedInputStream",
+					e.getMessage());
+				LOG.debug(e);
+			    }
+			}
+			if (contentWriter != null) {
+
+			    try {
+
+				contentWriter.close();
+			    } catch (final IOException e) {
+				LOG.error(
+					"IOExcetion when trying to close PipedOutputStream",
+					e.getMessage());
+				LOG.debug(e);
+			    }
+			}
+		    }
 		}
-		removeModifiedDeletedDocsFromIndex(toRemove);
-		doIndex(haveToIndexList);
+
+		idoc.setLastIndexedTime(new java.sql.Timestamp(new Date()
+			.getTime()));
+		idoc.setIndexState(indexed ? IndexedDocument.INDEX_STATE_INDEXED
+			: IndexedDocument.INDEX_STATE_ERROR);
+	    }
+	} finally {
+
+	    try {
+
+		indexWriter.commit();
+	    } catch (IOException e) {
+
+		LOG.error("ERROR while trying to commit index changes");
+		LOG.debug(e.getMessage());
+	    }
+	    this.indexedDocumentBean.unLockUpdateState(haveToIndexList);
 	}
+    }
+
+    @Scheduled(fixedDelay = 10 * 60 * 1000)
+    public void index() {
+
+	final List<IndexedDocument> haveToIndexList = new ArrayList<IndexedDocument>(
+		maxDoc);
+
+	final List<String> toRemove = new ArrayList<String>();
+	for (final IndexedDocument idoc : indexedDocumentBean
+		.haveToIndex(maxDoc)) {
+
+	    if (IndexedDocument.INDEX_STATE_DELETED
+		    .equals(idoc.getIndexState())
+		    || IndexedDocument.INDEX_STATE_MODIFIED.equals(idoc
+			    .getIndexState())
+		    || IndexedDocument.INDEX_STATE_REINDEX.equals(idoc
+			    .getIndexState())) {
+
+		toRemove.add(idoc.getId());
+		if (IndexedDocument.INDEX_STATE_DELETED.equals(idoc
+			.getIndexState())) {
+
+		    haveToIndexList.add(idoc);
+		}
+	    }
+	}
+	removeModifiedDeletedDocsFromIndex(toRemove);
+	doIndex(haveToIndexList);
+    }
 }
