@@ -22,13 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.xml.sax.SAXException;
 
-import com.glueball.snoop.dao.IndexedDocumentBean;
 import com.glueball.snoop.entity.IndexedDocument;
 import com.glueball.snoop.entity.Meta;
 import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.parser.UnavialableParserException;
 
-public class DataIndexer { //implements Runnable {
+public class DataIndexer {
 
 	private static final Logger LOG = LogManager.getLogger(DataIndexer.class);
 
@@ -51,6 +50,12 @@ public class DataIndexer { //implements Runnable {
 
 	public void setParserMap(final ParserMap _parserMap) {
 		this.parserMap = _parserMap;
+	}
+
+	private int maxDoc = 100;
+
+	public void setMaxDoc(int maxDoc) {
+		this.maxDoc = maxDoc;
 	}
 
 	private void removeModifiedDeletedDocsFromIndex(final List<String> toDelete) {
@@ -105,7 +110,7 @@ public class DataIndexer { //implements Runnable {
 					Writer contentWriter = null;
 					Reader contentReader = null;
 					try {
-												
+
 						contentWriter = new StringWriter();
 						final Meta meta = this.parserMap.getParser(idoc.getContentType()).parseContent(idoc.getLocalPath(), contentWriter);
 						final String c = contentWriter.toString();
@@ -187,25 +192,22 @@ public class DataIndexer { //implements Runnable {
 			try {
 
 				indexWriter.commit();
-				//this.indexedDocumentBean.updateState(haveToIndexList);
-				this.indexedDocumentBean.unLockUpdateState(haveToIndexList);
 			} catch (IOException e) {
 
 				LOG.error("ERROR while trying to commit index changes");
 				LOG.debug(e.getMessage());
 			}
+			this.indexedDocumentBean.unLockUpdateState(haveToIndexList);
 		}
 	}
 
-	//public void run() {
 	@Scheduled(fixedDelay = 10 * 60 * 1000)
 	public void index() {
 
-		indexedDocumentBean.createTable();
-		final List<IndexedDocument> haveToIndexList = indexedDocumentBean.haveToIndex();
+		final List<IndexedDocument> haveToIndexList = new ArrayList<IndexedDocument>(maxDoc);
 
 		final List<String> toRemove = new ArrayList<String>();
-		for (final IndexedDocument idoc : haveToIndexList) {
+		for (final IndexedDocument idoc : indexedDocumentBean.haveToIndex(maxDoc)) {
 
 			if (   IndexedDocument.INDEX_STATE_DELETED.equals(idoc.getIndexState())
 				|| IndexedDocument.INDEX_STATE_MODIFIED.equals(idoc.getIndexState())
@@ -213,6 +215,10 @@ public class DataIndexer { //implements Runnable {
 					) {
 
 				toRemove.add(idoc.getId());
+				if (IndexedDocument.INDEX_STATE_DELETED.equals(idoc.getIndexState())) {
+
+					haveToIndexList.add(idoc);
+				}
 			}
 		}
 		removeModifiedDeletedDocsFromIndex(toRemove);

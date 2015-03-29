@@ -33,14 +33,7 @@
 		</bean>
 
 		<bean id="dataIndexer" class="com.glueball.snoop.bean.DataIndexer" scope="singleton">
+			<property name="maxDoc" value="${snoop.dataindexer.maxdoc:100}" />
 		</bean>
-
-		<!-- task:scheduled-tasks>
-			<task:scheduled ref="dataLoader" method="run"  cron="${snoop.dataloader.cron:'* */10 * * * *'}" />
-   		</task:scheduled-tasks>
-
-		<task:scheduled-tasks>
-			<task:scheduled ref="dataIndexer" method="run" cron="*${snoop.dataindexer.cron:'* */15 * * * *'}" />
-   		</task:scheduled-tasks -->
 
 </beans>

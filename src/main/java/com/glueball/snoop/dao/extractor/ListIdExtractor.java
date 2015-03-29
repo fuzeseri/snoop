@@ -1,4 +1,4 @@
-package com.glueball.snoop.dao;
+package com.glueball.snoop.dao.extractor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class ListIdExtractor implements ResultSetExtractor {
+public class ListIdExtractor implements ResultSetExtractor<List<String>> {
 
 	final List<String> idList;
 
@@ -15,12 +15,12 @@ public class ListIdExtractor implements ResultSetExtractor {
 		this.idList = _idList;
 	}
 
-	public Object extractData(final ResultSet rs) throws SQLException, DataAccessException {
+	public List<String> extractData(final ResultSet rs) throws SQLException, DataAccessException {
 
 		while (rs.next()) {
 			idList.add(rs.getString("id"));
 		}
-		return rs;
+		return idList;
 	}
 
 }

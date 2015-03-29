@@ -1,4 +1,4 @@
-package com.glueball.snoop.bean;
+package com.glueball.snoop.main;
 
 import java.io.File;
 import java.io.FileInputStream;

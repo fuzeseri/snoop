@@ -8,9 +8,7 @@
                 			http://cxf.apache.org/jaxrs
   							http://cxf.apache.org/schemas/jaxrs.xsd
 							http://www.springframework.org/schema/beans
-            				http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-                            http://www.springframework.org/schema/security
-                            http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+            				http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
 	<import resource="classpath:spring/cxf-beans.xml" />
 

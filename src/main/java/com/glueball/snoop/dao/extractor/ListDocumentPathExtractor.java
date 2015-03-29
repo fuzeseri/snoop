@@ -1,4 +1,4 @@
-package com.glueball.snoop.dao;
+package com.glueball.snoop.dao.extractor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.DocumentPath;
 
-public class ListDocumentPathExtractor implements ResultSetExtractor {
+public class ListDocumentPathExtractor implements ResultSetExtractor<List<DocumentPath>> {
 
 	final List<DocumentPath> docList;
 
@@ -17,7 +17,7 @@ public class ListDocumentPathExtractor implements ResultSetExtractor {
 		this.docList = _docList;
 	}
 
-	public Object extractData(final ResultSet rs) throws SQLException, DataAccessException {
+	public List<DocumentPath> extractData(final ResultSet rs) throws SQLException, DataAccessException {
 
 		while (rs.next()) {
 
@@ -32,7 +32,7 @@ public class ListDocumentPathExtractor implements ResultSetExtractor {
 			doc.setContentType(rs.getString("content_type"));
 			docList.add(doc);
 		}
-		return rs;
+		return docList;
 	}
 
 }

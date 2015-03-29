@@ -36,15 +36,6 @@
 			<constructor-arg index="1" ref="indexWriterConfig" />
 		</bean>
 
-		<!--  >bean id="parserProxyFactory" class="org.springframework.aop.framework.ProxyFactoryBean">
-			<property name="proxyTargetClass" value="true" />
-			<property name="targetSource" ref="parserTargetSource" />
-		</bean>
-
-		<bean id="parserTargetSource" class="org.springframework.aop.target.ThreadLocalTargetSource" destroy-method="destroy">
-			<property name="targetBeanName" value="queryParser" />
-		</bean -->
-
 		<bean id="queryParser" class="org.apache.lucene.queryparser.classic.MultiFieldQueryParser" scope="singleton">
 			<constructor-arg index="0">
 				<array value-type="java.lang.String">

@@ -1,4 +1,4 @@
-package com.glueball.snoop.dao;
+package com.glueball.snoop.dao.extractor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.IndexedDocument;
 
-public class IndexedDocumentExtractor implements ResultSetExtractor {
+public class IndexedDocumentExtractor implements ResultSetExtractor<IndexedDocument> {
 
 	final IndexedDocument doc;
 
@@ -16,7 +16,7 @@ public class IndexedDocumentExtractor implements ResultSetExtractor {
 		this.doc = _doc;
 	}
 
-	public Object extractData(final ResultSet rs) throws SQLException, DataAccessException {
+	public IndexedDocument extractData(final ResultSet rs) throws SQLException, DataAccessException {
 
 		if (rs.next()) {
 			doc.setId(rs.getString("id"));
@@ -33,7 +33,7 @@ public class IndexedDocumentExtractor implements ResultSetExtractor {
 			doc.setLockTime(rs.getTimestamp("lockTime"));
 		}
 
-		return rs;
+		return doc;
 	}
 
 }

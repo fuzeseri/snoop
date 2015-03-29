@@ -1,4 +1,4 @@
-package com.glueball.snoop.bean;
+package com.glueball.snoop.main;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBusFactory;

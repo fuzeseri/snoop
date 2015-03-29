@@ -1,4 +1,4 @@
-package com.glueball.snoop.bean;
+package com.glueball.snoop.main;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

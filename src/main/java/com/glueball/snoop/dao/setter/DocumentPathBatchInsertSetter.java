@@ -1,4 +1,4 @@
-package com.glueball.snoop.dao;
+package com.glueball.snoop.dao.setter;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -9,9 +9,9 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import com.glueball.snoop.entity.DocumentPath;
 
 public class DocumentPathBatchInsertSetter implements BatchPreparedStatementSetter {
-	
+
 	final List<DocumentPath> docs;
-	
+
 	public DocumentPathBatchInsertSetter(final List<DocumentPath> docs) {
 		this.docs = docs;
 	}

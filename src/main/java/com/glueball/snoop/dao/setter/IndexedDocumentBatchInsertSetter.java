@@ -1,4 +1,4 @@
-package com.glueball.snoop.dao;
+package com.glueball.snoop.dao.setter;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

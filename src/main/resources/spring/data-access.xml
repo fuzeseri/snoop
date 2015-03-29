@@ -3,19 +3,32 @@
 		xmlns:beans="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:tx="http://www.springframework.org/schema/tx"
         xsi:schemaLocation="http://www.springframework.org/schema/beans
             				http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
             				http://www.springframework.org/schema/context
-          					http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+          					http://www.springframework.org/schema/context/spring-context-4.0.xsd
+          					http://www.springframework.org/schema/tx
+          					http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 
-		<context:annotation-config/>
-		<context:component-scan base-package="com.glueball.snoop.*" />
+		<!--  context:annotation-config/ -->
+		<!-- context:component-scan base-package="com.glueball.snoop.*" / -->
+
 		<import resource="classpath:spring/h2database.xml" />
 		<import resource="classpath:spring/lucene-index.xml" />
 
-		<bean id="documentPath"    class="com.glueball.snoop.dao.DocumentPathBean"    scope="singleton" />
-		<bean id="indexedDocument" class="com.glueball.snoop.dao.IndexedDocumentBean" scope="singleton">
-			<property name="maxDoc" value="${snoop.dataindexer.maxdoc:1000}" />
+		<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager" />
+
+		<bean id="documentPathDao" class="com.glueball.snoop.dao.impl.DocumentPathDaoImpl" />
+
+		<bean id="indexedDocumentDao" class="com.glueball.snoop.dao.impl.IndexedDocumentDaoImpl" />
+
+		<bean id="documentPath" class="com.glueball.snoop.bean.impl.DocumentPathBeanImpl" init-method="init">
+		    <property name="dao" ref="documentPathDao"/>
+		</bean>
+
+		<bean id="indexedDocument" class="com.glueball.snoop.bean.impl.IndexedDocumentBeanImpl" init-method="init">
+		    <property name="dao" ref="indexedDocumentDao"/>
 		</bean>
 
 </beans>

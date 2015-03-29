@@ -19,7 +19,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import com.glueball.snoop.dao.DocumentPathBean;
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.NetworkShare;
 import com.glueball.snoop.entity.NetworkShares;
@@ -27,7 +26,7 @@ import com.glueball.snoop.parser.MimeFileextMap;
 import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.visitor.DbLoaderVisitor;
 
-public class DataLoader { //implements Runnable {
+public class DataLoader {
 
 	private static final Logger LOG = LogManager.getLogger(DataLoader.class);
 
@@ -65,9 +64,8 @@ public class DataLoader { //implements Runnable {
 		this.sharesXml = _sharesXml;
 	}
 
-	//public void run() {
 	@Scheduled(fixedDelay = 5 * 60 * 1000)
-	public void load() {
+	public synchronized void load() {
 
 		for (final NetworkShare share : getShares()) {
 
@@ -83,10 +81,7 @@ public class DataLoader { //implements Runnable {
 				final String path = !StringUtils.isEmpty(share.getLocalPath()) ? share.getLocalPath() : share.getRemotePath();
 
 				Files.walkFileTree(Paths.get(path), visitor);
-				this.docPathBean.updateDocumentPath(docs);
-				this.docPathBean.updateNewDocuments();
-				this.docPathBean.updateModifiedDocuments();
-				this.docPathBean.updateDeletedDocuments(share.getName());
+				this.docPathBean.updateDocuments(share.getName(), docs);
 			} catch (final IOException e) {
 
 				LOG.error("IO ERROR when discovering files");
