@@ -27,7 +27,7 @@ public class TextBoxUtil {
 			return 0;
 
 		for (int index = 0; index <= box.getItemCount(); index++) {
-			if (Integer.valueOf(box.getItemText(index))==value) {
+			if (Integer.parseInt(box.getItemText(index)) == value.intValue()) {
 				return index;
 			}
 		}

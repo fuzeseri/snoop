@@ -65,7 +65,7 @@ public class DataLoader {
 	}
 
 	@Scheduled(fixedDelay = 5 * 60 * 1000)
-	public synchronized void load() {
+	public void load() {
 
 		for (final NetworkShare share : getShares()) {
 

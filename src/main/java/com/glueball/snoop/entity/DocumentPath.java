@@ -1,6 +1,8 @@
 package com.glueball.snoop.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class DocumentPath extends AbstractSnoopDocument {
@@ -60,7 +62,9 @@ public class DocumentPath extends AbstractSnoopDocument {
 			+ "content_type varchar(100)"
 			+ ")";
 
-	public static final String[] CREATE_INDEX_QUERY = new String[] {
+	public static final List<String> CREATE_INDEX_QUERY = Collections
+			.unmodifiableList(Arrays
+					.asList(new String[] {
 			"CREATE INDEX IF NOT EXISTS ndxDocId ON DOCUMENT_PATH (id)",
 			"CREATE INDEX IF NOT EXISTS ndxDocShareName ON DOCUMENT_PATH (share_name)",
 			"CREATE INDEX IF NOT EXISTS ndxDocFileName ON DOCUMENT_PATH (file_name)",
@@ -68,7 +72,7 @@ public class DocumentPath extends AbstractSnoopDocument {
 			"CREATE INDEX IF NOT EXISTS ndxDocPath ON DOCUMENT_PATH (path)",
 			"CREATE INDEX IF NOT EXISTS ndxDocLocalPath ON DOCUMENT_PATH (local_path)",
 			"CREATE INDEX IF NOT EXISTS ndxDocLastModifiedTime ON DOCUMENT_PATH (last_modified_time)",
-			"CREATE INDEX IF NOT EXISTS ndxDocContentType ON DOCUMENT_PATH (content_type)" };
+			"CREATE INDEX IF NOT EXISTS ndxDocContentType ON DOCUMENT_PATH (content_type)" }));
 
 	@Override
 	public String toString() {
