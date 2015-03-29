@@ -1,7 +1,6 @@
 package com.glueball.snoop.entity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DocumentPath extends AbstractSnoopDocument {
@@ -61,16 +60,15 @@ public class DocumentPath extends AbstractSnoopDocument {
 			+ "content_type varchar(100)"
 			+ ")";
 
-	public static final List<String> CREATE_INDEX_QUERY = Arrays
-			.asList(new String[] {
-					"CREATE INDEX IF NOT EXISTS ndxDocId ON DOCUMENT_PATH (id)",
-					"CREATE INDEX IF NOT EXISTS ndxDocShareName ON DOCUMENT_PATH (share_name)",
-					"CREATE INDEX IF NOT EXISTS ndxDocFileName ON DOCUMENT_PATH (file_name)",
-					"CREATE INDEX IF NOT EXISTS ndxDocUri ON DOCUMENT_PATH (uri)",
-					"CREATE INDEX IF NOT EXISTS ndxDocPath ON DOCUMENT_PATH (path)",
-					"CREATE INDEX IF NOT EXISTS ndxDocLocalPath ON DOCUMENT_PATH (local_path)",
-					"CREATE INDEX IF NOT EXISTS ndxDocLastModifiedTime ON DOCUMENT_PATH (last_modified_time)",
-					"CREATE INDEX IF NOT EXISTS ndxDocContentType ON DOCUMENT_PATH (content_type)" });
+	public static final String[] CREATE_INDEX_QUERY = new String[] {
+			"CREATE INDEX IF NOT EXISTS ndxDocId ON DOCUMENT_PATH (id)",
+			"CREATE INDEX IF NOT EXISTS ndxDocShareName ON DOCUMENT_PATH (share_name)",
+			"CREATE INDEX IF NOT EXISTS ndxDocFileName ON DOCUMENT_PATH (file_name)",
+			"CREATE INDEX IF NOT EXISTS ndxDocUri ON DOCUMENT_PATH (uri)",
+			"CREATE INDEX IF NOT EXISTS ndxDocPath ON DOCUMENT_PATH (path)",
+			"CREATE INDEX IF NOT EXISTS ndxDocLocalPath ON DOCUMENT_PATH (local_path)",
+			"CREATE INDEX IF NOT EXISTS ndxDocLastModifiedTime ON DOCUMENT_PATH (last_modified_time)",
+			"CREATE INDEX IF NOT EXISTS ndxDocContentType ON DOCUMENT_PATH (content_type)" };
 
 	@Override
 	public String toString() {
@@ -90,11 +88,22 @@ public class DocumentPath extends AbstractSnoopDocument {
 
 		for (final DocumentPath doc : docList) {
 
-			final IndexedDocument idoc = (IndexedDocument) (SnoopDocument) doc;
+			final IndexedDocument idoc = new IndexedDocument();
+			idoc.setContentType(doc.getContentType());
+			idoc.setFileName(doc.getFileName());
+			idoc.setId(doc.getId());
 			idoc.setIndexState(indexStateNew);
+			idoc.setLastIndexedTime(doc.getLastIndexedTime());
+			idoc.setLastModifiedTime(doc.getLastModifiedTime());
+			idoc.setLocalPath(doc.getLocalPath());
+			idoc.setLock(0);
+			idoc.setLockTime(null);
+			idoc.setPath(doc.getPath());
+			idoc.setShareName(doc.getShareName());
+			idoc.setUri(doc.getUri());
+
 			idocList.add(idoc);
 		}
-
 		return idocList;
 	}
 }
