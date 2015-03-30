@@ -21,7 +21,7 @@ public interface SnoopDao<T> {
     /**
      * Returns the object with a specific primary key.
      *
-     * @param Id
+     * @param id
      *            the primary key.
      * @return the entity object representing the row with the primary key.
      */

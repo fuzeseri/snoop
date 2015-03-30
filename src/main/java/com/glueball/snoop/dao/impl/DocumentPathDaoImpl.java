@@ -14,7 +14,9 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -32,7 +34,7 @@ import com.glueball.snoop.entity.IndexedDocument;
  *
  * @author karesz
  */
-public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
+public class DocumentPathDaoImpl implements
         DocumentPathDao {
 
     /**
@@ -41,12 +43,29 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
     private static final Logger LOG = LogManager
             .getLogger(DocumentPathDaoImpl.class);
 
+    /**
+     * Spring data jdbc template.
+     */
+    @Autowired(required = true)
+    private JdbcTemplate jdbcTemplate;
+
+    /**
+     * Setter method of the jdbcTemplate field.
+     *
+     * @param pJdbcTemplate
+     *            The Spring data jdbc template object.
+     */
+    protected void setJdbcTemplate(final JdbcTemplate pJdbcTemplate) {
+
+        this.jdbcTemplate = pJdbcTemplate;
+    }
+
     /*
      * (non-Javadoc)
      * @see com.glueball.snoop.dao.SnoopDao#insertOne(java.lang.Object)
      */
     @Override
-    public void insertOne(final DocumentPath doc) {
+    public final void insertOne(final DocumentPath doc) {
 
         LOG.debug("Inserting document: " + doc.toString() + " query: "
                 + DocumentPath.INSERT_QUERY);
@@ -62,7 +81,7 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#insertList(java.util.List)
      */
     @Override
-    public void insertList(final List<DocumentPath> docs)
+    public final void insertList(final List<DocumentPath> docs)
             throws DataAccessException {
 
         LOG.debug("Inserting " + docs.size() + " documents. query: "
@@ -79,7 +98,7 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#findById(java.lang.String)
      */
     @Override
-    public DocumentPath findById(final String Id) {
+    public final DocumentPath findById(final String Id) {
 
         LOG.debug("Running query: " + DocumentPath.SELECT_BY_ID_QUERY
                 + " with parameter [id : " + Id + "]");
@@ -104,7 +123,7 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.DocumentPathDao#findBySum(java.lang.String)
      */
     @Override
-    public DocumentPath findBySum(final String md5sum)
+    public final DocumentPath findBySum(final String md5sum)
             throws DataAccessException {
 
         LOG.debug("Running query: " + DocumentPath.SELECT_BY_SUM_QUERY
@@ -130,7 +149,7 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#createTable()
      */
     @Override
-    public void createTable() throws DataAccessException {
+    public final void createTable() throws DataAccessException {
 
         LOG.debug("Running query: " + DocumentPath.CREATE_TABLE_QUERY);
 
@@ -150,7 +169,7 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#rowNum()
      */
     @Override
-    public long rowNum() {
+    public final long rowNum() {
 
         LOG.debug("Running query: " + DocumentPath.ROW_NUM_QUERY);
 
@@ -176,7 +195,7 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#truncateTable()
      */
     @Override
-    public void truncateTable() {
+    public final void truncateTable() {
 
         LOG.debug("Running query: " + DocumentPath.EMPTY_TABLE_QUERY);
 
@@ -190,7 +209,7 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#selectAll()
      */
     @Override
-    public List<DocumentPath> selectAll() {
+    public final List<DocumentPath> selectAll() {
 
         LOG.debug("Running query: " + DocumentPath.SELECT_ALL_QUERY);
 
@@ -209,7 +228,7 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#deleteById(java.lang.String)
      */
     @Override
-    public void deleteById(final String id) {
+    public final void deleteById(final String id) {
 
         LOG.debug("Running query: " + DocumentPath.DELETE_BY_ID_QUERY);
 
@@ -234,12 +253,13 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
      * .String)
      */
     @Override
-    public void updateDeletedDocuments(final String shareName) {
+    public final void updateDeletedDocuments(final String shareName) {
 
         LOG.debug("Running query: "
                 + DocumentPath.UPDATE_DELETED_DOCUMENTS_QUERY);
 
-        jdbcTemplate.update(DocumentPath.UPDATE_DELETED_DOCUMENTS_QUERY,
+        this.jdbcTemplate.update(
+                DocumentPath.UPDATE_DELETED_DOCUMENTS_QUERY,
                 new PreparedStatementSetter() {
 
                     @Override
@@ -261,13 +281,13 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
      * )
      */
     @Override
-    public void updateNewDocuments(String shareName) {
+    public final void updateNewDocuments(String shareName) {
 
         final List<DocumentPath> docList = new ArrayList<DocumentPath>();
 
         LOG.debug("Running query: " + DocumentPath.SELECT_NEW_DOCUMENTS_QUERY);
 
-        jdbcTemplate.query(DocumentPath.SELECT_NEW_DOCUMENTS_QUERY,
+        this.jdbcTemplate.query(DocumentPath.SELECT_NEW_DOCUMENTS_QUERY,
                 new ListDocumentPathExtractor(docList));
 
         LOG.debug(docList.size() + " new documents successfully selected");
@@ -275,7 +295,8 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
         final List<IndexedDocument> idocList = DocumentPath
                 .toIndexedDocumentList(docList, IndexedDocument.INDEX_STATE_NEW);
 
-        jdbcTemplate.batchUpdate(IndexedDocument.INSERT_DOCUMENT_QUERY,
+        this.jdbcTemplate.batchUpdate(
+                IndexedDocument.INSERT_DOCUMENT_QUERY,
                 new IndexedDocumentBatchInsertSetter(idocList));
 
         LOG.debug("New documents status successfully updated on share : "
@@ -289,14 +310,15 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
      * .String)
      */
     @Override
-    public void updateModifiedDocuments(String shareName) {
+    public final void updateModifiedDocuments(String shareName) {
 
         final List<DocumentPath> docList = new ArrayList<DocumentPath>();
 
         LOG.debug("Running query: "
                 + DocumentPath.SELECT_MODIFIED_DOCUMENTS_QUERY);
 
-        jdbcTemplate.query(DocumentPath.SELECT_MODIFIED_DOCUMENTS_QUERY,
+        this.jdbcTemplate.query(
+                DocumentPath.SELECT_MODIFIED_DOCUMENTS_QUERY,
                 new ListDocumentPathExtractor(docList));
 
         LOG.debug(docList.size() + " new documents successfully selected");
@@ -305,7 +327,8 @@ public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
                 .toIndexedDocumentList(docList,
                         IndexedDocument.INDEX_STATE_MODIFIED);
 
-        jdbcTemplate.batchUpdate(IndexedDocument.INSERT_DOCUMENT_QUERY,
+        this.jdbcTemplate.batchUpdate(
+                IndexedDocument.INSERT_DOCUMENT_QUERY,
                 new IndexedDocumentBatchInsertSetter(idocList));
 
         LOG.debug("Modified documents status successfully updated on share : "

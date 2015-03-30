@@ -25,7 +25,7 @@ public final class ListIdExtractor implements
     /**
      * The List to extract the ids to it.
      */
-    final List<String> idList;
+    private final List<String> idList;
 
     /**
      * Constructor.

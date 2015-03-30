@@ -22,7 +22,7 @@ import com.glueball.snoop.entity.DocumentPath;
  *
  * @author karesz
  */
-public final class DocumentPathBeanImpl implements DocumentPathBean {
+public class DocumentPathBeanImpl implements DocumentPathBean {
 
     /**
      * Logger instance.
@@ -51,7 +51,7 @@ public final class DocumentPathBeanImpl implements DocumentPathBean {
     /**
      * Initialization method.
      */
-    public void init() {
+    public final void init() {
 
         dao.createTable();
     }

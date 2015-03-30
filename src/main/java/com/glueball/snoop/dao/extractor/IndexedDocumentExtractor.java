@@ -26,7 +26,7 @@ public final class IndexedDocumentExtractor implements
     /**
      * The IndexedDocument object to extract data into it.
      */
-    final IndexedDocument doc;
+    private final IndexedDocument doc;
 
     /**
      * @param pDoc

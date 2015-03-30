@@ -27,7 +27,7 @@ public final class ListIndexedDocumentExtractor implements
     /**
      * The List of IndexedDocument objects to extract the data to it.
      */
-    final List<IndexedDocument> docList;
+    private final List<IndexedDocument> docList;
 
     /**
      * Constructor.

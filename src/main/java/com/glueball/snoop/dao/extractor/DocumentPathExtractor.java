@@ -26,7 +26,7 @@ public final class DocumentPathExtractor
     /**
      * The DocumentPath object to extract data into it.
      */
-    final DocumentPath doc;
+    private final DocumentPath doc;
 
     /**
      * Constructor.

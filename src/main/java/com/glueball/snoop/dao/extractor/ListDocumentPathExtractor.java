@@ -27,7 +27,7 @@ public final class ListDocumentPathExtractor implements
     /**
      * The List of DocumentPath objects to extract the data to it.
      */
-    final List<DocumentPath> docList;
+    private final List<DocumentPath> docList;
 
     /**
      * Constructor.

@@ -15,8 +15,10 @@ import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -35,7 +37,7 @@ import com.glueball.snoop.entity.IndexedDocument;
  *
  * @author karesz
  */
-public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
+public class IndexedDocumentDaoImpl implements
         IndexedDocumentDao {
 
     /**
@@ -43,6 +45,23 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      */
     private static final Logger LOG = LogManager
             .getLogger(IndexedDocumentDaoImpl.class);
+
+    /**
+     * Spring data jdbc template.
+     */
+    @Autowired(required = true)
+    private JdbcTemplate jdbcTemplate;
+
+    /**
+     * Setter method of the jdbcTemplate field.
+     *
+     * @param pJdbcTemplate
+     *            The Spring data jdbc template object.
+     */
+    public final void setJdbcTemplate(final JdbcTemplate pJdbcTemplate) {
+
+        this.jdbcTemplate = pJdbcTemplate;
+    }
 
     /**
      * Random number generator object to generate lock ids.
@@ -54,7 +73,7 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#insertOne(java.lang.Object)
      */
     @Override
-    public void insertOne(final IndexedDocument doc) {
+    public final void insertOne(final IndexedDocument doc) {
 
         LOG.debug("Inserting document: " + doc.toString() + " query: "
                 + IndexedDocument.INSERT_DOCUMENT_QUERY);
@@ -70,12 +89,13 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#insertList(java.util.List)
      */
     @Override
-    public void insertList(final List<IndexedDocument> docs) {
+    public final void insertList(final List<IndexedDocument> docs) {
 
         LOG.debug("Inserting " + docs.size() + " documents. query: "
                 + IndexedDocument.INSERT_DOCUMENT_QUERY);
 
-        this.jdbcTemplate.batchUpdate(IndexedDocument.INSERT_DOCUMENT_QUERY,
+        this.jdbcTemplate.batchUpdate(
+                IndexedDocument.INSERT_DOCUMENT_QUERY,
                 new IndexedDocumentBatchInsertSetter(docs));
 
         LOG.debug(docs.toString() + " documents succesfully inserted.");
@@ -86,7 +106,7 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#findById(java.lang.String)
      */
     @Override
-    public IndexedDocument findById(final String id) {
+    public final IndexedDocument findById(final String id) {
 
         final IndexedDocument doc = new IndexedDocument();
 
@@ -114,7 +134,7 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * )
      */
     @Override
-    public List<IndexedDocument> findByShareName(final String share) {
+    public final List<IndexedDocument> findByShareName(final String share) {
 
         final List<IndexedDocument> docList = new ArrayList<IndexedDocument>();
 
@@ -122,7 +142,8 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
                 + IndexedDocument.SELECT_BY_SHARE_NAME_QUERY
                 + " with parameter [ shareName : " + share + "]");
 
-        this.jdbcTemplate.query(IndexedDocument.SELECT_BY_SHARE_NAME_QUERY,
+        this.jdbcTemplate.query(
+                IndexedDocument.SELECT_BY_SHARE_NAME_QUERY,
                 new PreparedStatementSetter() {
 
                     @Override
@@ -143,7 +164,7 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#createTable()
      */
     @Override
-    public void createTable() {
+    public final void createTable() {
 
         LOG.debug("Running query: " + IndexedDocument.CREATE_TABLE_QUERY);
 
@@ -161,11 +182,12 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#rowNum()
      */
     @Override
-    public long rowNum() {
+    public final long rowNum() {
 
         LOG.debug("Running query: " + IndexedDocument.SELECT_ROW_NUM_QUERY);
 
-        return this.jdbcTemplate.query(IndexedDocument.SELECT_ROW_NUM_QUERY,
+        return this.jdbcTemplate.query(
+                IndexedDocument.SELECT_ROW_NUM_QUERY,
                 new ResultSetExtractor<Long>() {
 
                     @Override
@@ -186,7 +208,7 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#deleteById(java.lang.String)
      */
     @Override
-    public void deleteById(final String id) {
+    public final void deleteById(final String id) {
 
         LOG.debug("Running query: " + IndexedDocument.DELETE_BY_ID_QUERY);
 
@@ -208,7 +230,7 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#truncateTable()
      */
     @Override
-    public void truncateTable() {
+    public final void truncateTable() {
 
         LOG.debug("Running query: " + IndexedDocument.TRUNCATE_TABLE_QUERY);
 
@@ -222,7 +244,7 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.SnoopDao#selectAll()
      */
     @Override
-    public List<IndexedDocument> selectAll() throws DataAccessException {
+    public final List<IndexedDocument> selectAll() throws DataAccessException {
 
         final List<IndexedDocument> docList = new ArrayList<IndexedDocument>();
 
@@ -241,7 +263,7 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * com.glueball.snoop.dao.IndexedDocumentDao#deleteByIds(java.util.List)
      */
     @Override
-    public void deleteByIds(final List<String> ids) {
+    public final void deleteByIds(final List<String> ids) {
 
         LOG.debug("Running batch delete. Query: "
                 + IndexedDocument.DELETE_BY_ID_QUERY + " with " + ids.size()
@@ -259,7 +281,7 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.IndexedDocumentDao#lockDocuments(int)
      */
     @Override
-    public long lockDocuments(final int docNum) {
+    public final long lockDocuments(final int docNum) {
 
         final int lock = random.nextInt();
 
@@ -267,7 +289,7 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
                 + IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY);
 
         final List<String> ids = new ArrayList<String>(docNum);
-        jdbcTemplate.query(IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY,
+        this.jdbcTemplate.query(IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY,
                 new PreparedStatementSetter() {
 
                     @Override
@@ -280,7 +302,7 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
 
         LOG.debug("Running query: " + IndexedDocument.LOCK_DOCUMENTS_QUERY);
 
-        jdbcTemplate.batchUpdate(IndexedDocument.LOCK_DOCUMENTS_QUERY,
+        this.jdbcTemplate.batchUpdate(IndexedDocument.LOCK_DOCUMENTS_QUERY,
                 new BatchPreparedStatementSetter() {
 
                     @Override
@@ -307,13 +329,13 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * @see com.glueball.snoop.dao.IndexedDocumentDao#getByLock(long)
      */
     @Override
-    public List<IndexedDocument> getByLock(final long lock) {
+    public final List<IndexedDocument> getByLock(final long lock) {
 
         final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
 
         LOG.debug("Running query: " + IndexedDocument.SELECT_BY_LOCK_QUERY);
 
-        jdbcTemplate.query(IndexedDocument.SELECT_BY_LOCK_QUERY,
+        this.jdbcTemplate.query(IndexedDocument.SELECT_BY_LOCK_QUERY,
                 new PreparedStatementSetter() {
 
                     @Override
@@ -335,7 +357,7 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * com.glueball.snoop.dao.IndexedDocumentDao#updateState(java.util.List)
      */
     @Override
-    public void updateState(final List<IndexedDocument> idocList) {
+    public final void updateState(final List<IndexedDocument> idocList) {
 
         LOG.debug("Running batch update. Query: "
                 + IndexedDocument.UPDATE_STATE_QUERY + " with "
@@ -354,7 +376,7 @@ public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
      * .List)
      */
     @Override
-    public void unLockUpdateState(final List<IndexedDocument> idocList) {
+    public final void unLockUpdateState(final List<IndexedDocument> idocList) {
 
         LOG.debug("Running batch update. Query: "
                 + IndexedDocument.UNLOCK_UPDATE_STATE_QUERY + " with "

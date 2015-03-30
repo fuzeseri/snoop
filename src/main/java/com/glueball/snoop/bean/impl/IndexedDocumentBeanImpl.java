@@ -19,7 +19,7 @@ import com.glueball.snoop.entity.IndexedDocument;
  *
  * @author karesz
  */
-public final class IndexedDocumentBeanImpl implements IndexedDocumentBean {
+public class IndexedDocumentBeanImpl implements IndexedDocumentBean {
 
     /**
      * Spring data access object to access the IndexedDocuemnts in the
@@ -42,7 +42,7 @@ public final class IndexedDocumentBeanImpl implements IndexedDocumentBean {
     /**
      * Initialization method.
      */
-    public void init() {
+    public final void init() {
 
         dao.createTable();
     }
@@ -54,7 +54,7 @@ public final class IndexedDocumentBeanImpl implements IndexedDocumentBean {
      * .List)
      */
     @Override
-    public void unLockUpdateState(final List<IndexedDocument> idocList) {
+    public final void unLockUpdateState(final List<IndexedDocument> idocList) {
 
         dao.unLockUpdateState(idocList);
     }
@@ -64,7 +64,7 @@ public final class IndexedDocumentBeanImpl implements IndexedDocumentBean {
      * @see com.glueball.snoop.bean.IndexedDocumentBean#haveToIndex(int)
      */
     @Override
-    public List<IndexedDocument> haveToIndex(final int docNum) {
+    public final List<IndexedDocument> haveToIndex(final int docNum) {
 
         final long lock = dao.lockDocuments(docNum);
         return dao.getByLock(lock);
