@@ -32,44 +32,96 @@ import com.glueball.snoop.entity.Meta;
 import com.glueball.snoop.parser.ParserMap;
 
 /**
+ * This periodically checks the (scheduled by the spring framework) state of the
+ * documents stored in the relational database, parses the meta data and the
+ * content of the document and loads it to the lucene index.
+ * 
  * @author karesz
  *
  */
 public final class DataIndexer {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOG = LogManager.getLogger(DataIndexer.class);
 
+    /**
+     * Constant default value of the maximum allowed documents per round.
+     */
+    private static final int DEFAULT_MAXDOC_NUM = 100;
+
+    /**
+     * The Apache lucene index writer object.
+     */
     @Autowired
     private IndexWriter indexWriter;
 
+    /**
+     * Setter method of the indexWriter.
+     *
+     * @param _indexWriter
+     *            the IndexWriter instance.
+     */
     public void setIndexWriter(final IndexWriter _indexWriter) {
 
         this.indexWriter = _indexWriter;
     }
 
+    /**
+     * Indexed document database service.
+     */
     @Autowired
     private IndexedDocumentBean indexedDocumentBean;
 
+    /**
+     * Setter of the indexedDocumentBean service field.
+     *
+     * @param _indexedDocumentBean
+     *            the IndexedDocumentBean instance.
+     */
     public void setIndexedDocumentBean(final IndexedDocumentBean _indexedDocumentBean) {
 
         this.indexedDocumentBean = _indexedDocumentBean;
     }
 
+    /**
+     * This map contains all of the file parser objects as value. The key is the
+     * mime type.
+     */
     @Autowired
     private ParserMap parserMap;
 
+    /**
+     * Setter methos of the ParserMap field.
+     *
+     * @param _parserMap
+     */
     public void setParserMap(final ParserMap _parserMap) {
 
         this.parserMap = _parserMap;
     }
 
-    private int maxDoc = 100;
+    /**
+     * Maximum number of document to index in one round.
+     */
+    private int maxDoc = DEFAULT_MAXDOC_NUM;
 
+    /**
+     * Setter method of the maxDoc field.
+     * 
+     * @param _maxDoc
+     */
     public void setMaxDoc(int _maxDoc) {
 
         this.maxDoc = _maxDoc;
     }
 
+    /**
+     * Removes documents from the lucene index marked as DELETED.
+     * 
+     * @param toDelete
+     */
     private void removeModifiedDeletedDocsFromIndex(final List<String> toDelete) {
 
         try {
@@ -100,6 +152,11 @@ public final class DataIndexer {
         }
     }
 
+    /**
+     * Loads a list of IndexedDocument to the lucene index.
+     * 
+     * @param haveToIndexList
+     */
     private void indexList(final List<IndexedDocument> haveToIndexList) {
 
         try {
@@ -133,6 +190,11 @@ public final class DataIndexer {
         }
     }
 
+    /**
+     * Scheduled task method. It loads the IndexedDocuments from the relational
+     * database. Group them by the status and calls the delete or index methods
+     * on the lists.
+     */
     @Scheduled(fixedDelay = 10 * 60 * 1000)
     public void index() {
 
@@ -155,6 +217,17 @@ public final class DataIndexer {
         indexList(haveToIndexList);
     }
 
+    /**
+     * Creates apache lucene document from the data parsed out from the file.
+     * 
+     * @param idoc
+     *            the IdexedDocument data from the relational database.
+     * @param meta
+     *            the metadata parsed out from the file.
+     * @param contentReader
+     *            reader instance for the content of the file.
+     * @return apache lucene document.
+     */
     private Document getLuceneDocument(final IndexedDocument idoc, final Meta meta, final Reader contentReader) {
 
         final Document doc = new Document();
@@ -179,6 +252,14 @@ public final class DataIndexer {
         return doc;
     }
 
+    /**
+     * Loads the lucene document to the luecen index.
+     * 
+     * @param idoc
+     *            IndexedDocument from the relational database.
+     * @return true if the lucene docuemnt has successfully loaded to the lucene
+     *         index.
+     */
     private boolean indexFileContent(final IndexedDocument idoc) {
 
         try (final Writer contentWriter = new StringWriter()) {

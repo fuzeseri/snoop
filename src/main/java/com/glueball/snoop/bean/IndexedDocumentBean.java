@@ -11,9 +11,30 @@ import java.util.List;
 
 import com.glueball.snoop.entity.IndexedDocument;
 
+/**
+ * Service to acces and update the documents index statuses in the relation
+ * database.
+ * 
+ * @author karesz
+ *
+ */
 public interface IndexedDocumentBean {
 
-    void unLockUpdateState(final List<IndexedDocument> haveToIndexList);
+    /**
+     * Unlock the documents and update their index statuses.
+     * 
+     * @param idocList
+     *            list of IndexedDocuments.
+     */
+    void unLockUpdateState(final List<IndexedDocument> idocList);
 
+    /**
+     * Reads the IdexedDocuments from the relational database with non INDEXED
+     * and non ERROR status.
+     * 
+     * @param docNum
+     *            maximum number of documents to return.
+     * @return list of IndexedDocuments which needed to index.
+     */
     List<IndexedDocument> haveToIndex(final int docNum);
 }

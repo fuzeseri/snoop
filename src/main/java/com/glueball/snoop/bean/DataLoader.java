@@ -33,50 +33,107 @@ import com.glueball.snoop.parser.MimeFileextMap;
 import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.visitor.DbLoaderVisitor;
 
+/**
+ * Periodically checks the directories on the disk or network file shares and
+ * updates the docuemtns index statuses in the ralational databse. This code
+ * also checks if the snoop has parser for the mime-type of the file and skip it
+ * if it hasn't.
+ * 
+ * @author karesz
+ *
+ */
 public class DataLoader {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOG = LogManager.getLogger(DataLoader.class);
 
+    /**
+     * Document paths database service.
+     */
     @Autowired
     private DocumentPathBean docPathBean;
 
+    /**
+     * Setter methond of the docPathBean field.
+     * 
+     * @param docPathBean
+     *            the DocumentPathBean instance.
+     */
     public void setDocPathBean(final DocumentPathBean docPathBean) {
 
         this.docPathBean = docPathBean;
     }
 
+    /**
+     * This map contains all of the file parser objects as value. The key is the
+     * mime type.
+     */
     @Autowired
     private ParserMap parserMap;
 
+    /**
+     * Setter methos of the ParserMap field.
+     *
+     * @param _parserMap
+     */
     public void setParserMap(final ParserMap parserMap) {
 
         this.parserMap = parserMap;
     }
 
+    /**
+     * This map contains the related file extensions for the specific
+     * mime-types.
+     */
     @Autowired
     private MimeFileextMap mimeFileextMap;
 
+    /**
+     * Setter method of the mimeFileextMap field.
+     * 
+     * @param _mimeFileextMap
+     *            MimeFileextMap instance.
+     */
     public void setPMimeFileextMap(final MimeFileextMap _mimeFileextMap) {
 
         this.mimeFileextMap = _mimeFileextMap;
     }
 
+    /**
+     * Path of the xml file containing the set of network shares to scan and
+     * index its' content's.
+     */
     private String sharesXml;
 
+    /**
+     * Setter method of the sharesXml field.
+     * 
+     * @param source
+     *            path of the shares.xml file.
+     */
     public void setSharesXml(final String source) {
 
         this.sharesXml = source;
     }
 
-    public DataLoader() {
-
-    }
-
+    /**
+     * Constructor.
+     * 
+     * @param _sharesXml
+     *            path of the shares.xml file.
+     */
     public DataLoader(final String _sharesXml) {
 
         this.sharesXml = _sharesXml;
     }
 
+    /**
+     * Scheduled task method. Going through the shares and tree walks on the sub
+     * directories. Checks all the files if it is parsable by the snoop and
+     * updates the statuses of the documents in the relational database.
+     */
     @Scheduled(fixedDelay = 5 * 60 * 1000)
     public void load() {
 
@@ -103,6 +160,11 @@ public class DataLoader {
         }
     }
 
+    /**
+     * Unmarshall the network share instances from shares.xml file.
+     * 
+     * @return list of NetworkShare instances.
+     */
     private List<NetworkShare> getShares() {
 
         final List<NetworkShare> shares = new ArrayList<NetworkShare>();
