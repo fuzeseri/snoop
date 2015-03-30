@@ -4,7 +4,6 @@ package com.glueball.snoop.bean;
  * Licensed to Glueball Ltd. under one or more contributor license agreements.
  * See the README file distributed with this work for additional information
  * regarding copyright ownership. You may obtain a copy of the License at
- * 
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.io.File;
@@ -35,12 +34,11 @@ import com.glueball.snoop.visitor.DbLoaderVisitor;
 
 /**
  * Periodically checks the directories on the disk or network file shares and
- * updates the docuemtns index statuses in the ralational databse. This code
- * also checks if the snoop has parser for the mime-type of the file and skip it
- * if it hasn't.
- * 
- * @author karesz
+ * updates the document index statuses in the ralational databse. This code
+ * checks if the snoop has a parser for the mime-type of the file and skip if
+ * has not.
  *
+ * @author karesz
  */
 public class DataLoader {
 
@@ -57,17 +55,17 @@ public class DataLoader {
 
     /**
      * Setter methond of the docPathBean field.
-     * 
-     * @param docPathBean
+     *
+     * @param pDdocPathBean
      *            the DocumentPathBean instance.
      */
-    public void setDocPathBean(final DocumentPathBean docPathBean) {
+    public void setDocPathBean(final DocumentPathBean pDdocPathBean) {
 
-        this.docPathBean = docPathBean;
+        this.docPathBean = pDdocPathBean;
     }
 
     /**
-     * This map contains all of the file parser objects as value. The key is the
+     * This map contains all of the file parser objects as value. Key is the
      * mime type.
      */
     @Autowired
@@ -76,11 +74,11 @@ public class DataLoader {
     /**
      * Setter methos of the ParserMap field.
      *
-     * @param _parserMap
+     * @param pParserMap
      */
-    public void setParserMap(final ParserMap parserMap) {
+    public void setParserMap(final ParserMap pParserMap) {
 
-        this.parserMap = parserMap;
+        this.parserMap = pParserMap;
     }
 
     /**
@@ -92,13 +90,13 @@ public class DataLoader {
 
     /**
      * Setter method of the mimeFileextMap field.
-     * 
-     * @param _mimeFileextMap
+     *
+     * @param pMimeFileextMap
      *            MimeFileextMap instance.
      */
-    public void setPMimeFileextMap(final MimeFileextMap _mimeFileextMap) {
+    public void setPMimeFileextMap(final MimeFileextMap pMimeFileextMap) {
 
-        this.mimeFileextMap = _mimeFileextMap;
+        this.mimeFileextMap = pMimeFileextMap;
     }
 
     /**
@@ -109,7 +107,7 @@ public class DataLoader {
 
     /**
      * Setter method of the sharesXml field.
-     * 
+     *
      * @param source
      *            path of the shares.xml file.
      */
@@ -120,21 +118,22 @@ public class DataLoader {
 
     /**
      * Constructor.
-     * 
-     * @param _sharesXml
+     *
+     * @param pSharesXml
      *            path of the shares.xml file.
      */
-    public DataLoader(final String _sharesXml) {
+    public DataLoader(final String pSharesXml) {
 
-        this.sharesXml = _sharesXml;
+        this.sharesXml = pSharesXml;
     }
 
     /**
-     * Scheduled task method. Going through the shares and tree walks on the sub
+     * Scheduled task method. Goes through the shares and tree walks on the sub
      * directories. Checks all the files if it is parsable by the snoop and
      * updates the statuses of the documents in the relational database.
      */
-    @Scheduled(fixedDelay = 5 * 60 * 1000)
+    @Scheduled(
+            fixedDelay = 300000)
     public void load() {
 
         for (final NetworkShare share : getShares()) {
@@ -149,8 +148,9 @@ public class DataLoader {
 
             try {
 
-                final String path = !StringUtils.isEmpty(share.getLocalPath()) ? share
-                        .getLocalPath() : share.getRemotePath();
+                final String path = !StringUtils.isEmpty(
+                        share.getLocalPath()) ?
+                        share.getLocalPath() : share.getRemotePath();
 
                 Files.walkFileTree(Paths.get(path), visitor);
                 this.docPathBean.updateDocuments(share.getName(), docs);
@@ -164,7 +164,7 @@ public class DataLoader {
 
     /**
      * Unmarshall the network share instances from shares.xml file.
-     * 
+     *
      * @return list of NetworkShare instances.
      */
     private List<NetworkShare> getShares() {

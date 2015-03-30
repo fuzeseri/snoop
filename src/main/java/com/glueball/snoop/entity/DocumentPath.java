@@ -4,7 +4,6 @@ package com.glueball.snoop.entity;
  * Licensed to Glueball Ltd. under one or more contributor license agreements.
  * See the README file distributed with this work for additional information
  * regarding copyright ownership. You may obtain a copy of the License at
- * 
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.util.ArrayList;
@@ -29,24 +28,34 @@ public class DocumentPath extends AbstractSnoopDocument {
     public static final String EMPTY_TABLE_QUERY = "DELETE FROM DOCUMENT_PATH";
 
     public static final String SELECT_NEW_DOCUMENTS_QUERY = " SELECT "
-            + " docp.id id, " + " docp.share_name share_name, "
-            + " docp.file_name file_name, " + " docp.uri uri, "
-            + " docp.path path, " + " docp.local_path local_path,"
+            + " docp.id id, "
+            + " docp.share_name share_name, "
+            + " docp.file_name file_name, "
+            + " docp.uri uri, "
+            + " docp.path path, "
+            + " docp.local_path local_path,"
             + " docp.last_modified_time last_modified_time, "
-            + " docp.content_type content_type " + " FROM "
+            + " docp.content_type content_type "
+            + " FROM "
             + " DOCUMENT_PATH docp "
             + " LEFT JOIN INDEXED_DOCUMENT idoc ON docp.id = idoc.id "
-            + " WHERE " + " idoc.id IS NULL ";
+            + " WHERE "
+            + " idoc.id IS NULL ";
 
     public static final String SELECT_MODIFIED_DOCUMENTS_QUERY = " SELECT "
-            + " docp.id id, " + " docp.share_name share_name, "
-            + " docp.file_name file_name, " + " docp.uri uri, "
-            + " docp.path path, " + " docp.local_path local_path, "
+            + " docp.id id, "
+            + " docp.share_name share_name, "
+            + " docp.file_name file_name, "
+            + " docp.uri uri, "
+            + " docp.path path, "
+            + " docp.local_path local_path, "
             + " docp.last_modified_time last_modified_time, "
-            + " docp.content_type content_type " + " FROM "
+            + " docp.content_type content_type "
+            + " FROM "
             + " DOCUMENT_PATH docp "
             + " INNER JOIN INDEXED_DOCUMENT idoc ON docp.id = idoc.id "
-            + " WHERE " + " docp.last_modified_time > idoc.last_modified_time";
+            + " WHERE "
+            + " docp.last_modified_time > idoc.last_modified_time";
 
     public static final String UPDATE_DELETED_DOCUMENTS_QUERY = " UPDATE INDEXED_DOCUMENT SET index_state = ?, lock = 0, lock_time = null "
             + " WHERE id IN ( "

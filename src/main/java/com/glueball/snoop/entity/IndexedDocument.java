@@ -4,7 +4,6 @@ package com.glueball.snoop.entity;
  * Licensed to Glueball Ltd. under one or more contributor license agreements.
  * See the README file distributed with this work for additional information
  * regarding copyright ownership. You may obtain a copy of the License at
- * 
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.sql.Timestamp;
@@ -52,7 +51,8 @@ public class IndexedDocument extends AbstractSnoopDocument {
             + " WHERE index_state NOT IN ('"
             + INDEX_STATE_INDEXED
             + "','"
-            + INDEX_STATE_ERROR + "') AND lock = 0 LIMIT ?";
+            + INDEX_STATE_ERROR
+            + "') AND lock = 0 LIMIT ?";
 
     public static final String LOCK_DOCUMENTS_QUERY = "UPDATE INDEXED_DOCUMENT "
             + " SET lock = ?, lock_time = now() WHERE id = ?";
@@ -79,7 +79,9 @@ public class IndexedDocument extends AbstractSnoopDocument {
             + "last_indexed_time timestamp,"
             + "content_type varchar(100),"
             + "index_state varchar(10),"
-            + "lock integer," + "lock_time timestamp" + ")";
+            + "lock integer,"
+            + "lock_time timestamp"
+            + ")";
 
     public static final List<String> CREATE_INDEX_QUERY = Collections
             .unmodifiableList(Arrays

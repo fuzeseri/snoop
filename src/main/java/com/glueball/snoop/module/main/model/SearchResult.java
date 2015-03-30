@@ -4,7 +4,6 @@ package com.glueball.snoop.module.main.model;
  * Licensed to Glueball Ltd. under one or more contributor license agreements.
  * See the README file distributed with this work for additional information
  * regarding copyright ownership. You may obtain a copy of the License at
- * 
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.io.Serializable;
@@ -16,8 +15,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "result")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@XmlRootElement(
+        name = "result")
+@JsonIgnoreProperties(
+        ignoreUnknown = true)
 public class SearchResult implements Serializable {
 
     private static final long serialVersionUID = 1L;

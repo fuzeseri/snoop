@@ -4,7 +4,6 @@ package com.glueball.snoop.dao.impl;
  * Licensed to Glueball Ltd. under one or more contributor license agreements.
  * See the README file distributed with this work for additional information
  * regarding copyright ownership. You may obtain a copy of the License at
- * 
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.sql.PreparedStatement;
@@ -38,7 +37,8 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
     private static final Logger LOG = LogManager
             .getLogger(IndexedDocumentDaoImpl.class);
 
-    @Autowired(required = true)
+    @Autowired(
+            required = true)
     private JdbcTemplate jdbcTemplate;
 
     public void setJdbcTemplate(final JdbcTemplate _jdbcTemplate) {

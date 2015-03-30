@@ -4,7 +4,6 @@ package com.glueball.snoop.bean;
  * Licensed to Glueball Ltd. under one or more contributor license agreements.
  * See the README file distributed with this work for additional information
  * regarding copyright ownership. You may obtain a copy of the License at
- * 
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.io.IOException;
@@ -32,12 +31,11 @@ import com.glueball.snoop.entity.Meta;
 import com.glueball.snoop.parser.ParserMap;
 
 /**
- * This periodically checks the (scheduled by the spring framework) state of the
- * documents stored in the relational database, parses the meta data and the
+ * This periodically checks the ( scheduled by the spring framework ) status of
+ * the documents stored in the relational database, parses the metadata and the
  * content of the document and loads it to the lucene index.
- * 
- * @author karesz
  *
+ * @author karesz
  */
 public final class DataIndexer {
 
@@ -60,12 +58,12 @@ public final class DataIndexer {
     /**
      * Setter method of the indexWriter.
      *
-     * @param _indexWriter
+     * @param pIndexWriter
      *            the IndexWriter instance.
      */
-    public void setIndexWriter(final IndexWriter _indexWriter) {
+    public void setIndexWriter(final IndexWriter pIndexWriter) {
 
-        this.indexWriter = _indexWriter;
+        this.indexWriter = pIndexWriter;
     }
 
     /**
@@ -77,17 +75,17 @@ public final class DataIndexer {
     /**
      * Setter of the indexedDocumentBean service field.
      *
-     * @param _indexedDocumentBean
+     * @param pIndexedDocumentBean
      *            the IndexedDocumentBean instance.
      */
     public void setIndexedDocumentBean(
-            final IndexedDocumentBean _indexedDocumentBean) {
+            final IndexedDocumentBean pIndexedDocumentBean) {
 
-        this.indexedDocumentBean = _indexedDocumentBean;
+        this.indexedDocumentBean = pIndexedDocumentBean;
     }
 
     /**
-     * This map contains all of the file parser objects as value. The key is the
+     * This map contains all of the file parser objects as value. Key is the
      * mime type.
      */
     @Autowired
@@ -96,11 +94,11 @@ public final class DataIndexer {
     /**
      * Setter methos of the ParserMap field.
      *
-     * @param _parserMap
+     * @param pParserMap
      */
-    public void setParserMap(final ParserMap _parserMap) {
+    public void setParserMap(final ParserMap pParserMap) {
 
-        this.parserMap = _parserMap;
+        this.parserMap = pParserMap;
     }
 
     /**
@@ -110,20 +108,22 @@ public final class DataIndexer {
 
     /**
      * Setter method of the maxDoc field.
-     * 
-     * @param _maxDoc
+     *
+     * @param pMaxDoc
+     *            maximum number of documents to index in a round.
      */
-    public void setMaxDoc(int _maxDoc) {
+    public void setMaxDoc(final int pMaxDoc) {
 
-        this.maxDoc = _maxDoc;
+        this.maxDoc = pMaxDoc;
     }
 
     /**
      * Removes documents from the lucene index marked as DELETED.
-     * 
+     *
      * @param toDelete
+     *            list of document Ids to delete from the lucene index.
      */
-    private void removeModifiedDeletedDocsFromIndex(final List<String> toDelete) {
+    private void removeDocsFromIndex(final List<String> toDelete) {
 
         try {
 
@@ -155,9 +155,10 @@ public final class DataIndexer {
     }
 
     /**
-     * Loads a list of IndexedDocument to the lucene index.
-     * 
+     * Loads a list of IndexedDocuments to the lucene index.
+     *
      * @param haveToIndexList
+     *            the list of IndexedDocument to load.
      */
     private void indexList(final List<IndexedDocument> haveToIndexList) {
 
@@ -179,8 +180,9 @@ public final class DataIndexer {
 
                 idoc.setLastIndexedTime(new java.sql.Timestamp(new Date()
                         .getTime()));
-                idoc.setIndexState(indexed ? IndexedDocument.INDEX_STATE_INDEXED
-                        : IndexedDocument.INDEX_STATE_ERROR);
+                idoc.setIndexState(
+                        indexed ? IndexedDocument.INDEX_STATE_INDEXED
+                                : IndexedDocument.INDEX_STATE_ERROR);
             }
         } finally {
 
@@ -204,8 +206,8 @@ public final class DataIndexer {
     @Scheduled(fixedDelay = 10 * 60 * 1000)
     public void index() {
 
-        final List<IndexedDocument> haveToIndexList = new ArrayList<IndexedDocument>(
-                maxDoc);
+        final List<IndexedDocument> haveToIndexList =
+                new ArrayList<IndexedDocument>(maxDoc);
 
         final List<String> toRemove = new ArrayList<String>();
         for (final IndexedDocument idoc : indexedDocumentBean
@@ -226,13 +228,13 @@ public final class DataIndexer {
                 }
             }
         }
-        removeModifiedDeletedDocsFromIndex(toRemove);
+        removeDocsFromIndex(toRemove);
         indexList(haveToIndexList);
     }
 
     /**
      * Creates apache lucene document from the data parsed out from the file.
-     * 
+     *
      * @param idoc
      *            the IdexedDocument data from the relational database.
      * @param meta
@@ -246,7 +248,8 @@ public final class DataIndexer {
 
         final Document doc = new Document();
         doc.add(new StringField("id", idoc.getId(), Field.Store.YES));
-        doc.add(new StringField("fileName", idoc.getFileName(), Field.Store.YES));
+        doc.add(new StringField(
+                "fileName", idoc.getFileName(), Field.Store.YES));
         doc.add(new TextField("file", idoc.getFileName(), Field.Store.YES));
         doc.add(new StringField("path", idoc.getPath(), Field.Store.YES));
         doc.add(new StringField("uri", idoc.getUri(), Field.Store.YES));
@@ -254,7 +257,8 @@ public final class DataIndexer {
                 Field.Store.YES));
 
         if (meta.hasAuthor()) {
-            doc.add(new TextField("author", meta.getAuthor(), Field.Store.YES));
+            doc.add(new TextField(
+                    "author", meta.getAuthor(), Field.Store.YES));
         }
         if (meta.hasTitle()) {
             doc.add(new TextField("title", meta.getTitle(), Field.Store.YES));
@@ -270,11 +274,10 @@ public final class DataIndexer {
 
     /**
      * Loads the lucene document to the luecen index.
-     * 
+     *
      * @param idoc
      *            IndexedDocument from the relational database.
-     * @return true if the lucene docuemnt has successfully loaded to the lucene
-     *         index.
+     * @return true if the document has successfully loaded to the index.
      */
     private boolean indexFileContent(final IndexedDocument idoc) {
 
@@ -283,8 +286,8 @@ public final class DataIndexer {
             final Meta meta = this.parserMap.getParser(idoc.getContentType())
                     .parseContent(idoc.getLocalPath(), contentWriter);
 
-            try (final Reader contentReader = new StringReader(
-                    contentWriter.toString())) {
+            try (final Reader contentReader = new StringReader(contentWriter
+                    .toString())) {
 
                 indexWriter.addDocument(getLuceneDocument(idoc, meta,
                         contentReader));

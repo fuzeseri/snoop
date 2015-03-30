@@ -4,7 +4,6 @@ package com.glueball.snoop.bean.impl;
  * Licensed to Glueball Ltd. under one or more contributor license agreements.
  * See the README file distributed with this work for additional information
  * regarding copyright ownership. You may obtain a copy of the License at
- * 
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.util.List;
@@ -18,24 +17,50 @@ import com.glueball.snoop.bean.DocumentPathBean;
 import com.glueball.snoop.dao.DocumentPathDao;
 import com.glueball.snoop.entity.DocumentPath;
 
+/**
+ * Implementation of the DocumentPathBean service.
+ *
+ * @author karesz
+ */
 public class DocumentPathBeanImpl implements DocumentPathBean {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOG = LogManager
             .getLogger(DocumentPathBeanImpl.class);
 
+    /**
+     * Spring data access object to access the DocumentPaths in the relational
+     * database.
+     */
     private DocumentPathDao dao;
 
+    /**
+     * Setter method of the dao field.
+     *
+     * @param pDao
+     *            the DocumentPathDao instance.
+     */
     @Required
-    public void setDao(final DocumentPathDao dao) {
+    public void setDao(final DocumentPathDao pDao) {
 
-        this.dao = dao;
+        this.dao = pDao;
     }
 
+    /**
+     * Initialization method.
+     */
     public void init() {
 
         dao.createTable();
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.bean.DocumentPathBean#updateDocuments(
+     * java.lang.String* , java.util.List)
+     */
     @Override
     @Transactional
     public void updateDocuments(final String shareName,

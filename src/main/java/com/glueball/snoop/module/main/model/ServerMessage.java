@@ -4,7 +4,6 @@ package com.glueball.snoop.module.main.model;
  * Licensed to Glueball Ltd. under one or more contributor license agreements.
  * See the README file distributed with this work for additional information
  * regarding copyright ownership. You may obtain a copy of the License at
- * 
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.io.Serializable;
@@ -16,22 +15,26 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "server_message")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@XmlRootElement(
+        name = "server_message")
+@JsonIgnoreProperties(
+        ignoreUnknown = true)
 public class ServerMessage implements Serializable {
 
     public static final int MESSAGE_TYPE_OK = 0;
     public static final int MESSAGE_TYPE_ERROR = 1;
 
     public static final ServerMessage MESSAGE_NO_HITS = new ServerMessage(
-            MESSAGE_TYPE_ERROR, "No documents found int the search term.");
+            MESSAGE_TYPE_ERROR,
+            "No documents found int the search term.");
 
     public static final ServerMessage MESSAGE_INDEX_NOT_READY = new ServerMessage(
             MESSAGE_TYPE_ERROR,
             "The index is not ready yet. Please come back later.");
 
     public static final ServerMessage MESSAGE_CANT_OPEN_INDEX = new ServerMessage(
-            MESSAGE_TYPE_ERROR, "Error opening index.");
+            MESSAGE_TYPE_ERROR,
+            "Error opening index.");
 
     private static final long serialVersionUID = 1L;
 

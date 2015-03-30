@@ -4,7 +4,6 @@ package com.glueball.snoop.client;
  * Licensed to Glueball Ltd. under one or more contributor license agreements.
  * See the README file distributed with this work for additional information
  * regarding copyright ownership. You may obtain a copy of the License at
- * 
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.util.ArrayList;
@@ -24,9 +23,6 @@ public class ClientMain {
 
         final List<Object> providers = new ArrayList<Object>();
         providers.add(new JacksonJsonProvider());
-
-        // final WebClient client = WebClient.create( "http://localhost:8080/",
-        // providers);
 
         long start = System.currentTimeMillis();
 
@@ -71,7 +67,6 @@ public class ClientMain {
         System.out.println("Runtime: " + (System.currentTimeMillis() - start));
         /*
          * for (final SearchResult result : results) {
-         * 
          * System.out.println(result.toString()); }
          */
     }

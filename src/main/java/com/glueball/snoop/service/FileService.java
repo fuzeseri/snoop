@@ -4,7 +4,6 @@ package com.glueball.snoop.service;
  * Licensed to Glueball Ltd. under one or more contributor license agreements.
  * See the README file distributed with this work for additional information
  * regarding copyright ownership. You may obtain a copy of the License at
- * 
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.io.IOException;
@@ -25,7 +24,8 @@ public class FileService {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/{module}")
-    public Response getFile(@PathParam(value = "module") final String module)
+    public Response getFile(@PathParam(
+            value = "module") final String module)
             throws IOException {
 
         final String retVal = "<!doctype html>\n"
@@ -46,8 +46,10 @@ public class FileService {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/{module}/{filename}")
-    public Response getFile(@PathParam(value = "module") final String module,
-            @PathParam(value = "filename") final String filename)
+    public Response getFile(@PathParam(
+            value = "module") final String module,
+            @PathParam(
+                    value = "filename") final String filename)
             throws IOException {
 
         final String filePath = "com.glueball.snoop.module." + module
@@ -61,7 +63,8 @@ public class FileService {
     @Produces("image/png")
     @Path("/image/{filename}")
     public Response getImage(
-            @PathParam(value = "filename") final String filename)
+            @PathParam(
+                    value = "filename") final String filename)
             throws IOException {
 
         final Resource res = new ClassPathResource("images/" + filename);

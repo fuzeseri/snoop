@@ -4,7 +4,6 @@ package com.glueball.snoop.service;
  * Licensed to Glueball Ltd. under one or more contributor license agreements.
  * See the README file distributed with this work for additional information
  * regarding copyright ownership. You may obtain a copy of the License at
- * 
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.io.IOException;
@@ -42,7 +41,8 @@ import com.glueball.snoop.module.main.model.ServerMessage;
 @Path("/search")
 public class SearchService<QueryParser> {
 
-    private static Logger LOG = LogManager.getLogger(SearchService.class);
+    private static Logger LOG = LogManager
+            .getLogger(SearchService.class);
 
     private static final int MAX_SCORE_DOCS = 1000;
 
@@ -89,7 +89,8 @@ public class SearchService<QueryParser> {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{keyword}")
     public Response search(
-            @PathParam(value = "keyword") @DefaultValue("") String searchString,
+            @PathParam(
+                    value = "keyword") @DefaultValue("") String searchString,
             @FormParam("page") @DefaultValue("1") int page) {
 
         try {
