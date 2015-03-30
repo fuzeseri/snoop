@@ -1,5 +1,12 @@
 package com.glueball.snoop.service;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * 
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -13,7 +20,7 @@ public class AdminService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/hello/{name}")
-    public Response hello(@PathParam("name") String name) {
+    public Response hello(@PathParam("name") final String name) {
 
         return Response.ok("Hello " + name, MediaType.APPLICATION_JSON).build();
     }

@@ -1,5 +1,12 @@
 package com.glueball.snoop.bean.impl;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * 
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;

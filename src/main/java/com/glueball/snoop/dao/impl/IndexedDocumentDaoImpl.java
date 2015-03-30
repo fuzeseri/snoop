@@ -1,5 +1,12 @@
 package com.glueball.snoop.dao.impl;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * 
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -119,8 +126,9 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
 
         LOG.debug("Running query: " + IndexedDocument.SELECT_ROW_NUM_QUERY);
 
-        return (Long) this.jdbcTemplate.query(IndexedDocument.SELECT_ROW_NUM_QUERY, new ResultSetExtractor<Long>() {
+        return this.jdbcTemplate.query(IndexedDocument.SELECT_ROW_NUM_QUERY, new ResultSetExtractor<Long>() {
 
+            @Override
             public Long extractData(final ResultSet rs) throws SQLException, DataAccessException {
 
                 long rowNum = 0;
@@ -188,7 +196,7 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
 
         LOG.debug("Running query: " + IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY);
 
-        final List<String> ids = new ArrayList<String>((int) docNum);
+        final List<String> ids = new ArrayList<String>(docNum);
         jdbcTemplate.query(IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY, new PreparedStatementSetter() {
 
             @Override

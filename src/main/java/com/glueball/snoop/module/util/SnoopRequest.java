@@ -1,5 +1,12 @@
 package com.glueball.snoop.module.util;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * 
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import org.fusesource.restygwt.client.JsonCallback;
 import org.fusesource.restygwt.client.JsonEncoderDecoder;
 import org.fusesource.restygwt.client.JsonEncoderDecoder.DecodingException;
@@ -30,16 +37,17 @@ public class SnoopRequest<T> {
         final Resource resource = new Resource(url);
         resource.get().send(new JsonCallback() {
 
+            @Override
             public void onSuccess(final Method method, final JSONValue response) {
 
                 try {
 
                     if (response.isObject().containsKey("serverMessage")) {
 
-                        callback.onMessage((ServerMessage) messageCodec.decode(response));
+                        callback.onMessage(messageCodec.decode(response));
                     } else {
 
-                        callback.onSuccess((T) codec.decode(response));
+                        callback.onSuccess(codec.decode(response));
                     }
                 } catch (DecodingException e) {
 
@@ -50,6 +58,7 @@ public class SnoopRequest<T> {
                 }
             }
 
+            @Override
             public void onFailure(Method method, Throwable exception) {
 
                 Window.alert(this.getClass().getName() + " : " + "CommunicationFailure: " + exception);

@@ -1,5 +1,12 @@
 package com.glueball.snoop.dao.impl;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * 
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -112,8 +119,9 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
 
         LOG.debug("Running query: " + DocumentPath.ROW_NUM_QUERY);
 
-        return (Long) this.jdbcTemplate.query(DocumentPath.ROW_NUM_QUERY, new ResultSetExtractor<Long>() {
+        return this.jdbcTemplate.query(DocumentPath.ROW_NUM_QUERY, new ResultSetExtractor<Long>() {
 
+            @Override
             public Long extractData(ResultSet rs) throws SQLException, DataAccessException {
 
                 long rowNum = 0;

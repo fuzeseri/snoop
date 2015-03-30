@@ -1,5 +1,12 @@
 package com.glueball.snoop.bean;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * 
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -24,24 +31,28 @@ import com.glueball.snoop.entity.IndexedDocument;
 import com.glueball.snoop.entity.Meta;
 import com.glueball.snoop.parser.ParserMap;
 
-public class DataIndexer {
+/**
+ * @author karesz
+ *
+ */
+public final class DataIndexer {
 
     private static final Logger LOG = LogManager.getLogger(DataIndexer.class);
 
     @Autowired
     private IndexWriter indexWriter;
 
-    public void setIndexWriter(IndexWriter indexWriter) {
+    public void setIndexWriter(final IndexWriter _indexWriter) {
 
-        this.indexWriter = indexWriter;
+        this.indexWriter = _indexWriter;
     }
 
     @Autowired
     private IndexedDocumentBean indexedDocumentBean;
 
-    public void setIndexedDocumentBean(final IndexedDocumentBean indexedDocumentBean) {
+    public void setIndexedDocumentBean(final IndexedDocumentBean _indexedDocumentBean) {
 
-        this.indexedDocumentBean = indexedDocumentBean;
+        this.indexedDocumentBean = _indexedDocumentBean;
     }
 
     @Autowired
@@ -54,9 +65,9 @@ public class DataIndexer {
 
     private int maxDoc = 100;
 
-    public void setMaxDoc(int maxDoc) {
+    public void setMaxDoc(int _maxDoc) {
 
-        this.maxDoc = maxDoc;
+        this.maxDoc = _maxDoc;
     }
 
     private void removeModifiedDeletedDocsFromIndex(final List<String> toDelete) {
@@ -144,7 +155,7 @@ public class DataIndexer {
         indexList(haveToIndexList);
     }
 
-    private final Document getLuceneDocument(final IndexedDocument idoc, final Meta meta, final Reader contentReader) {
+    private Document getLuceneDocument(final IndexedDocument idoc, final Meta meta, final Reader contentReader) {
 
         final Document doc = new Document();
         doc.add(new StringField("id", idoc.getId(), Field.Store.YES));
@@ -168,7 +179,7 @@ public class DataIndexer {
         return doc;
     }
 
-    private final boolean indexFileContent(final IndexedDocument idoc) {
+    private boolean indexFileContent(final IndexedDocument idoc) {
 
         try (final Writer contentWriter = new StringWriter()) {
 

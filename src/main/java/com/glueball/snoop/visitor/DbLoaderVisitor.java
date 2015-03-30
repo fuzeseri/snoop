@@ -1,5 +1,12 @@
 package com.glueball.snoop.visitor;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * 
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -40,11 +47,13 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
         this.share = _share;
     }
 
+    @Override
     public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
 
         return FileVisitResult.CONTINUE;
     }
 
+    @Override
     public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
 
         if (attrs.isRegularFile() && !attrs.isDirectory()) {
@@ -82,11 +91,13 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
         return FileVisitResult.CONTINUE;
     }
 
+    @Override
     public FileVisitResult visitFileFailed(final Path file, final IOException exc) throws IOException {
 
         return FileVisitResult.CONTINUE;
     }
 
+    @Override
     public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
 
         return FileVisitResult.CONTINUE;

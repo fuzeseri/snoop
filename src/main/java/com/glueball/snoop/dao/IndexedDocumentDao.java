@@ -1,5 +1,12 @@
 package com.glueball.snoop.dao;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * 
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import java.util.List;
 
 import com.glueball.snoop.entity.IndexedDocument;
@@ -17,11 +24,4 @@ public interface IndexedDocumentDao extends SnoopDao<IndexedDocument> {
     void updateState(final List<IndexedDocument> idocList);
 
     void unLockUpdateState(final List<IndexedDocument> idocList);
-
-    // void deleteByIds(List<String> ids) throws DataAccessException;
-    // List<IndexedDocument> haveToIndex() throws DataAccessException;
-    // void updateState(List<IndexedDocument> idocList) throws
-    // DataAccessException;
-    // void unLockUpdateState(List<IndexedDocument> idocList) throws
-    // DataAccessException;
 }

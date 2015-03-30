@@ -1,5 +1,12 @@
 package com.glueball.snoop.service;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * 
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -12,16 +19,17 @@ final class FileServerUtil {
 
         final Resource res = new ClassPathResource(filename);
 
-        final StringBuilder sb = new StringBuilder();
-        final InputStream is = res.getInputStream();
+        try (final InputStream is = res.getInputStream()) {
 
-        int c;
-        while ((c = is.read()) != -1) {
-            sb.append((char) c);
+            final StringBuilder sb = new StringBuilder();
+            int c;
+
+            while ((c = is.read()) != -1) {
+
+                sb.append((char) c);
+            }
+
+            return sb.toString();
         }
-
-        return sb.toString();
-
     }
-
 }

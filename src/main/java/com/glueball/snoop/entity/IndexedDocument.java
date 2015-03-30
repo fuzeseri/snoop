@@ -1,5 +1,12 @@
 package com.glueball.snoop.entity;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * 
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
@@ -65,6 +72,7 @@ public class IndexedDocument extends AbstractSnoopDocument {
     private Integer lock = 0;
     private Timestamp lockTime = null;
 
+    @Override
     public String toString() {
 
         return " id : " + getId() + " ,fileName : " + getFileName() + " ,shareName : " + getShareName() + " ,uri : " + getUri() + " ,path : " + getPath()

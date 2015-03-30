@@ -1,5 +1,12 @@
 package com.glueball.snoop.parser;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * 
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -56,6 +63,7 @@ public class SnoopParserImpl implements SnoopParser {
     protected Meta parse(final InputStream input, final Writer output) throws IOException, SAXException, TikaException {
 
         try {
+
             final BodyContentHandler content = new BodyContentHandler(output);
             final Metadata metadata = new Metadata();
             final ParseContext context = new ParseContext();

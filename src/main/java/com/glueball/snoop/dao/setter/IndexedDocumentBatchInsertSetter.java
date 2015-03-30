@@ -1,5 +1,12 @@
 package com.glueball.snoop.dao.setter;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * 
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -17,6 +24,7 @@ public class IndexedDocumentBatchInsertSetter implements BatchPreparedStatementS
         this.docs = docs;
     }
 
+    @Override
     public void setValues(final PreparedStatement pstmt, int i) throws SQLException {
 
         pstmt.setString(1, docs.get(i).getId());
@@ -34,6 +42,7 @@ public class IndexedDocumentBatchInsertSetter implements BatchPreparedStatementS
             pstmt.setTimestamp(12, docs.get(i).getLockTime());
     }
 
+    @Override
     public int getBatchSize() {
 
         return docs.size();
