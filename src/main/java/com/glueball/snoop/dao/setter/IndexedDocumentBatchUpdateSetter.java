@@ -15,7 +15,8 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
 import com.glueball.snoop.entity.IndexedDocument;
 
-public class IndexedDocumentBatchUpdateSetter implements BatchPreparedStatementSetter {
+public class IndexedDocumentBatchUpdateSetter implements
+        BatchPreparedStatementSetter {
 
     final List<IndexedDocument> docs;
 
@@ -25,7 +26,8 @@ public class IndexedDocumentBatchUpdateSetter implements BatchPreparedStatementS
     }
 
     @Override
-    public void setValues(final PreparedStatement pstmt, int i) throws SQLException {
+    public void setValues(final PreparedStatement pstmt, int i)
+            throws SQLException {
 
         pstmt.setTimestamp(1, docs.get(i).getLastIndexedTime());
         pstmt.setString(2, docs.get(i).getIndexState());

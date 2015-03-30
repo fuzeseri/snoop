@@ -91,7 +91,8 @@ public class SearchResult implements Serializable {
     @Override
     public String toString() {
 
-        return "SearchResult [title=" + title + ", author=" + author + ", description=" + description + ", fileName=" + fileName + ", uri=" + uri
-                + ", contentType=" + contentType + "]";
+        return "SearchResult [title=" + title + ", author=" + author
+                + ", description=" + description + ", fileName=" + fileName
+                + ", uri=" + uri + ", contentType=" + contentType + "]";
     }
 }

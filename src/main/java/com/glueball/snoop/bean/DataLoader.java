@@ -144,11 +144,13 @@ public class DataLoader {
             LOG.info("Local  path: " + share.getLocalPath());
 
             final List<DocumentPath> docs = new ArrayList<DocumentPath>();
-            final FileVisitor<Path> visitor = new DbLoaderVisitor(docs, parserMap, mimeFileextMap, share);
+            final FileVisitor<Path> visitor = new DbLoaderVisitor(docs,
+                    parserMap, mimeFileextMap, share);
 
             try {
 
-                final String path = !StringUtils.isEmpty(share.getLocalPath()) ? share.getLocalPath() : share.getRemotePath();
+                final String path = !StringUtils.isEmpty(share.getLocalPath()) ? share
+                        .getLocalPath() : share.getRemotePath();
 
                 Files.walkFileTree(Paths.get(path), visitor);
                 this.docPathBean.updateDocuments(share.getName(), docs);
@@ -170,9 +172,12 @@ public class DataLoader {
         final List<NetworkShare> shares = new ArrayList<NetworkShare>();
         try {
 
-            final JAXBContext jaxbContext = JAXBContext.newInstance(NetworkShares.class);
-            final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            final NetworkShares netShares = (NetworkShares) jaxbUnmarshaller.unmarshal(new File(sharesXml));
+            final JAXBContext jaxbContext = JAXBContext
+                    .newInstance(NetworkShares.class);
+            final Unmarshaller jaxbUnmarshaller = jaxbContext
+                    .createUnmarshaller();
+            final NetworkShares netShares = (NetworkShares) jaxbUnmarshaller
+                    .unmarshal(new File(sharesXml));
             shares.addAll(netShares.getShares());
         } catch (JAXBException e) {
 

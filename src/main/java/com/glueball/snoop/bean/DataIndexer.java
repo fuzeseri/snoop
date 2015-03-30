@@ -80,7 +80,8 @@ public final class DataIndexer {
      * @param _indexedDocumentBean
      *            the IndexedDocumentBean instance.
      */
-    public void setIndexedDocumentBean(final IndexedDocumentBean _indexedDocumentBean) {
+    public void setIndexedDocumentBean(
+            final IndexedDocumentBean _indexedDocumentBean) {
 
         this.indexedDocumentBean = _indexedDocumentBean;
     }
@@ -147,7 +148,8 @@ public final class DataIndexer {
                 LOG.error("ERROR while trying to commit index changes");
                 LOG.debug(e.getMessage());
             }
-            LOG.debug("index contains deleted files: " + indexWriter.hasDeletions());
+            LOG.debug("index contains deleted files: "
+                    + indexWriter.hasDeletions());
             LOG.debug("index contains documents: " + indexWriter.maxDoc());
         }
     }
@@ -165,7 +167,9 @@ public final class DataIndexer {
 
                 if (!this.parserMap.hasParser(idoc.getContentType())) {
 
-                    LOG.debug("Can't find parser for content. File name: " + idoc.getFileName() + " content-type: " + idoc.getContentType());
+                    LOG.debug("Can't find parser for content. File name: "
+                            + idoc.getFileName() + " content-type: "
+                            + idoc.getContentType());
                     continue;
                 }
 
@@ -173,8 +177,10 @@ public final class DataIndexer {
 
                 boolean indexed = indexFileContent(idoc);
 
-                idoc.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
-                idoc.setIndexState(indexed ? IndexedDocument.INDEX_STATE_INDEXED : IndexedDocument.INDEX_STATE_ERROR);
+                idoc.setLastIndexedTime(new java.sql.Timestamp(new Date()
+                        .getTime()));
+                idoc.setIndexState(indexed ? IndexedDocument.INDEX_STATE_INDEXED
+                        : IndexedDocument.INDEX_STATE_ERROR);
             }
         } finally {
 
@@ -198,16 +204,23 @@ public final class DataIndexer {
     @Scheduled(fixedDelay = 10 * 60 * 1000)
     public void index() {
 
-        final List<IndexedDocument> haveToIndexList = new ArrayList<IndexedDocument>(maxDoc);
+        final List<IndexedDocument> haveToIndexList = new ArrayList<IndexedDocument>(
+                maxDoc);
 
         final List<String> toRemove = new ArrayList<String>();
-        for (final IndexedDocument idoc : indexedDocumentBean.haveToIndex(maxDoc)) {
+        for (final IndexedDocument idoc : indexedDocumentBean
+                .haveToIndex(maxDoc)) {
 
-            if (IndexedDocument.INDEX_STATE_DELETED.equals(idoc.getIndexState()) || IndexedDocument.INDEX_STATE_MODIFIED.equals(idoc.getIndexState())
-                    || IndexedDocument.INDEX_STATE_REINDEX.equals(idoc.getIndexState())) {
+            if (IndexedDocument.INDEX_STATE_DELETED
+                    .equals(idoc.getIndexState())
+                    || IndexedDocument.INDEX_STATE_MODIFIED.equals(idoc
+                            .getIndexState())
+                    || IndexedDocument.INDEX_STATE_REINDEX.equals(idoc
+                            .getIndexState())) {
 
                 toRemove.add(idoc.getId());
-                if (!IndexedDocument.INDEX_STATE_DELETED.equals(idoc.getIndexState())) {
+                if (!IndexedDocument.INDEX_STATE_DELETED.equals(idoc
+                        .getIndexState())) {
 
                     haveToIndexList.add(idoc);
                 }
@@ -228,7 +241,8 @@ public final class DataIndexer {
      *            reader instance for the content of the file.
      * @return apache lucene document.
      */
-    private Document getLuceneDocument(final IndexedDocument idoc, final Meta meta, final Reader contentReader) {
+    private Document getLuceneDocument(final IndexedDocument idoc,
+            final Meta meta, final Reader contentReader) {
 
         final Document doc = new Document();
         doc.add(new StringField("id", idoc.getId(), Field.Store.YES));
@@ -236,7 +250,8 @@ public final class DataIndexer {
         doc.add(new TextField("file", idoc.getFileName(), Field.Store.YES));
         doc.add(new StringField("path", idoc.getPath(), Field.Store.YES));
         doc.add(new StringField("uri", idoc.getUri(), Field.Store.YES));
-        doc.add(new StringField("contentType", idoc.getContentType(), Field.Store.YES));
+        doc.add(new StringField("contentType", idoc.getContentType(),
+                Field.Store.YES));
 
         if (meta.hasAuthor()) {
             doc.add(new TextField("author", meta.getAuthor(), Field.Store.YES));
@@ -245,7 +260,8 @@ public final class DataIndexer {
             doc.add(new TextField("title", meta.getTitle(), Field.Store.YES));
         }
         if (meta.hasDescription()) {
-            doc.add(new TextField("description", meta.getDescription(), Field.Store.YES));
+            doc.add(new TextField("description", meta.getDescription(),
+                    Field.Store.YES));
         }
         doc.add(new TextField("content", contentReader));
 
@@ -264,11 +280,14 @@ public final class DataIndexer {
 
         try (final Writer contentWriter = new StringWriter()) {
 
-            final Meta meta = this.parserMap.getParser(idoc.getContentType()).parseContent(idoc.getLocalPath(), contentWriter);
+            final Meta meta = this.parserMap.getParser(idoc.getContentType())
+                    .parseContent(idoc.getLocalPath(), contentWriter);
 
-            try (final Reader contentReader = new StringReader(contentWriter.toString())) {
+            try (final Reader contentReader = new StringReader(
+                    contentWriter.toString())) {
 
-                indexWriter.addDocument(getLuceneDocument(idoc, meta, contentReader));
+                indexWriter.addDocument(getLuceneDocument(idoc, meta,
+                        contentReader));
             }
 
             LOG.debug("File added to index: " + idoc.toString());

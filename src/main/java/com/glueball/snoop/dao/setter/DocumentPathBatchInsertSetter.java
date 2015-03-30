@@ -15,7 +15,8 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
 import com.glueball.snoop.entity.DocumentPath;
 
-public class DocumentPathBatchInsertSetter implements BatchPreparedStatementSetter {
+public class DocumentPathBatchInsertSetter implements
+        BatchPreparedStatementSetter {
 
     final List<DocumentPath> docs;
 

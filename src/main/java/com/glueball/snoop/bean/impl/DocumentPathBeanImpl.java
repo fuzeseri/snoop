@@ -20,7 +20,8 @@ import com.glueball.snoop.entity.DocumentPath;
 
 public class DocumentPathBeanImpl implements DocumentPathBean {
 
-    private static final Logger LOG = LogManager.getLogger(DocumentPathBeanImpl.class);
+    private static final Logger LOG = LogManager
+            .getLogger(DocumentPathBeanImpl.class);
 
     private DocumentPathDao dao;
 
@@ -37,7 +38,8 @@ public class DocumentPathBeanImpl implements DocumentPathBean {
 
     @Override
     @Transactional
-    public void updateDocuments(final String shareName, final List<DocumentPath> docs) {
+    public void updateDocuments(final String shareName,
+            final List<DocumentPath> docs) {
 
         dao.truncateTable();
         dao.insertList(docs);

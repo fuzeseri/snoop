@@ -37,7 +37,8 @@ public class SnoopParserImpl implements SnoopParser {
     }
 
     @Override
-    public Meta parseContent(final String _uri, final Writer output) throws IOException, SAXException, TikaException {
+    public Meta parseContent(final String _uri, final Writer output)
+            throws IOException, SAXException, TikaException {
 
         try (final InputStream is = new FileInputStream(new File(_uri))) {
 
@@ -46,7 +47,8 @@ public class SnoopParserImpl implements SnoopParser {
     }
 
     @Override
-    public Meta parseContent(final File path, final Writer output) throws IOException, SAXException, TikaException {
+    public Meta parseContent(final File path, final Writer output)
+            throws IOException, SAXException, TikaException {
 
         try (final InputStream is = new FileInputStream(path)) {
 
@@ -55,12 +57,14 @@ public class SnoopParserImpl implements SnoopParser {
     }
 
     @Override
-    public Meta parseContent(final InputStream is, final Writer output) throws IOException, SAXException, TikaException {
+    public Meta parseContent(final InputStream is, final Writer output)
+            throws IOException, SAXException, TikaException {
 
         return parse(is, output);
     }
 
-    protected Meta parse(final InputStream input, final Writer output) throws IOException, SAXException, TikaException {
+    protected Meta parse(final InputStream input, final Writer output)
+            throws IOException, SAXException, TikaException {
 
         try {
 
@@ -75,19 +79,22 @@ public class SnoopParserImpl implements SnoopParser {
             String description = "";
 
             for (final String name : metadata.names()) {
-                if (StringUtils.isEmpty(title) && name.toLowerCase().contains("title")) {
+                if (StringUtils.isEmpty(title)
+                        && name.toLowerCase().contains("title")) {
                     title = metadata.get(name);
                 }
                 if (name.toLowerCase().equals("title")) {
                     title = metadata.get(name);
                 }
-                if (StringUtils.isEmpty(author) && name.toLowerCase().contains("author")) {
+                if (StringUtils.isEmpty(author)
+                        && name.toLowerCase().contains("author")) {
                     author = metadata.get(name);
                 }
                 if (name.toLowerCase().equals("author")) {
                     author = metadata.get(name);
                 }
-                if (StringUtils.isEmpty(description) && name.toLowerCase().contains("description")) {
+                if (StringUtils.isEmpty(description)
+                        && name.toLowerCase().contains("description")) {
                     description = metadata.get(name);
                 }
                 if (name.toLowerCase().equals("description")) {
@@ -98,7 +105,8 @@ public class SnoopParserImpl implements SnoopParser {
 
         } catch (final RuntimeException e) {
 
-            throw new TikaException("Can't parse content. " + e.getLocalizedMessage());
+            throw new TikaException("Can't parse content. "
+                    + e.getLocalizedMessage());
         }
     }
 

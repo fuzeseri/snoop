@@ -42,8 +42,10 @@ public class Message extends Composite {
 
     private void init() {
 
-        icon.setAltText(ServerMessage.getTypeText(serverMessage.getMessageType()));
-        icon.setUrl(URLHelper.getImageUrl(ServerMessage.getIcon(serverMessage.getMessageType())));
+        icon.setAltText(ServerMessage.getTypeText(serverMessage
+                .getMessageType()));
+        icon.setUrl(URLHelper.getImageUrl(ServerMessage.getIcon(serverMessage
+                .getMessageType())));
         message.setText(serverMessage.getMessage());
     }
 

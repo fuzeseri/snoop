@@ -24,7 +24,8 @@ public class ListIdExtractor implements ResultSetExtractor<List<String>> {
     }
 
     @Override
-    public List<String> extractData(final ResultSet rs) throws SQLException, DataAccessException {
+    public List<String> extractData(final ResultSet rs) throws SQLException,
+            DataAccessException {
 
         while (rs.next()) {
             idList.add(rs.getString("id"));

@@ -13,7 +13,8 @@ import java.security.NoSuchAlgorithmException;
 
 public class MD5 {
 
-    public static final String md5Digest(final String original) throws NoSuchAlgorithmException {
+    public static final String md5Digest(final String original)
+            throws NoSuchAlgorithmException {
 
         final MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(original.getBytes(Charset.defaultCharset()));

@@ -15,7 +15,8 @@ import org.apache.logging.log4j.Logger;
 
 public final class MimeFileextMap {
 
-    private static final Logger LOG = LogManager.getLogger(MimeFileextMap.class);
+    private static final Logger LOG = LogManager
+            .getLogger(MimeFileextMap.class);
 
     private final Map<String, String[]> mimeExtMap = new HashMap<String, String[]>();
 
@@ -29,7 +30,8 @@ public final class MimeFileextMap {
         return this.mimeExtMap.containsKey(key);
     }
 
-    public String[] getExtensions(final String key) throws UnsupportedMimeTypeException {
+    public String[] getExtensions(final String key)
+            throws UnsupportedMimeTypeException {
 
         if (this.mimeExtMap.containsKey(key)) {
             return this.mimeExtMap.get(key);
@@ -50,7 +52,8 @@ public final class MimeFileextMap {
         }
 
         if (!check) {
-            LOG.debug("File has no parsable mime-type: " + fileName + " mime-type: " + mimeType);
+            LOG.debug("File has no parsable mime-type: " + fileName
+                    + " mime-type: " + mimeType);
         }
 
         return check;

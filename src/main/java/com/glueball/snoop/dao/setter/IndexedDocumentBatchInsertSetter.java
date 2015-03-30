@@ -15,7 +15,8 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
 import com.glueball.snoop.entity.IndexedDocument;
 
-public class IndexedDocumentBatchInsertSetter implements BatchPreparedStatementSetter {
+public class IndexedDocumentBatchInsertSetter implements
+        BatchPreparedStatementSetter {
 
     final List<IndexedDocument> docs;
 
@@ -25,7 +26,8 @@ public class IndexedDocumentBatchInsertSetter implements BatchPreparedStatementS
     }
 
     @Override
-    public void setValues(final PreparedStatement pstmt, int i) throws SQLException {
+    public void setValues(final PreparedStatement pstmt, int i)
+            throws SQLException {
 
         pstmt.setString(1, docs.get(i).getId());
         pstmt.setString(2, docs.get(i).getShareName());

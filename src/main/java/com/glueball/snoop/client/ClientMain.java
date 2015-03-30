@@ -49,8 +49,12 @@ public class ClientMain {
                             e.printStackTrace();
                         }
 
-                        final WebClient client = WebClient.create("http://localhost:8080/", providers);
-                        final SearchResults results = client.path("search/java").query("page=1").accept(MediaType.APPLICATION_JSON).get(SearchResults.class);
+                        final WebClient client = WebClient.create(
+                                "http://localhost:8080/", providers);
+                        final SearchResults results = client
+                                .path("search/java").query("page=1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .get(SearchResults.class);
                         System.out.println(i);
                         client.close();
                     }

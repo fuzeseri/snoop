@@ -16,7 +16,8 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.DocumentPath;
 
-public class ListDocumentPathExtractor implements ResultSetExtractor<List<DocumentPath>> {
+public class ListDocumentPathExtractor implements
+        ResultSetExtractor<List<DocumentPath>> {
 
     final List<DocumentPath> docList;
 
@@ -26,7 +27,8 @@ public class ListDocumentPathExtractor implements ResultSetExtractor<List<Docume
     }
 
     @Override
-    public List<DocumentPath> extractData(final ResultSet rs) throws SQLException, DataAccessException {
+    public List<DocumentPath> extractData(final ResultSet rs)
+            throws SQLException, DataAccessException {
 
         while (rs.next()) {
 

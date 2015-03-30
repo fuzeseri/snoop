@@ -27,12 +27,15 @@ public class Main {
 
     public Main() {
 
-        ctx = new ClassPathXmlApplicationContext("classpath:spring/application.xml");
+        ctx = new ClassPathXmlApplicationContext(
+                "classpath:spring/application.xml");
         final String address = (String) ctx.getBean("listenAddress");
 
-        bus = busFactory.createBus(new ClassPathResource("spring/jetty-server.xml").getPath());
+        bus = busFactory.createBus(new ClassPathResource(
+                "spring/jetty-server.xml").getPath());
 
-        jaxRsServerFactory = (SpringJAXRSServerFactoryBean) ctx.getBean("restContainer");
+        jaxRsServerFactory = (SpringJAXRSServerFactoryBean) ctx
+                .getBean("restContainer");
         jaxRsServerFactory.setBus(bus);
         jaxRsServerFactory.setAddress(address);
     }

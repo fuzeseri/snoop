@@ -15,7 +15,8 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.IndexedDocument;
 
-public class IndexedDocumentExtractor implements ResultSetExtractor<IndexedDocument> {
+public class IndexedDocumentExtractor implements
+        ResultSetExtractor<IndexedDocument> {
 
     final IndexedDocument doc;
 
@@ -25,7 +26,8 @@ public class IndexedDocumentExtractor implements ResultSetExtractor<IndexedDocum
     }
 
     @Override
-    public IndexedDocument extractData(final ResultSet rs) throws SQLException, DataAccessException {
+    public IndexedDocument extractData(final ResultSet rs) throws SQLException,
+            DataAccessException {
 
         if (rs.next()) {
             doc.setId(rs.getString("id"));

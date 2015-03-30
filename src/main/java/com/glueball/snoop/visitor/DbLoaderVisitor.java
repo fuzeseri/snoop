@@ -29,7 +29,8 @@ import com.glueball.snoop.util.MD5;
 
 public class DbLoaderVisitor implements FileVisitor<Path> {
 
-    private static final Logger LOG = LogManager.getLogger(DbLoaderVisitor.class);
+    private static final Logger LOG = LogManager
+            .getLogger(DbLoaderVisitor.class);
 
     private final ParserMap parserMap;
 
@@ -39,7 +40,9 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 
     private final NetworkShare share;
 
-    public DbLoaderVisitor(final List<DocumentPath> _docs, final ParserMap _parserMap, final MimeFileextMap _mimeFileextMap, final NetworkShare _share) {
+    public DbLoaderVisitor(final List<DocumentPath> _docs,
+            final ParserMap _parserMap, final MimeFileextMap _mimeFileextMap,
+            final NetworkShare _share) {
 
         this.docs = _docs;
         this.parserMap = _parserMap;
@@ -48,19 +51,23 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+    public FileVisitResult preVisitDirectory(final Path dir,
+            final BasicFileAttributes attrs) throws IOException {
 
         return FileVisitResult.CONTINUE;
     }
 
     @Override
-    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+    public FileVisitResult visitFile(final Path file,
+            final BasicFileAttributes attrs) throws IOException {
 
         if (attrs.isRegularFile() && !attrs.isDirectory()) {
 
             final String contentType = Files.probeContentType(file);
 
-            if (parserMap.hasParser(contentType) && mimeFileextMap.checkFile(contentType, file.getFileName().toString())) {
+            if (parserMap.hasParser(contentType)
+                    && mimeFileextMap.checkFile(contentType, file.getFileName()
+                            .toString())) {
 
                 final DocumentPath doc = new DocumentPath();
 
@@ -77,12 +84,15 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
                 doc.setContentType(contentType);
                 doc.setLocalPath(file.toAbsolutePath().toString());
 
-                final String remotePath = !StringUtils.isEmpty(share.getLocalPath()) ? file.toAbsolutePath().toString()
-                        .replace(share.getLocalPath(), share.getRemotePath()) : file.toAbsolutePath().toString();
+                final String remotePath = !StringUtils.isEmpty(share
+                        .getLocalPath()) ? file.toAbsolutePath().toString()
+                        .replace(share.getLocalPath(), share.getRemotePath())
+                        : file.toAbsolutePath().toString();
 
                 doc.setPath(remotePath);
                 doc.setUri(Paths.get(remotePath).toUri().toString());
-                doc.setLastModifiedTime(new java.sql.Timestamp(attrs.lastModifiedTime().toMillis()));
+                doc.setLastModifiedTime(new java.sql.Timestamp(attrs
+                        .lastModifiedTime().toMillis()));
                 docs.add(doc);
 
                 LOG.info("File Path loaded: " + doc.getPath());
@@ -92,13 +102,15 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult visitFileFailed(final Path file, final IOException exc) throws IOException {
+    public FileVisitResult visitFileFailed(final Path file,
+            final IOException exc) throws IOException {
 
         return FileVisitResult.CONTINUE;
     }
 
     @Override
-    public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+    public FileVisitResult postVisitDirectory(final Path dir,
+            final IOException exc) throws IOException {
 
         return FileVisitResult.CONTINUE;
     }

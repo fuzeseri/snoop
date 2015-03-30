@@ -23,11 +23,15 @@ public class ServerMessage implements Serializable {
     public static final int MESSAGE_TYPE_OK = 0;
     public static final int MESSAGE_TYPE_ERROR = 1;
 
-    public static final ServerMessage MESSAGE_NO_HITS = new ServerMessage(MESSAGE_TYPE_ERROR, "No documents found int the search term.");
+    public static final ServerMessage MESSAGE_NO_HITS = new ServerMessage(
+            MESSAGE_TYPE_ERROR, "No documents found int the search term.");
 
-    public static final ServerMessage MESSAGE_INDEX_NOT_READY = new ServerMessage(MESSAGE_TYPE_ERROR, "The index is not ready yet. Please come back later.");
+    public static final ServerMessage MESSAGE_INDEX_NOT_READY = new ServerMessage(
+            MESSAGE_TYPE_ERROR,
+            "The index is not ready yet. Please come back later.");
 
-    public static final ServerMessage MESSAGE_CANT_OPEN_INDEX = new ServerMessage(MESSAGE_TYPE_ERROR, "Error opening index.");
+    public static final ServerMessage MESSAGE_CANT_OPEN_INDEX = new ServerMessage(
+            MESSAGE_TYPE_ERROR, "Error opening index.");
 
     private static final long serialVersionUID = 1L;
 

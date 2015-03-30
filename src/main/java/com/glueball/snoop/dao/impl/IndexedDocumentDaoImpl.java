@@ -35,7 +35,8 @@ import com.glueball.snoop.entity.IndexedDocument;
 
 public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
 
-    private static final Logger LOG = LogManager.getLogger(IndexedDocumentDaoImpl.class);
+    private static final Logger LOG = LogManager
+            .getLogger(IndexedDocumentDaoImpl.class);
 
     @Autowired(required = true)
     private JdbcTemplate jdbcTemplate;
@@ -50,9 +51,11 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
     @Override
     public void insertOne(final IndexedDocument doc) {
 
-        LOG.debug("Inserting document: " + doc.toString() + " query: " + IndexedDocument.INSERT_DOCUMENT_QUERY);
+        LOG.debug("Inserting document: " + doc.toString() + " query: "
+                + IndexedDocument.INSERT_DOCUMENT_QUERY);
 
-        this.jdbcTemplate.update(IndexedDocument.INSERT_DOCUMENT_QUERY, new IndexedDocumentInsertSetter(doc));
+        this.jdbcTemplate.update(IndexedDocument.INSERT_DOCUMENT_QUERY,
+                new IndexedDocumentInsertSetter(doc));
 
         LOG.debug("Succesfully inserted document: " + doc.toString());
     }
@@ -60,9 +63,11 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
     @Override
     public void insertList(final List<IndexedDocument> docs) {
 
-        LOG.debug("Inserting " + docs.size() + " documents. query: " + IndexedDocument.INSERT_DOCUMENT_QUERY);
+        LOG.debug("Inserting " + docs.size() + " documents. query: "
+                + IndexedDocument.INSERT_DOCUMENT_QUERY);
 
-        this.jdbcTemplate.batchUpdate(IndexedDocument.INSERT_DOCUMENT_QUERY, new IndexedDocumentBatchInsertSetter(docs));
+        this.jdbcTemplate.batchUpdate(IndexedDocument.INSERT_DOCUMENT_QUERY,
+                new IndexedDocumentBatchInsertSetter(docs));
 
         LOG.debug(docs.toString() + " documents succesfully inserted.");
     }
@@ -72,17 +77,20 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
 
         final IndexedDocument doc = new IndexedDocument();
 
-        LOG.debug("Running query: " + IndexedDocument.SELECT_BY_ID_QUERY + " with parameter [ id : " + id + "]");
+        LOG.debug("Running query: " + IndexedDocument.SELECT_BY_ID_QUERY
+                + " with parameter [ id : " + id + "]");
 
-        this.jdbcTemplate.query(IndexedDocument.SELECT_BY_ID_QUERY, new PreparedStatementSetter() {
+        this.jdbcTemplate.query(IndexedDocument.SELECT_BY_ID_QUERY,
+                new PreparedStatementSetter() {
 
-            @Override
-            public void setValues(final PreparedStatement ps) throws SQLException {
+                    @Override
+                    public void setValues(final PreparedStatement ps)
+                            throws SQLException {
 
-                ps.setString(1, id);
-            }
+                        ps.setString(1, id);
+                    }
 
-        }, new IndexedDocumentExtractor(doc));
+                }, new IndexedDocumentExtractor(doc));
         return doc;
     }
 
@@ -91,16 +99,20 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
 
         final List<IndexedDocument> docList = new ArrayList<IndexedDocument>();
 
-        LOG.debug("Running query: " + IndexedDocument.SELECT_BY_SHARE_NAME_QUERY + " with parameter [ shareName : " + share + "]");
+        LOG.debug("Running query: "
+                + IndexedDocument.SELECT_BY_SHARE_NAME_QUERY
+                + " with parameter [ shareName : " + share + "]");
 
-        this.jdbcTemplate.query(IndexedDocument.SELECT_BY_SHARE_NAME_QUERY, new PreparedStatementSetter() {
+        this.jdbcTemplate.query(IndexedDocument.SELECT_BY_SHARE_NAME_QUERY,
+                new PreparedStatementSetter() {
 
-            @Override
-            public void setValues(final PreparedStatement ps) throws SQLException {
+                    @Override
+                    public void setValues(final PreparedStatement ps)
+                            throws SQLException {
 
-                ps.setString(1, share);
-            }
-        }, new ListIndexedDocumentExtractor(docList));
+                        ps.setString(1, share);
+                    }
+                }, new ListIndexedDocumentExtractor(docList));
 
         LOG.debug(docList.size() + " document selected.");
 
@@ -126,18 +138,20 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
 
         LOG.debug("Running query: " + IndexedDocument.SELECT_ROW_NUM_QUERY);
 
-        return this.jdbcTemplate.query(IndexedDocument.SELECT_ROW_NUM_QUERY, new ResultSetExtractor<Long>() {
+        return this.jdbcTemplate.query(IndexedDocument.SELECT_ROW_NUM_QUERY,
+                new ResultSetExtractor<Long>() {
 
-            @Override
-            public Long extractData(final ResultSet rs) throws SQLException, DataAccessException {
+                    @Override
+                    public Long extractData(final ResultSet rs)
+                            throws SQLException, DataAccessException {
 
-                long rowNum = 0;
-                if (rs.next()) {
-                    rowNum = rs.getLong(1);
-                }
-                return rowNum;
-            }
-        });
+                        long rowNum = 0;
+                        if (rs.next()) {
+                            rowNum = rs.getLong(1);
+                        }
+                        return rowNum;
+                    }
+                });
     }
 
     @Override
@@ -145,14 +159,16 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
 
         LOG.debug("Running query: " + IndexedDocument.DELETE_BY_ID_QUERY);
 
-        this.jdbcTemplate.update(IndexedDocument.DELETE_BY_ID_QUERY, new PreparedStatementSetter() {
+        this.jdbcTemplate.update(IndexedDocument.DELETE_BY_ID_QUERY,
+                new PreparedStatementSetter() {
 
-            @Override
-            public void setValues(final PreparedStatement ps) throws SQLException {
+                    @Override
+                    public void setValues(final PreparedStatement ps)
+                            throws SQLException {
 
-                ps.setString(1, id);
-            }
-        });
+                        ps.setString(1, id);
+                    }
+                });
         LOG.debug("Ducument id : " + id + " successfully deleted.");
     }
 
@@ -172,7 +188,8 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
         final List<IndexedDocument> docList = new ArrayList<IndexedDocument>();
 
         LOG.debug("Running query: " + IndexedDocument.SELECT_ALL_QUERY);
-        this.jdbcTemplate.query(IndexedDocument.SELECT_ALL_QUERY, new ListIndexedDocumentExtractor(docList));
+        this.jdbcTemplate.query(IndexedDocument.SELECT_ALL_QUERY,
+                new ListIndexedDocumentExtractor(docList));
 
         LOG.debug(docList.size() + " document selected.");
 
@@ -182,11 +199,15 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
     @Override
     public void deleteByIds(final List<String> ids) {
 
-        LOG.debug("Running batch delete. Query: " + IndexedDocument.DELETE_BY_ID_QUERY + " with " + ids.size() + " ids.");
+        LOG.debug("Running batch delete. Query: "
+                + IndexedDocument.DELETE_BY_ID_QUERY + " with " + ids.size()
+                + " ids.");
 
-        this.jdbcTemplate.batchUpdate(IndexedDocument.DELETE_BY_ID_QUERY, new DeleteDocumentBatchPstmtSetter(ids));
+        this.jdbcTemplate.batchUpdate(IndexedDocument.DELETE_BY_ID_QUERY,
+                new DeleteDocumentBatchPstmtSetter(ids));
 
-        LOG.debug(ids.size() + " records was deleted from INDEXED_DOCUMENT table");
+        LOG.debug(ids.size()
+                + " records was deleted from INDEXED_DOCUMENT table");
     }
 
     @Override
@@ -194,35 +215,40 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
 
         final int lock = random.nextInt();
 
-        LOG.debug("Running query: " + IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY);
+        LOG.debug("Running query: "
+                + IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY);
 
         final List<String> ids = new ArrayList<String>(docNum);
-        jdbcTemplate.query(IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY, new PreparedStatementSetter() {
+        jdbcTemplate.query(IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY,
+                new PreparedStatementSetter() {
 
-            @Override
-            public void setValues(PreparedStatement ps) throws SQLException {
+                    @Override
+                    public void setValues(PreparedStatement ps)
+                            throws SQLException {
 
-                ps.setInt(1, docNum);
-            }
-        }, new ListIdExtractor(ids));
+                        ps.setInt(1, docNum);
+                    }
+                }, new ListIdExtractor(ids));
 
         LOG.debug("Running query: " + IndexedDocument.LOCK_DOCUMENTS_QUERY);
 
-        jdbcTemplate.batchUpdate(IndexedDocument.LOCK_DOCUMENTS_QUERY, new BatchPreparedStatementSetter() {
+        jdbcTemplate.batchUpdate(IndexedDocument.LOCK_DOCUMENTS_QUERY,
+                new BatchPreparedStatementSetter() {
 
-            @Override
-            public void setValues(final PreparedStatement ps, int i) throws SQLException {
+                    @Override
+                    public void setValues(final PreparedStatement ps, int i)
+                            throws SQLException {
 
-                ps.setLong(1, lock);
-                ps.setString(2, ids.get(i));
-            }
+                        ps.setLong(1, lock);
+                        ps.setString(2, ids.get(i));
+                    }
 
-            @Override
-            public int getBatchSize() {
+                    @Override
+                    public int getBatchSize() {
 
-                return ids.size();
-            }
-        });
+                        return ids.size();
+                    }
+                });
         LOG.debug(ids.size() + " documents successfully locked");
 
         return lock;
@@ -235,14 +261,16 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
 
         LOG.debug("Running query: " + IndexedDocument.SELECT_BY_LOCK_QUERY);
 
-        jdbcTemplate.query(IndexedDocument.SELECT_BY_LOCK_QUERY, new PreparedStatementSetter() {
+        jdbcTemplate.query(IndexedDocument.SELECT_BY_LOCK_QUERY,
+                new PreparedStatementSetter() {
 
-            @Override
-            public void setValues(final PreparedStatement ps) throws SQLException {
+                    @Override
+                    public void setValues(final PreparedStatement ps)
+                            throws SQLException {
 
-                ps.setLong(1, lock);
-            }
-        }, new ListIndexedDocumentExtractor(idocList));
+                        ps.setLong(1, lock);
+                    }
+                }, new ListIndexedDocumentExtractor(idocList));
 
         LOG.debug(idocList.size() + " documents selected to index.");
 
@@ -252,9 +280,12 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
     @Override
     public void updateState(final List<IndexedDocument> idocList) {
 
-        LOG.debug("Running batch update. Query: " + IndexedDocument.UPDATE_STATE_QUERY + " with " + idocList.size() + " ids.");
+        LOG.debug("Running batch update. Query: "
+                + IndexedDocument.UPDATE_STATE_QUERY + " with "
+                + idocList.size() + " ids.");
 
-        this.jdbcTemplate.batchUpdate(IndexedDocument.UPDATE_STATE_QUERY, new IndexedDocumentBatchUpdateSetter(idocList));
+        this.jdbcTemplate.batchUpdate(IndexedDocument.UPDATE_STATE_QUERY,
+                new IndexedDocumentBatchUpdateSetter(idocList));
 
         LOG.debug(idocList.size() + " documents successfully updated.");
     }
@@ -262,9 +293,13 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
     @Override
     public void unLockUpdateState(final List<IndexedDocument> idocList) {
 
-        LOG.debug("Running batch update. Query: " + IndexedDocument.UNLOCK_UPDATE_STATE_QUERY + " with " + idocList.size() + " ids.");
+        LOG.debug("Running batch update. Query: "
+                + IndexedDocument.UNLOCK_UPDATE_STATE_QUERY + " with "
+                + idocList.size() + " ids.");
 
-        this.jdbcTemplate.batchUpdate(IndexedDocument.UNLOCK_UPDATE_STATE_QUERY, new IndexedDocumentBatchUpdateSetter(idocList));
+        this.jdbcTemplate.batchUpdate(
+                IndexedDocument.UNLOCK_UPDATE_STATE_QUERY,
+                new IndexedDocumentBatchUpdateSetter(idocList));
 
         LOG.debug(idocList.size() + " documents successfully updated.");
     }

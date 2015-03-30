@@ -25,12 +25,20 @@ public class FileService {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/{module}")
-    public Response getFile(@PathParam(value = "module") final String module) throws IOException {
+    public Response getFile(@PathParam(value = "module") final String module)
+            throws IOException {
 
-        final String retVal = "<!doctype html>\n" + "<html>\n" + "  <head>\n" + "    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n"
-                + "    <title>module</title>\n" + "  </head>\n" + "  <body>\n"
+        final String retVal = "<!doctype html>\n"
+                + "<html>\n"
+                + "  <head>\n"
+                + "    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n"
+                + "    <title>module</title>\n"
+                + "  </head>\n"
+                + "  <body>\n"
                 + "    <iframe src=\"javascript:''\" id=\"__gwt_historyFrame\" tabIndex='-1' style=\"position:absolute;width:0;height:0;border:0\"></iframe>\n"
-                + "	<script languge=\"javascript\" src=\"com.glueball.snoop.module." + module + "Module.nocache.js\"></script>\n" + "  </body>\n" + "</html>\n";
+                + "	<script languge=\"javascript\" src=\"com.glueball.snoop.module."
+                + module + "Module.nocache.js\"></script>\n" + "  </body>\n"
+                + "</html>\n";
 
         return Response.ok(retVal, MediaType.TEXT_HTML).build();
     }
@@ -38,9 +46,12 @@ public class FileService {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/{module}/{filename}")
-    public Response getFile(@PathParam(value = "module") final String module, @PathParam(value = "filename") final String filename) throws IOException {
+    public Response getFile(@PathParam(value = "module") final String module,
+            @PathParam(value = "filename") final String filename)
+            throws IOException {
 
-        final String filePath = "com.glueball.snoop.module." + module + "Module/" + filename;
+        final String filePath = "com.glueball.snoop.module." + module
+                + "Module/" + filename;
         final String retVal = FileServerUtil.getContent(filePath);
 
         return Response.ok(retVal, MediaType.TEXT_HTML).build();
@@ -49,7 +60,9 @@ public class FileService {
     @GET
     @Produces("image/png")
     @Path("/image/{filename}")
-    public Response getImage(@PathParam(value = "filename") final String filename) throws IOException {
+    public Response getImage(
+            @PathParam(value = "filename") final String filename)
+            throws IOException {
 
         final Resource res = new ClassPathResource("images/" + filename);
 

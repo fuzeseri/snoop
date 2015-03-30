@@ -40,7 +40,8 @@ public final class ParserMap {
         return hasParser;
     }
 
-    public SnoopParser getParser(final String contentType) throws UnavialableParserException {
+    public SnoopParser getParser(final String contentType)
+            throws UnavialableParserException {
 
         return this.parserMap.get(contentType);
     }

@@ -25,7 +25,8 @@ public class DocumentPathExtractor implements ResultSetExtractor<DocumentPath> {
     }
 
     @Override
-    public DocumentPath extractData(final ResultSet rs) throws SQLException, DataAccessException {
+    public DocumentPath extractData(final ResultSet rs) throws SQLException,
+            DataAccessException {
 
         if (rs.next()) {
             doc.setId(rs.getString("id"));

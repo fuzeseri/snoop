@@ -15,7 +15,8 @@ public class Meta {
     private final String title;
     private final String description;
 
-    public Meta(final String _author, final String _title, final String _description) {
+    public Meta(final String _author, final String _title,
+            final String _description) {
 
         this.author = _author;
         this.title = _title;
@@ -60,6 +61,7 @@ public class Meta {
     @Override
     public String toString() {
 
-        return "author: " + author + " ,title: " + title + " ,description: " + description;
+        return "author: " + author + " ,title: " + title + " ,description: "
+                + description;
     }
 }

@@ -88,7 +88,9 @@ public class SearchService<QueryParser> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{keyword}")
-    public Response search(@PathParam(value = "keyword") @DefaultValue("") String searchString, @FormParam("page") @DefaultValue("1") int page) {
+    public Response search(
+            @PathParam(value = "keyword") @DefaultValue("") String searchString,
+            @FormParam("page") @DefaultValue("1") int page) {
 
         try {
 
@@ -96,12 +98,14 @@ public class SearchService<QueryParser> {
         } catch (final IOException e) {
 
             LOG.debug(e.getMessage());
-            return Response.ok(ServerMessage.MESSAGE_CANT_OPEN_INDEX, MediaType.APPLICATION_JSON).build();
+            return Response.ok(ServerMessage.MESSAGE_CANT_OPEN_INDEX,
+                    MediaType.APPLICATION_JSON).build();
         }
 
         if (indexSearcher == null) {
 
-            return Response.ok(ServerMessage.MESSAGE_INDEX_NOT_READY, MediaType.APPLICATION_JSON).build();
+            return Response.ok(ServerMessage.MESSAGE_INDEX_NOT_READY,
+                    MediaType.APPLICATION_JSON).build();
         }
 
         LOG.debug("Searching for: " + searchString);
@@ -110,7 +114,8 @@ public class SearchService<QueryParser> {
 
         LOG.debug("query: " + query);
 
-        final TopScoreDocCollector collector = TopScoreDocCollector.create(MAX_SCORE_DOCS, true);
+        final TopScoreDocCollector collector = TopScoreDocCollector.create(
+                MAX_SCORE_DOCS, true);
         ScoreDoc[] hits = new ScoreDoc[] {};
         try {
 
@@ -130,13 +135,15 @@ public class SearchService<QueryParser> {
 
         if (results.isEmpty()) {
 
-            return Response.ok(ServerMessage.MESSAGE_NO_HITS, MediaType.APPLICATION_JSON).build();
+            return Response.ok(ServerMessage.MESSAGE_NO_HITS,
+                    MediaType.APPLICATION_JSON).build();
         }
 
         return Response.ok(results, MediaType.APPLICATION_JSON).build();
     }
 
-    private SearchResults extractResults(final ScoreDoc[] hits, final IndexSearcher indexSearcher) {
+    private SearchResults extractResults(final ScoreDoc[] hits,
+            final IndexSearcher indexSearcher) {
 
         final SearchResults results = new SearchResults(hits.length);
 
@@ -172,7 +179,8 @@ public class SearchService<QueryParser> {
             this.indexSearcher = new IndexSearcher(this.indexReader);
         } else {
 
-            final IndexReader newReader = DirectoryReader.openIfChanged((DirectoryReader) this.indexReader);
+            final IndexReader newReader = DirectoryReader
+                    .openIfChanged((DirectoryReader) this.indexReader);
             if (newReader != null) {
 
                 this.indexReader = newReader;
@@ -202,7 +210,9 @@ public class SearchService<QueryParser> {
             totalHits = MAX_SCORE_DOCS;
         }
 
-        int pagesNum = totalHits < hitsPerPage ? 1 : ((totalHits / hitsPerPage) + (totalHits % hitsPerPage == 0 ? 0 : 1));
+        int pagesNum = totalHits < hitsPerPage ? 1
+                : ((totalHits / hitsPerPage) + (totalHits % hitsPerPage == 0 ? 0
+                        : 1));
 
         int[] pages = new int[pagesNum];
         for (int i = 0; i < pagesNum; i++) {

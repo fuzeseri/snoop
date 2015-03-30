@@ -52,8 +52,10 @@ public class Result extends Composite {
 
     private void init() {
 
-        final String fileExt = this.result.getFileName().substring(this.result.getFileName().lastIndexOf(".") + 1, this.result.getFileName().length())
-                .toLowerCase();
+        final String fileExt = this.result
+                .getFileName()
+                .substring(this.result.getFileName().lastIndexOf(".") + 1,
+                        this.result.getFileName().length()).toLowerCase();
 
         mimeIcon.setAltText(fileExt);
         mimeIcon.setUrl(URLHelper.getImageUrl(fileExt + ".png"));

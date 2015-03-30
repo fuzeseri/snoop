@@ -51,17 +51,20 @@ public class SnoopRequest<T> {
                     }
                 } catch (DecodingException e) {
 
-                    Window.alert(this.getClass().getName() + " : " + "DecodingError: " + e);
+                    Window.alert(this.getClass().getName() + " : "
+                            + "DecodingError: " + e);
                 } catch (Exception e) {
 
-                    Window.alert(this.getClass().getName() + " : " + "GeneralError: " + e);
+                    Window.alert(this.getClass().getName() + " : "
+                            + "GeneralError: " + e);
                 }
             }
 
             @Override
             public void onFailure(Method method, Throwable exception) {
 
-                Window.alert(this.getClass().getName() + " : " + "CommunicationFailure: " + exception);
+                Window.alert(this.getClass().getName() + " : "
+                        + "CommunicationFailure: " + exception);
             }
         });
 
