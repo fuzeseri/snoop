@@ -20,33 +20,30 @@ public class Main {
 
     public Main() {
 
-	ctx = new ClassPathXmlApplicationContext(
-		"classpath:spring/application.xml");
-	final String address = (String) ctx.getBean("listenAddress");
+        ctx = new ClassPathXmlApplicationContext("classpath:spring/application.xml");
+        final String address = (String) ctx.getBean("listenAddress");
 
-	bus = busFactory.createBus(new ClassPathResource(
-		"spring/jetty-server.xml").getPath());
+        bus = busFactory.createBus(new ClassPathResource("spring/jetty-server.xml").getPath());
 
-	jaxRsServerFactory = (SpringJAXRSServerFactoryBean) ctx
-		.getBean("restContainer");
-	jaxRsServerFactory.setBus(bus);
-	jaxRsServerFactory.setAddress(address);
+        jaxRsServerFactory = (SpringJAXRSServerFactoryBean) ctx.getBean("restContainer");
+        jaxRsServerFactory.setBus(bus);
+        jaxRsServerFactory.setAddress(address);
     }
 
     public static void main(final String[] args) {
 
-	final Main main = new Main();
-	main.start();
+        final Main main = new Main();
+        main.start();
     }
 
     public void start() {
 
-	this.server = jaxRsServerFactory.create();
+        this.server = jaxRsServerFactory.create();
     }
 
     public void stop() {
 
-	this.server.destroy();
-	System.exit(1);
+        this.server.destroy();
+        System.exit(1);
     }
 }

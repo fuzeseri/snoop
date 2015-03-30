@@ -15,74 +15,92 @@ public abstract class AbstractSnoopDocument implements SnoopDocument {
     protected String contentType;
 
     public String getId() {
-	return id;
+
+        return id;
     }
 
     public void setId(String id) {
-	this.id = id;
+
+        this.id = id;
     }
 
     public String getFileName() {
-	return fileName;
+
+        return fileName;
     }
 
     public void setFileName(String fileName) {
-	this.fileName = fileName;
+
+        this.fileName = fileName;
     }
 
     public String getUri() {
-	return uri;
+
+        return uri;
     }
 
     public void setUri(String uri) {
-	this.uri = uri;
+
+        this.uri = uri;
     }
 
     public String getPath() {
-	return path;
+
+        return path;
     }
 
     public void setPath(String path) {
-	this.path = path;
+
+        this.path = path;
     }
 
     public String getLocalPath() {
-	return localPath;
+
+        return localPath;
     }
 
     public void setLocalPath(String localPath) {
-	this.localPath = localPath;
+
+        this.localPath = localPath;
     }
 
     public Timestamp getLastModifiedTime() {
-	return lastModifiedTime;
+
+        return lastModifiedTime;
     }
 
     public void setLastModifiedTime(Timestamp lastModifiedTime) {
-	this.lastModifiedTime = lastModifiedTime;
+
+        this.lastModifiedTime = lastModifiedTime;
     }
 
     public String getContentType() {
-	return contentType;
+
+        return contentType;
     }
 
     public void setContentType(String contentType) {
-	this.contentType = contentType;
+
+        this.contentType = contentType;
     }
 
     public Timestamp getLastIndexedTime() {
-	return lastIndexedTime;
+
+        return lastIndexedTime;
     }
 
     public void setLastIndexedTime(Timestamp lastIndexedTime) {
-	this.lastIndexedTime = lastIndexedTime;
+
+        this.lastIndexedTime = lastIndexedTime;
     }
 
     public String getShareName() {
-	return shareName;
+
+        return shareName;
     }
 
     public void setShareName(String shareName) {
-	this.shareName = shareName;
+
+        this.shareName = shareName;
     }
 }

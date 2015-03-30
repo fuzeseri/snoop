@@ -15,22 +15,24 @@ public class MainWindow extends CrmContainer {
     @UiField
     VerticalPanel hits;
 
-    private static MainWindowUiBinder uiBinder = GWT
-	    .create(MainWindowUiBinder.class);
+    private static MainWindowUiBinder uiBinder = GWT.create(MainWindowUiBinder.class);
 
     interface MainWindowUiBinder extends UiBinder<Widget, MainWindow> {
     }
 
     public MainWindow() {
-	initWidget(uiBinder.createAndBindUi(this));
+
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     public SimplePanel getHeadPanel() {
-	return headPanel;
+
+        return headPanel;
     }
 
     public VerticalPanel getHits() {
-	return hits;
+
+        return hits;
     }
 
 }

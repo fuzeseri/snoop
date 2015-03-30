@@ -28,22 +28,21 @@ public class Message extends Composite {
 
     public Message(final ServerMessage msg) {
 
-	this.widget = uiBinder.createAndBindUi(this);
-	this.serverMessage = msg;
-	init();
+        this.widget = uiBinder.createAndBindUi(this);
+        this.serverMessage = msg;
+        init();
     }
 
     private void init() {
 
-	icon.setAltText(ServerMessage.getTypeText(serverMessage
-		.getMessageType()));
-	icon.setUrl(URLHelper.getImageUrl(ServerMessage.getIcon(serverMessage
-		.getMessageType())));
-	message.setText(serverMessage.getMessage());
+        icon.setAltText(ServerMessage.getTypeText(serverMessage.getMessageType()));
+        icon.setUrl(URLHelper.getImageUrl(ServerMessage.getIcon(serverMessage.getMessageType())));
+        message.setText(serverMessage.getMessage());
     }
 
     @Override
     public Widget asWidget() {
-	return this.widget;
+
+        return this.widget;
     }
 }

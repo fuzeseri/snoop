@@ -22,57 +22,69 @@ public class SearchResult implements Serializable {
     private String contentType;
 
     public String getTitle() {
-	return title;
+
+        return title;
     }
 
     public void setTitle(String title) {
-	this.title = title;
+
+        this.title = title;
     }
 
     public String getAuthor() {
-	return author;
+
+        return author;
     }
 
     public void setAuthor(String author) {
-	this.author = author;
+
+        this.author = author;
     }
 
     public String getDescription() {
-	return description;
+
+        return description;
     }
 
     public void setDescription(String desription) {
-	this.description = desription;
+
+        this.description = desription;
     }
 
     public String getFileName() {
-	return fileName;
+
+        return fileName;
     }
 
     public void setFileName(String fileName) {
-	this.fileName = fileName;
+
+        this.fileName = fileName;
     }
 
     public String getUri() {
-	return uri;
+
+        return uri;
     }
 
     public void setUri(String uri) {
-	this.uri = uri;
+
+        this.uri = uri;
     }
 
     public String getContentType() {
-	return contentType;
+
+        return contentType;
     }
 
     public void setContentType(String contentType) {
-	this.contentType = contentType;
+
+        this.contentType = contentType;
     }
 
     @Override
     public String toString() {
-	return "SearchResult [title=" + title + ", author=" + author
-		+ ", description=" + description + ", fileName=" + fileName
-		+ ", uri=" + uri + ", contentType=" + contentType + "]";
+
+        return "SearchResult [title=" + title + ", author=" + author + ", description=" + description + ", fileName=" + fileName + ", uri=" + uri
+                + ", contentType=" + contentType + "]";
     }
 }

@@ -8,34 +8,33 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.IndexedDocument;
 
-public class IndexedDocumentExtractor implements
-	ResultSetExtractor<IndexedDocument> {
+public class IndexedDocumentExtractor implements ResultSetExtractor<IndexedDocument> {
 
     final IndexedDocument doc;
 
     public IndexedDocumentExtractor(final IndexedDocument _doc) {
-	this.doc = _doc;
+
+        this.doc = _doc;
     }
 
-    public IndexedDocument extractData(final ResultSet rs) throws SQLException,
-	    DataAccessException {
+    public IndexedDocument extractData(final ResultSet rs) throws SQLException, DataAccessException {
 
-	if (rs.next()) {
-	    doc.setId(rs.getString("id"));
-	    doc.setShareName(rs.getString("share_name"));
-	    doc.setFileName(rs.getString("file_name"));
-	    doc.setUri(rs.getString("uri"));
-	    doc.setPath(rs.getString("path"));
-	    doc.setLocalPath(rs.getString("local_path"));
-	    doc.setLastModifiedTime(rs.getTimestamp("last_modified_time"));
-	    doc.setLastIndexedTime(rs.getTimestamp("last_indexed_time"));
-	    doc.setContentType(rs.getString("content_type"));
-	    doc.setIndexState(rs.getString("index_state"));
-	    doc.setLock(rs.getInt("lock"));
-	    doc.setLockTime(rs.getTimestamp("lockTime"));
-	}
+        if (rs.next()) {
+            doc.setId(rs.getString("id"));
+            doc.setShareName(rs.getString("share_name"));
+            doc.setFileName(rs.getString("file_name"));
+            doc.setUri(rs.getString("uri"));
+            doc.setPath(rs.getString("path"));
+            doc.setLocalPath(rs.getString("local_path"));
+            doc.setLastModifiedTime(rs.getTimestamp("last_modified_time"));
+            doc.setLastIndexedTime(rs.getTimestamp("last_indexed_time"));
+            doc.setContentType(rs.getString("content_type"));
+            doc.setIndexState(rs.getString("index_state"));
+            doc.setLock(rs.getInt("lock"));
+            doc.setLockTime(rs.getTimestamp("lockTime"));
+        }
 
-	return doc;
+        return doc;
     }
 
 }

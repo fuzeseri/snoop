@@ -13,32 +13,30 @@ import com.glueball.snoop.entity.DocumentPath;
 
 public class DocumentPathBeanImpl implements DocumentPathBean {
 
-    private static final Logger LOG = LogManager
-	    .getLogger(DocumentPathBeanImpl.class);
+    private static final Logger LOG = LogManager.getLogger(DocumentPathBeanImpl.class);
 
     private DocumentPathDao dao;
 
     @Required
     public void setDao(final DocumentPathDao dao) {
 
-	this.dao = dao;
+        this.dao = dao;
     }
 
     public void init() {
 
-	dao.createTable();
+        dao.createTable();
     }
 
     @Override
     @Transactional
-    public void updateDocuments(final String shareName,
-	    final List<DocumentPath> docs) {
+    public void updateDocuments(final String shareName, final List<DocumentPath> docs) {
 
-	dao.truncateTable();
-	dao.insertList(docs);
-	dao.updateNewDocuments(shareName);
-	dao.updateModifiedDocuments(shareName);
-	dao.updateDeletedDocuments(shareName);
-	LOG.debug("Documents successfully updated on share : " + shareName);
+        dao.truncateTable();
+        dao.insertList(docs);
+        dao.updateNewDocuments(shareName);
+        dao.updateModifiedDocuments(shareName);
+        dao.updateDeletedDocuments(shareName);
+        LOG.debug("Documents successfully updated on share : " + shareName);
     }
 }

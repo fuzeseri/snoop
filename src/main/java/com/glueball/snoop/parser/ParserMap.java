@@ -14,25 +14,27 @@ public final class ParserMap {
 
     @SuppressWarnings("unused")
     private ParserMap() {
+
     }
 
     public ParserMap(final Map<String, SnoopParser> _parserMap) {
-	this.parserMap.putAll(_parserMap);
+
+        this.parserMap.putAll(_parserMap);
     }
 
     public boolean hasParser(final String contentType) {
 
-	boolean hasParser = this.parserMap.containsKey(contentType);
+        boolean hasParser = this.parserMap.containsKey(contentType);
 
-	if (!hasParser) {
-	    LOG.debug("No parser available for mime-type: " + contentType);
-	}
+        if (!hasParser) {
+            LOG.debug("No parser available for mime-type: " + contentType);
+        }
 
-	return hasParser;
+        return hasParser;
     }
 
-    public SnoopParser getParser(final String contentType)
-	    throws UnavialableParserException {
-	return this.parserMap.get(contentType);
+    public SnoopParser getParser(final String contentType) throws UnavialableParserException {
+
+        return this.parserMap.get(contentType);
     }
 }

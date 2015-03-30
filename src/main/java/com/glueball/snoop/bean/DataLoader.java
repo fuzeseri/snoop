@@ -34,82 +34,83 @@ public class DataLoader {
     private DocumentPathBean docPathBean;
 
     public void setDocPathBean(final DocumentPathBean docPathBean) {
-	this.docPathBean = docPathBean;
+
+        this.docPathBean = docPathBean;
     }
 
     @Autowired
     private ParserMap parserMap;
 
     public void setParserMap(final ParserMap parserMap) {
-	this.parserMap = parserMap;
+
+        this.parserMap = parserMap;
     }
 
     @Autowired
     private MimeFileextMap mimeFileextMap;
 
     public void setPMimeFileextMap(final MimeFileextMap _mimeFileextMap) {
-	this.mimeFileextMap = _mimeFileextMap;
+
+        this.mimeFileextMap = _mimeFileextMap;
     }
 
     private String sharesXml;
 
     public void setSharesXml(final String source) {
-	this.sharesXml = source;
+
+        this.sharesXml = source;
     }
 
     public DataLoader() {
+
     }
 
     public DataLoader(final String _sharesXml) {
-	this.sharesXml = _sharesXml;
+
+        this.sharesXml = _sharesXml;
     }
 
     @Scheduled(fixedDelay = 5 * 60 * 1000)
     public void load() {
 
-	for (final NetworkShare share : getShares()) {
+        for (final NetworkShare share : getShares()) {
 
-	    LOG.info("Loading netwok share: " + share.getName());
-	    LOG.info("Remote path: " + share.getRemotePath());
-	    LOG.info("Local  path: " + share.getLocalPath());
+            LOG.info("Loading netwok share: " + share.getName());
+            LOG.info("Remote path: " + share.getRemotePath());
+            LOG.info("Local  path: " + share.getLocalPath());
 
-	    final List<DocumentPath> docs = new ArrayList<DocumentPath>();
-	    final FileVisitor<Path> visitor = new DbLoaderVisitor(docs,
-		    parserMap, mimeFileextMap, share);
+            final List<DocumentPath> docs = new ArrayList<DocumentPath>();
+            final FileVisitor<Path> visitor = new DbLoaderVisitor(docs, parserMap, mimeFileextMap, share);
 
-	    try {
+            try {
 
-		final String path = !StringUtils.isEmpty(share.getLocalPath()) ? share
-			.getLocalPath() : share.getRemotePath();
+                final String path = !StringUtils.isEmpty(share.getLocalPath()) ? share.getLocalPath() : share.getRemotePath();
 
-		Files.walkFileTree(Paths.get(path), visitor);
-		this.docPathBean.updateDocuments(share.getName(), docs);
-	    } catch (final IOException e) {
+                Files.walkFileTree(Paths.get(path), visitor);
+                this.docPathBean.updateDocuments(share.getName(), docs);
+            } catch (final IOException e) {
 
-		LOG.error("IO ERROR when discovering files");
-		LOG.debug(e.getMessage());
-	    }
-	}
+                LOG.error("IO ERROR when discovering files");
+                LOG.debug(e.getMessage());
+            }
+        }
     }
 
     private List<NetworkShare> getShares() {
 
-	final List<NetworkShare> shares = new ArrayList<NetworkShare>();
-	try {
+        final List<NetworkShare> shares = new ArrayList<NetworkShare>();
+        try {
 
-	    final JAXBContext jaxbContext = JAXBContext
-		    .newInstance(NetworkShares.class);
-	    final Unmarshaller jaxbUnmarshaller = jaxbContext
-		    .createUnmarshaller();
-	    final NetworkShares netShares = (NetworkShares) jaxbUnmarshaller
-		    .unmarshal(new File(sharesXml));
-	    shares.addAll(netShares.getShares());
-	} catch (JAXBException e) {
+            final JAXBContext jaxbContext = JAXBContext.newInstance(NetworkShares.class);
+            final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            final NetworkShares netShares = (NetworkShares) jaxbUnmarshaller.unmarshal(new File(sharesXml));
+            shares.addAll(netShares.getShares());
+        } catch (JAXBException e) {
 
-	    LOG.error("IO ERROR when unmarshalling shares.xml");
-	    LOG.debug(e.getMessage());
-	}
+            LOG.error("IO ERROR when unmarshalling shares.xml");
+            LOG.debug(e.getMessage());
+        }
 
-	return shares;
+        return shares;
     }
 }

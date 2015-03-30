@@ -16,15 +16,11 @@ public class ServerMessage implements Serializable {
     public static final int MESSAGE_TYPE_OK = 0;
     public static final int MESSAGE_TYPE_ERROR = 1;
 
-    public static final ServerMessage MESSAGE_NO_HITS = new ServerMessage(
-	    MESSAGE_TYPE_ERROR, "No documents found int the search term.");
+    public static final ServerMessage MESSAGE_NO_HITS = new ServerMessage(MESSAGE_TYPE_ERROR, "No documents found int the search term.");
 
-    public static final ServerMessage MESSAGE_INDEX_NOT_READY = new ServerMessage(
-	    MESSAGE_TYPE_ERROR,
-	    "The index is not ready yet. Please come back later.");
+    public static final ServerMessage MESSAGE_INDEX_NOT_READY = new ServerMessage(MESSAGE_TYPE_ERROR, "The index is not ready yet. Please come back later.");
 
-    public static final ServerMessage MESSAGE_CANT_OPEN_INDEX = new ServerMessage(
-	    MESSAGE_TYPE_ERROR, "Error opening index.");
+    public static final ServerMessage MESSAGE_CANT_OPEN_INDEX = new ServerMessage(MESSAGE_TYPE_ERROR, "Error opening index.");
 
     private static final long serialVersionUID = 1L;
 
@@ -32,59 +28,66 @@ public class ServerMessage implements Serializable {
     private String message = "";
 
     public ServerMessage() {
+
     }
 
     public ServerMessage(final int _messageType, final String _message) {
-	this.messageType = _messageType;
-	this.message = _message;
+
+        this.messageType = _messageType;
+        this.message = _message;
     }
 
     public int getMessageType() {
-	return messageType;
+
+        return messageType;
     }
 
     public void setMessageType(int messageType) {
-	this.messageType = messageType;
+
+        this.messageType = messageType;
     }
 
     public String getMessage() {
-	return message;
+
+        return message;
     }
 
     public void setMessage(String message) {
-	this.message = message;
+
+        this.message = message;
     }
 
     public static String getTypeText(int messageType) {
 
-	if (messageType == MESSAGE_TYPE_OK) {
+        if (messageType == MESSAGE_TYPE_OK) {
 
-	    return "OK";
-	}
-	if (messageType == MESSAGE_TYPE_ERROR) {
+            return "OK";
+        }
+        if (messageType == MESSAGE_TYPE_ERROR) {
 
-	    return "ERROR";
-	}
+            return "ERROR";
+        }
 
-	return "";
+        return "";
     }
 
     public static String getIcon(int messageType) {
 
-	if (messageType == MESSAGE_TYPE_OK) {
+        if (messageType == MESSAGE_TYPE_OK) {
 
-	    return "ok.png";
-	}
+            return "ok.png";
+        }
 
-	if (messageType == MESSAGE_TYPE_ERROR) {
+        if (messageType == MESSAGE_TYPE_ERROR) {
 
-	    return "error.png";
-	}
+            return "error.png";
+        }
 
-	return "";
+        return "";
     }
 
     public boolean isServerMessage() {
-	return true;
+
+        return true;
     }
 }

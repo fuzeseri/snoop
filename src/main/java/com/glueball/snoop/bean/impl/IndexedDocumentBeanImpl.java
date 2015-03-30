@@ -15,24 +15,24 @@ public class IndexedDocumentBeanImpl implements IndexedDocumentBean {
     @Required
     public void setDao(final IndexedDocumentDao _dao) {
 
-	this.dao = _dao;
+        this.dao = _dao;
     }
 
     public void init() {
 
-	dao.createTable();
+        dao.createTable();
     }
 
     @Override
     public void unLockUpdateState(final List<IndexedDocument> idocList) {
 
-	dao.unLockUpdateState(idocList);
+        dao.unLockUpdateState(idocList);
     }
 
     @Override
     public List<IndexedDocument> haveToIndex(final int docNum) {
 
-	final long lock = dao.lockDocuments(docNum);
-	return dao.getByLock(lock);
+        final long lock = dao.lockDocuments(docNum);
+        return dao.getByLock(lock);
     }
 }

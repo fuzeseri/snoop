@@ -14,13 +14,15 @@ public class MainApp implements EntryPoint {
 
     public void onModuleLoad() {
 
-	window.getHeadPanel().add(head.asWidget());
-	Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-	    public void execute() {
-		head.searchBox.setFocus(true);
-	    }
-	});
-	RootPanel.get().add(window.asWidget());
+        window.getHeadPanel().add(head.asWidget());
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                head.searchBox.setFocus(true);
+            }
+        });
+        RootPanel.get().add(window.asWidget());
     }
 
 }

@@ -43,8 +43,7 @@ public class SnoopHead extends Composite {
 
     private final VerticalPanel hits;
 
-    private static SnoopHeadUiBinder uiBinder = GWT
-	    .create(SnoopHeadUiBinder.class);
+    private static SnoopHeadUiBinder uiBinder = GWT.create(SnoopHeadUiBinder.class);
     private Widget widget;
 
     interface SnoopHeadUiBinder extends UiBinder<Widget, SnoopHead> {
@@ -55,109 +54,103 @@ public class SnoopHead extends Composite {
 
     private final SearchCodec codec = GWT.create(SearchCodec.class);
 
-    private final SnoopRequest<SearchResults> req = new SnoopRequest<SearchResults>(
-	    codec);
+    private final SnoopRequest<SearchResults> req = new SnoopRequest<SearchResults>(codec);
 
     public SnoopHead(final VerticalPanel _hits) {
 
-	this.hits = _hits;
-	this.widget = uiBinder.createAndBindUi(this);
-	logo.setAltText("snoop");
-	logo.setHeight("26px");
-	logo.setUrl(URLHelper.getImageUrl("VectorToons-dog4.jpg"));
+        this.hits = _hits;
+        this.widget = uiBinder.createAndBindUi(this);
+        logo.setAltText("snoop");
+        logo.setHeight("26px");
+        logo.setUrl(URLHelper.getImageUrl("VectorToons-dog4.jpg"));
     }
 
     public TextBox getSearchBox() {
-	return searchBox;
+
+        return searchBox;
     }
 
     public Button getSearchButton() {
-	return searchButton;
+
+        return searchButton;
     }
 
     @Override
     public Widget asWidget() {
-	return this.widget;
+
+        return this.widget;
     }
 
     @UiHandler("searchButton")
     public void buttonHandler(final ClickEvent evt) {
 
-	search(searchBox.getText(), 1);
+        search(searchBox.getText(), 1);
     }
 
     @UiHandler("searchBox")
     public void boxHandler(final KeyDownEvent evt) {
 
-	if (evt.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+        if (evt.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 
-	    search(searchBox.getText(), 1);
-	}
+            search(searchBox.getText(), 1);
+        }
     }
 
     private void search(final String keyword, int page) {
 
-	req.request(URLHelper.SEARCH + keyword + "?page=" + page,
-		new SnoopRequestCallback<SearchResults>() {
+        req.request(URLHelper.SEARCH + keyword + "?page=" + page, new SnoopRequestCallback<SearchResults>() {
 
-		    @Override
-		    public void onSuccess(final SearchResults results) {
+            @Override
+            public void onSuccess(final SearchResults results) {
 
-			hits.clear();
-			for (final SearchResult doc : results) {
+                hits.clear();
+                for (final SearchResult doc : results) {
 
-			    final Result result = new Result(doc);
-			    hits.add(result.asWidget());
-			}
+                    final Result result = new Result(doc);
+                    hits.add(result.asWidget());
+                }
 
-			pages.clear();
-			for (final int page : results.getPages()) {
+                pages.clear();
+                for (final int page : results.getPages()) {
 
-			    final Label pageNum = new Label();
-			    pageNum.setText(String.valueOf(page));
-			    pageNum.getElement().getStyle()
-				    .setCursor(Cursor.POINTER);
-			    pageNum.getElement().getStyle()
-				    .setPadding(1, Unit.PX);
+                    final Label pageNum = new Label();
+                    pageNum.setText(String.valueOf(page));
+                    pageNum.getElement().getStyle().setCursor(Cursor.POINTER);
+                    pageNum.getElement().getStyle().setPadding(1, Unit.PX);
 
-			    if (results.getCurrentPage() == page) {
+                    if (results.getCurrentPage() == page) {
 
-				pageNum.getElement().getStyle()
-					.setColor("blue");
-				pageNum.getElement().getStyle()
-					.setFontWeight(FontWeight.BOLD);
-			    } else {
+                        pageNum.getElement().getStyle().setColor("blue");
+                        pageNum.getElement().getStyle().setFontWeight(FontWeight.BOLD);
+                    } else {
 
-				pageNum.getElement()
-					.getStyle()
-					.setTextDecoration(
-						TextDecoration.UNDERLINE);
-			    }
+                        pageNum.getElement().getStyle().setTextDecoration(TextDecoration.UNDERLINE);
+                    }
 
-			    pageNum.addClickHandler(new ClickHandler() {
+                    pageNum.addClickHandler(new ClickHandler() {
 
-				@Override
-				public void onClick(ClickEvent event) {
+                        @Override
+                        public void onClick(ClickEvent event) {
 
-				    search(searchBox.getText(), page);
-				}
+                            search(searchBox.getText(), page);
+                        }
 
-			    });
-			    pages.add(pageNum.asWidget());
-			}
+                    });
+                    pages.add(pageNum.asWidget());
+                }
 
-			totalHits.setText(String.valueOf(results.getTotalHits()));
-		    }
+                totalHits.setText(String.valueOf(results.getTotalHits()));
+            }
 
-		    @Override
-		    public void onMessage(final ServerMessage message) {
+            @Override
+            public void onMessage(final ServerMessage message) {
 
-			hits.clear();
-			hits.add(new Message(message).asWidget());
-			pages.clear();
-			totalHits.setText("");
-		    }
+                hits.clear();
+                hits.add(new Message(message).asWidget());
+                pages.clear();
+                totalHits.setText("");
+            }
 
-		});
+        });
     }
 }

@@ -22,8 +22,7 @@ import com.glueball.snoop.util.MD5;
 
 public class DbLoaderVisitor implements FileVisitor<Path> {
 
-    private static final Logger LOG = LogManager
-	    .getLogger(DbLoaderVisitor.class);
+    private static final Logger LOG = LogManager.getLogger(DbLoaderVisitor.class);
 
     private final ParserMap parserMap;
 
@@ -33,71 +32,64 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 
     private final NetworkShare share;
 
-    public DbLoaderVisitor(final List<DocumentPath> _docs,
-	    final ParserMap _parserMap, final MimeFileextMap _mimeFileextMap,
-	    final NetworkShare _share) {
-	this.docs = _docs;
-	this.parserMap = _parserMap;
-	this.mimeFileextMap = _mimeFileextMap;
-	this.share = _share;
+    public DbLoaderVisitor(final List<DocumentPath> _docs, final ParserMap _parserMap, final MimeFileextMap _mimeFileextMap, final NetworkShare _share) {
+
+        this.docs = _docs;
+        this.parserMap = _parserMap;
+        this.mimeFileextMap = _mimeFileextMap;
+        this.share = _share;
     }
 
-    public FileVisitResult preVisitDirectory(final Path dir,
-	    final BasicFileAttributes attrs) throws IOException {
-	return FileVisitResult.CONTINUE;
+    public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+
+        return FileVisitResult.CONTINUE;
     }
 
-    public FileVisitResult visitFile(final Path file,
-	    final BasicFileAttributes attrs) throws IOException {
+    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
 
-	if (attrs.isRegularFile() && !attrs.isDirectory()) {
+        if (attrs.isRegularFile() && !attrs.isDirectory()) {
 
-	    final String contentType = Files.probeContentType(file);
+            final String contentType = Files.probeContentType(file);
 
-	    if (parserMap.hasParser(contentType)
-		    && mimeFileextMap.checkFile(contentType, file.getFileName()
-			    .toString())) {
+            if (parserMap.hasParser(contentType) && mimeFileextMap.checkFile(contentType, file.getFileName().toString())) {
 
-		final DocumentPath doc = new DocumentPath();
+                final DocumentPath doc = new DocumentPath();
 
-		try {
+                try {
 
-		    doc.setId(MD5.md5Digest(file.toUri().toString()));
-		} catch (final NoSuchAlgorithmException e) {
+                    doc.setId(MD5.md5Digest(file.toUri().toString()));
+                } catch (final NoSuchAlgorithmException e) {
 
-		    throw new IOException(e);
-		}
+                    throw new IOException(e);
+                }
 
-		doc.setShareName(share.getName());
-		doc.setFileName(file.getFileName().toString());
-		doc.setContentType(contentType);
-		doc.setLocalPath(file.toAbsolutePath().toString());
+                doc.setShareName(share.getName());
+                doc.setFileName(file.getFileName().toString());
+                doc.setContentType(contentType);
+                doc.setLocalPath(file.toAbsolutePath().toString());
 
-		final String remotePath = !StringUtils.isEmpty(share
-			.getLocalPath()) ? file.toAbsolutePath().toString()
-			.replace(share.getLocalPath(), share.getRemotePath())
-			: file.toAbsolutePath().toString();
+                final String remotePath = !StringUtils.isEmpty(share.getLocalPath()) ? file.toAbsolutePath().toString()
+                        .replace(share.getLocalPath(), share.getRemotePath()) : file.toAbsolutePath().toString();
 
-		doc.setPath(remotePath);
-		doc.setUri(Paths.get(remotePath).toUri().toString());
-		doc.setLastModifiedTime(new java.sql.Timestamp(attrs
-			.lastModifiedTime().toMillis()));
-		docs.add(doc);
+                doc.setPath(remotePath);
+                doc.setUri(Paths.get(remotePath).toUri().toString());
+                doc.setLastModifiedTime(new java.sql.Timestamp(attrs.lastModifiedTime().toMillis()));
+                docs.add(doc);
 
-		LOG.info("File Path loaded: " + doc.getPath());
-	    }
-	}
-	return FileVisitResult.CONTINUE;
+                LOG.info("File Path loaded: " + doc.getPath());
+            }
+        }
+        return FileVisitResult.CONTINUE;
     }
 
-    public FileVisitResult visitFileFailed(final Path file,
-	    final IOException exc) throws IOException {
-	return FileVisitResult.CONTINUE;
+    public FileVisitResult visitFileFailed(final Path file, final IOException exc) throws IOException {
+
+        return FileVisitResult.CONTINUE;
     }
 
-    public FileVisitResult postVisitDirectory(final Path dir,
-	    final IOException exc) throws IOException {
-	return FileVisitResult.CONTINUE;
+    public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+
+        return FileVisitResult.CONTINUE;
     }
 
 }

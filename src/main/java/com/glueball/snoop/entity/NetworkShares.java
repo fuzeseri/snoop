@@ -19,10 +19,12 @@ public class NetworkShares implements Serializable {
     private List<NetworkShare> shares = new ArrayList<NetworkShare>();
 
     public List<NetworkShare> getShares() {
-	return shares;
+
+        return shares;
     }
 
     public void setShares(List<NetworkShare> shares) {
-	this.shares = shares;
+
+        this.shares = shares;
     }
 }

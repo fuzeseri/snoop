@@ -38,36 +38,35 @@ public class Result extends Composite {
 
     public Result(final SearchResult res) {
 
-	this.widget = uiBinder.createAndBindUi(this);
-	this.result = res;
-	init();
+        this.widget = uiBinder.createAndBindUi(this);
+        this.result = res;
+        init();
     }
 
     private void init() {
 
-	final String fileExt = this.result
-		.getFileName()
-		.substring(this.result.getFileName().lastIndexOf(".") + 1,
-			this.result.getFileName().length()).toLowerCase();
+        final String fileExt = this.result.getFileName().substring(this.result.getFileName().lastIndexOf(".") + 1, this.result.getFileName().length())
+                .toLowerCase();
 
-	mimeIcon.setAltText(fileExt);
-	mimeIcon.setUrl(URLHelper.getImageUrl(fileExt + ".png"));
+        mimeIcon.setAltText(fileExt);
+        mimeIcon.setUrl(URLHelper.getImageUrl(fileExt + ".png"));
 
-	title.setText(this.result.getTitle());
-	author.setText(this.result.getAuthor());
-	description.setText(this.result.getDescription());
-	link.setHref(this.result.getUri());
-	link.setText(this.result.getFileName());
+        title.setText(this.result.getTitle());
+        author.setText(this.result.getAuthor());
+        description.setText(this.result.getDescription());
+        link.setHref(this.result.getUri());
+        link.setText(this.result.getFileName());
     }
 
     @Override
     public Widget asWidget() {
-	return this.widget;
+
+        return this.widget;
     }
 
     @UiHandler("link")
     public void linkClickHandler(final ClickEvent event) {
 
-	Window.Location.replace(this.result.getUri());
+        Window.Location.replace(this.result.getUri());
     }
 }

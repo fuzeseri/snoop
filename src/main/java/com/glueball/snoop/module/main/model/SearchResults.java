@@ -23,54 +23,67 @@ public class SearchResults implements Serializable, Iterable<SearchResult> {
     private int currentPage;
 
     public SearchResults() {
-	results = new ArrayList<SearchResult>();
+
+        results = new ArrayList<SearchResult>();
     }
 
     public SearchResults(int size) {
-	results = new ArrayList<SearchResult>(size);
+
+        results = new ArrayList<SearchResult>(size);
     }
 
     public List<SearchResult> getResults() {
-	return results;
+
+        return results;
     }
 
     public void setResults(List<SearchResult> results) {
-	this.results = results;
+
+        this.results = results;
     }
 
     public void add(final SearchResult res) {
-	results.add(res);
+
+        results.add(res);
     }
 
     public Iterator<SearchResult> iterator() {
-	return results.iterator();
+
+        return results.iterator();
     }
 
     public boolean isEmpty() {
-	return results.isEmpty();
+
+        return results.isEmpty();
     }
 
     public int getTotalHits() {
-	return totalHits;
+
+        return totalHits;
     }
 
     public void setTotalHits(int totalHits) {
-	this.totalHits = totalHits;
+
+        this.totalHits = totalHits;
     }
 
     public int[] getPages() {
-	return pages;
+
+        return pages;
     }
 
     public void setPages(int[] pages) {
-	this.pages = pages;
+
+        this.pages = pages;
     }
 
     public int getCurrentPage() {
-	return currentPage;
+
+        return currentPage;
     }
 
     public void setCurrentPage(int currentPage) {
-	this.currentPage = currentPage;
+
+        this.currentPage = currentPage;
     }
 }

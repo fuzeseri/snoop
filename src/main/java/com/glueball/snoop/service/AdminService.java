@@ -15,7 +15,7 @@ public class AdminService {
     @Path("/hello/{name}")
     public Response hello(@PathParam("name") String name) {
 
-	return Response.ok("Hello " + name, MediaType.APPLICATION_JSON).build();
+        return Response.ok("Hello " + name, MediaType.APPLICATION_JSON).build();
     }
 
     @GET
@@ -23,6 +23,6 @@ public class AdminService {
     @Path("/ping")
     public Response ping() {
 
-	return Response.ok("pong", MediaType.APPLICATION_JSON).build();
+        return Response.ok("pong", MediaType.APPLICATION_JSON).build();
     }
 }

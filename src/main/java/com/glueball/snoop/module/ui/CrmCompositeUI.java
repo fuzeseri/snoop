@@ -9,11 +9,13 @@ public abstract class CrmCompositeUI extends Composite {
     protected Widget widget;
 
     protected CrmCompositeUI(final Composite app) {
-	this.crmApp = app;
+
+        this.crmApp = app;
     }
 
     protected Composite getCrmApp() {
-	return crmApp;
+
+        return crmApp;
     }
 
 }

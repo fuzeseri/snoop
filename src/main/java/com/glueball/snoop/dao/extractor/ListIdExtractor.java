@@ -12,16 +12,16 @@ public class ListIdExtractor implements ResultSetExtractor<List<String>> {
     final List<String> idList;
 
     public ListIdExtractor(final List<String> _idList) {
-	this.idList = _idList;
+
+        this.idList = _idList;
     }
 
-    public List<String> extractData(final ResultSet rs) throws SQLException,
-	    DataAccessException {
+    public List<String> extractData(final ResultSet rs) throws SQLException, DataAccessException {
 
-	while (rs.next()) {
-	    idList.add(rs.getString("id"));
-	}
-	return idList;
+        while (rs.next()) {
+            idList.add(rs.getString("id"));
+        }
+        return idList;
     }
 
 }

@@ -26,34 +26,42 @@ public class NetworkShare implements Serializable {
     private boolean aktiv = true;
 
     public String getName() {
-	return name;
+
+        return name;
     }
 
     public void setName(String name) {
-	this.name = name;
+
+        this.name = name;
     }
 
     public String getLocalPath() {
-	return localPath;
+
+        return localPath;
     }
 
     public void setLocalPath(String localPath) {
-	this.localPath = localPath;
+
+        this.localPath = localPath;
     }
 
     public String getRemotePath() {
-	return remotePath;
+
+        return remotePath;
     }
 
     public void setRemotePath(String remotePath) {
-	this.remotePath = remotePath;
+
+        this.remotePath = remotePath;
     }
 
     public boolean isAktiv() {
-	return aktiv;
+
+        return aktiv;
     }
 
     public void setAktiv(boolean aktiv) {
-	this.aktiv = aktiv;
+
+        this.aktiv = aktiv;
     }
 }
