@@ -28,7 +28,7 @@ public interface DocumentPathDao extends SnoopDao<DocumentPath> {
     /**
      * Updates the index status in the relational database of the new documents
      * on a specific share.
-     * 
+     *
      * @param shareName
      *            the name of the share.
      */
@@ -37,7 +37,7 @@ public interface DocumentPathDao extends SnoopDao<DocumentPath> {
     /**
      * Updates the index status in the relational database of the modified
      * documents on a specific share.
-     * 
+     *
      * @param shareName
      *            the name of the share.
      */
@@ -46,7 +46,7 @@ public interface DocumentPathDao extends SnoopDao<DocumentPath> {
     /**
      * Updates the index status in the relational database of the deleted
      * documents on a specific share.
-     * 
+     *
      * @param shareName
      *            the name of the share.
      */

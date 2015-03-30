@@ -14,20 +14,43 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.DocumentPath;
 
-public class DocumentPathExtractor implements ResultSetExtractor<DocumentPath> {
+/**
+ * ResultseExtractor implementation to extract data to a DocumentPath object
+ * from database query result.
+ *
+ * @author karesz
+ */
+public final class DocumentPathExtractor
+        implements ResultSetExtractor<DocumentPath> {
 
+    /**
+     * The DocumentPath object to extract data into it.
+     */
     final DocumentPath doc;
 
-    public DocumentPathExtractor(final DocumentPath _doc) {
+    /**
+     * Constructor.
+     *
+     * @param pDoc
+     *            The DocumentPath object to extract data into it.
+     */
+    public DocumentPathExtractor(final DocumentPath pDoc) {
 
-        this.doc = _doc;
+        this.doc = pDoc;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.ResultSetExtractor#extractData(java.sql
+     * .ResultSet)
+     */
     @Override
     public DocumentPath extractData(final ResultSet rs) throws SQLException,
             DataAccessException {
 
         if (rs.next()) {
+
             doc.setId(rs.getString("id"));
             doc.setShareName(rs.getString("share_name"));
             doc.setFileName(rs.getString("file_name"));

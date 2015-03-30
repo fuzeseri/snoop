@@ -14,9 +14,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -29,20 +27,24 @@ import com.glueball.snoop.dao.setter.IndexedDocumentBatchInsertSetter;
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.IndexedDocument;
 
-public class DocumentPathDaoImpl implements DocumentPathDao {
+/**
+ * Implementation of the DocumentPathDao service.
+ *
+ * @author karesz
+ */
+public final class DocumentPathDaoImpl extends AbstractSnoopDao implements
+        DocumentPathDao {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOG = LogManager
             .getLogger(DocumentPathDaoImpl.class);
 
-    @Autowired(
-            required = true)
-    private JdbcTemplate jdbcTemplate;
-
-    public void setJdbcTemplate(final JdbcTemplate _jdbcTemplate) {
-
-        this.jdbcTemplate = _jdbcTemplate;
-    }
-
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#insertOne(java.lang.Object)
+     */
     @Override
     public void insertOne(final DocumentPath doc) {
 
@@ -55,6 +57,10 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
         LOG.debug("Succesfully inserted document: " + doc.toString());
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#insertList(java.util.List)
+     */
     @Override
     public void insertList(final List<DocumentPath> docs)
             throws DataAccessException {
@@ -68,6 +74,10 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
         LOG.debug(docs.toString() + " documents succesfully inserted.");
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#findById(java.lang.String)
+     */
     @Override
     public DocumentPath findById(final String Id) {
 
@@ -89,6 +99,10 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
         return doc;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.DocumentPathDao#findBySum(java.lang.String)
+     */
     @Override
     public DocumentPath findBySum(final String md5sum)
             throws DataAccessException {
@@ -111,6 +125,10 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
         return doc;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#createTable()
+     */
     @Override
     public void createTable() throws DataAccessException {
 
@@ -127,6 +145,10 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
         LOG.debug("Table DOCUMENT_PATH has successfully created.");
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#rowNum()
+     */
     @Override
     public long rowNum() {
 
@@ -149,6 +171,10 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
                 });
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#truncateTable()
+     */
     @Override
     public void truncateTable() {
 
@@ -159,6 +185,10 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
         LOG.debug("Table DOCUMENT_PATH has successfully truncated.");
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#selectAll()
+     */
     @Override
     public List<DocumentPath> selectAll() {
 
@@ -174,6 +204,10 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
         return docList;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#deleteById(java.lang.String)
+     */
     @Override
     public void deleteById(final String id) {
 
@@ -193,6 +227,12 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
         LOG.debug("Document id : " + id + " successfully deleted.");
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.glueball.snoop.dao.DocumentPathDao#updateDeletedDocuments(java.lang
+     * .String)
+     */
     @Override
     public void updateDeletedDocuments(final String shareName) {
 
@@ -214,6 +254,12 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
                 + shareName);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.glueball.snoop.dao.DocumentPathDao#updateNewDocuments(java.lang.String
+     * )
+     */
     @Override
     public void updateNewDocuments(String shareName) {
 
@@ -236,6 +282,12 @@ public class DocumentPathDaoImpl implements DocumentPathDao {
                 + shareName);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.glueball.snoop.dao.DocumentPathDao#updateModifiedDocuments(java.lang
+     * .String)
+     */
     @Override
     public void updateModifiedDocuments(String shareName) {
 

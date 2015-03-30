@@ -25,7 +25,7 @@ public interface SnoopDao<T> {
      *            the primary key.
      * @return the entity object representing the row with the primary key.
      */
-    T findById(final String Id);
+    T findById(final String id);
 
     /**
      * Inserts an entity to the database.

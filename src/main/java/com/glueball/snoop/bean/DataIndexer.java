@@ -95,6 +95,7 @@ public final class DataIndexer {
      * Setter methos of the ParserMap field.
      *
      * @param pParserMap
+     *            the ParserMap object.
      */
     public void setParserMap(final ParserMap pParserMap) {
 
@@ -203,7 +204,7 @@ public final class DataIndexer {
      * database. Group them by the status and calls the delete or index methods
      * on the lists.
      */
-    @Scheduled(fixedDelay = 10 * 60 * 1000)
+    @Scheduled(fixedDelay = 600000)
     public void index() {
 
         final List<IndexedDocument> haveToIndexList =

@@ -15,16 +15,37 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.DocumentPath;
 
-public class ListDocumentPathExtractor implements
+/**
+ * ResultseExtractor implementation to extract data to List of DocumentPath
+ * objects from database query result.
+ *
+ * @author karesz
+ */
+public final class ListDocumentPathExtractor implements
         ResultSetExtractor<List<DocumentPath>> {
 
+    /**
+     * The List of DocumentPath objects to extract the data to it.
+     */
     final List<DocumentPath> docList;
 
-    public ListDocumentPathExtractor(final List<DocumentPath> _docList) {
+    /**
+     * Constructor.
+     *
+     * @param pDocList
+     *            The List of DocumentPath objects to extract the data to it.
+     */
+    public ListDocumentPathExtractor(final List<DocumentPath> pDocList) {
 
-        this.docList = _docList;
+        this.docList = pDocList;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.ResultSetExtractor#extractData(java.sql
+     * .ResultSet)
+     */
     @Override
     public List<DocumentPath> extractData(final ResultSet rs)
             throws SQLException, DataAccessException {

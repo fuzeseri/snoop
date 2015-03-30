@@ -15,10 +15,8 @@ import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -32,22 +30,29 @@ import com.glueball.snoop.dao.setter.IndexedDocumentBatchUpdateSetter;
 import com.glueball.snoop.dao.setter.IndexedDocumentInsertSetter;
 import com.glueball.snoop.entity.IndexedDocument;
 
-public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
+/**
+ * Implementtaion of the IndexedDocumentDao service.
+ *
+ * @author karesz
+ */
+public final class IndexedDocumentDaoImpl extends AbstractSnoopDao implements
+        IndexedDocumentDao {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOG = LogManager
             .getLogger(IndexedDocumentDaoImpl.class);
 
-    @Autowired(
-            required = true)
-    private JdbcTemplate jdbcTemplate;
-
-    public void setJdbcTemplate(final JdbcTemplate _jdbcTemplate) {
-
-        this.jdbcTemplate = _jdbcTemplate;
-    }
-
+    /**
+     * Random number generator object to generate lock ids.
+     */
     private static final Random random = new Random();
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#insertOne(java.lang.Object)
+     */
     @Override
     public void insertOne(final IndexedDocument doc) {
 
@@ -60,6 +65,10 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
         LOG.debug("Succesfully inserted document: " + doc.toString());
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#insertList(java.util.List)
+     */
     @Override
     public void insertList(final List<IndexedDocument> docs) {
 
@@ -72,6 +81,10 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
         LOG.debug(docs.toString() + " documents succesfully inserted.");
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#findById(java.lang.String)
+     */
     @Override
     public IndexedDocument findById(final String id) {
 
@@ -94,6 +107,12 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
         return doc;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.glueball.snoop.dao.IndexedDocumentDao#findByShareName(java.lang.String
+     * )
+     */
     @Override
     public List<IndexedDocument> findByShareName(final String share) {
 
@@ -119,6 +138,10 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
         return docList;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#createTable()
+     */
     @Override
     public void createTable() {
 
@@ -133,6 +156,10 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#rowNum()
+     */
     @Override
     public long rowNum() {
 
@@ -154,6 +181,10 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
                 });
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#deleteById(java.lang.String)
+     */
     @Override
     public void deleteById(final String id) {
 
@@ -172,6 +203,10 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
         LOG.debug("Ducument id : " + id + " successfully deleted.");
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#truncateTable()
+     */
     @Override
     public void truncateTable() {
 
@@ -182,6 +217,10 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
         LOG.debug("Table INDEXED_DOCUENT has successfully truncated.");
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#selectAll()
+     */
     @Override
     public List<IndexedDocument> selectAll() throws DataAccessException {
 
@@ -196,6 +235,11 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
         return docList;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.glueball.snoop.dao.IndexedDocumentDao#deleteByIds(java.util.List)
+     */
     @Override
     public void deleteByIds(final List<String> ids) {
 
@@ -210,6 +254,10 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
                 + " records was deleted from INDEXED_DOCUMENT table");
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.IndexedDocumentDao#lockDocuments(int)
+     */
     @Override
     public long lockDocuments(final int docNum) {
 
@@ -254,6 +302,10 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
         return lock;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.IndexedDocumentDao#getByLock(long)
+     */
     @Override
     public List<IndexedDocument> getByLock(final long lock) {
 
@@ -277,6 +329,11 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
         return idocList;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.glueball.snoop.dao.IndexedDocumentDao#updateState(java.util.List)
+     */
     @Override
     public void updateState(final List<IndexedDocument> idocList) {
 
@@ -290,6 +347,12 @@ public final class IndexedDocumentDaoImpl implements IndexedDocumentDao {
         LOG.debug(idocList.size() + " documents successfully updated.");
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.glueball.snoop.dao.IndexedDocumentDao#unLockUpdateState(java.util
+     * .List)
+     */
     @Override
     public void unLockUpdateState(final List<IndexedDocument> idocList) {
 

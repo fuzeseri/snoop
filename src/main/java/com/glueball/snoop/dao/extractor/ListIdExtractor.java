@@ -13,15 +13,37 @@ import java.util.List;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class ListIdExtractor implements ResultSetExtractor<List<String>> {
+/**
+ * ResultseExtractor implementation to extract document ids to a List from
+ * database query result.
+ *
+ * @author karesz
+ */
+public final class ListIdExtractor implements
+        ResultSetExtractor<List<String>> {
 
+    /**
+     * The List to extract the ids to it.
+     */
     final List<String> idList;
 
-    public ListIdExtractor(final List<String> _idList) {
+    /**
+     * Constructor.
+     *
+     * @param pIdList
+     *            The List to extract the ids to it.
+     */
+    public ListIdExtractor(final List<String> pIdList) {
 
-        this.idList = _idList;
+        this.idList = pIdList;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.ResultSetExtractor#extractData(java.sql
+     * .ResultSet)
+     */
     @Override
     public List<String> extractData(final ResultSet rs) throws SQLException,
             DataAccessException {
@@ -31,5 +53,4 @@ public class ListIdExtractor implements ResultSetExtractor<List<String>> {
         }
         return idList;
     }
-
 }

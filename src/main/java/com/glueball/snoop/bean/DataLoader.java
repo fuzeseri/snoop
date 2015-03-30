@@ -40,7 +40,7 @@ import com.glueball.snoop.visitor.DbLoaderVisitor;
  *
  * @author karesz
  */
-public class DataLoader {
+public final class DataLoader {
 
     /**
      * Logger instance.
@@ -72,9 +72,10 @@ public class DataLoader {
     private ParserMap parserMap;
 
     /**
-     * Setter methos of the ParserMap field.
+     * Setter methods of the ParserMap field.
      *
      * @param pParserMap
+     *            the ParserMap object.
      */
     public void setParserMap(final ParserMap pParserMap) {
 
@@ -94,7 +95,7 @@ public class DataLoader {
      * @param pMimeFileextMap
      *            MimeFileextMap instance.
      */
-    public void setPMimeFileextMap(final MimeFileextMap pMimeFileextMap) {
+    public void setMimeFileextMap(final MimeFileextMap pMimeFileextMap) {
 
         this.mimeFileextMap = pMimeFileextMap;
     }
@@ -149,8 +150,8 @@ public class DataLoader {
             try {
 
                 final String path = !StringUtils.isEmpty(
-                        share.getLocalPath()) ?
-                        share.getLocalPath() : share.getRemotePath();
+                        share.getLocalPath()) ? share.getLocalPath() : share
+                        .getRemotePath();
 
                 Files.walkFileTree(Paths.get(path), visitor);
                 this.docPathBean.updateDocuments(share.getName(), docs);

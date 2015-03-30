@@ -22,7 +22,7 @@ import com.glueball.snoop.entity.DocumentPath;
  *
  * @author karesz
  */
-public class DocumentPathBeanImpl implements DocumentPathBean {
+public final class DocumentPathBeanImpl implements DocumentPathBean {
 
     /**
      * Logger instance.

@@ -15,16 +15,37 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.IndexedDocument;
 
-public class ListIndexedDocumentExtractor implements
+/**
+ * ResultseExtractor implementation to extract data to List of IndexedDocument
+ * objects from database query result.
+ *
+ * @author karesz
+ */
+public final class ListIndexedDocumentExtractor implements
         ResultSetExtractor<List<IndexedDocument>> {
 
+    /**
+     * The List of IndexedDocument objects to extract the data to it.
+     */
     final List<IndexedDocument> docList;
 
-    public ListIndexedDocumentExtractor(final List<IndexedDocument> _docList) {
+    /**
+     * Constructor.
+     *
+     * @param pDocList
+     *            The List of IndexedDocument objects to extract the data to it.
+     */
+    public ListIndexedDocumentExtractor(final List<IndexedDocument> pDocList) {
 
-        this.docList = _docList;
+        this.docList = pDocList;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.ResultSetExtractor#extractData(java.sql
+     * .ResultSet)
+     */
     @Override
     public List<IndexedDocument> extractData(final ResultSet rs)
             throws SQLException, DataAccessException {
@@ -48,5 +69,4 @@ public class ListIndexedDocumentExtractor implements
         }
         return docList;
     }
-
 }
