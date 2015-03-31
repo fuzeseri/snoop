@@ -22,77 +22,145 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
         name = "results")
 @JsonIgnoreProperties(
         ignoreUnknown = true)
-public class SearchResults implements Serializable, Iterable<SearchResult> {
+public final class SearchResults implements Serializable,
+        Iterable<SearchResult> {
 
+    /**
+     * Serial version id.
+     */
     private static final long serialVersionUID = 1L;
+
+    /**
+     * List of the search results.
+     */
     private List<SearchResult> results;
+
+    /**
+     * The total hits.
+     */
     private int totalHits;
+
+    /**
+     * Number of the pages.
+     */
     private int[] pages;
+
+    /**
+     * The current page.
+     */
     private int currentPage;
 
-    public SearchResults() {
+    /**
+     * Hidden default Constructor.
+     */
+    @SuppressWarnings("unused")
+    private SearchResults() {
 
-        results = new ArrayList<SearchResult>();
     }
 
+    /**
+     * Constructor.
+     * 
+     * @param size
+     *            the size of the result set.
+     */
     public SearchResults(int size) {
 
         results = new ArrayList<SearchResult>(size);
     }
 
-    public List<SearchResult> getResults() {
-
-        return results;
-    }
-
-    public void setResults(List<SearchResult> results) {
-
-        this.results = results;
-    }
-
+    /**
+     * @param res
+     *            add a single search result ot the result set.
+     */
     public void add(final SearchResult res) {
 
         results.add(res);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Iterable#iterator()
+     */
     @Override
     public Iterator<SearchResult> iterator() {
 
         return results.iterator();
     }
 
+    /**
+     * @return true if the result set is empty.
+     */
     public boolean isEmpty() {
 
         return results.isEmpty();
     }
 
+    /**
+     * @return the results
+     */
+    public List<SearchResult> getResults() {
+
+        return results;
+    }
+
+    /**
+     * @param pResults
+     *            the results to set
+     */
+    public void setResults(final List<SearchResult> pResults) {
+
+        this.results = pResults;
+    }
+
+    /**
+     * @return the totalHits
+     */
     public int getTotalHits() {
 
         return totalHits;
     }
 
-    public void setTotalHits(int totalHits) {
+    /**
+     * @param pTotalHits
+     *            the totalHits to set
+     */
+    public void setTotalHits(final int pTotalHits) {
 
-        this.totalHits = totalHits;
+        this.totalHits = pTotalHits;
     }
 
+    /**
+     * @return the pages
+     */
     public int[] getPages() {
 
         return pages;
     }
 
-    public void setPages(int[] pages) {
+    /**
+     * @param pPages
+     *            the pages to set
+     */
+    public void setPages(final int[] pPages) {
 
-        this.pages = pages;
+        this.pages = pPages;
     }
 
+    /**
+     * @return the currentPage
+     */
     public int getCurrentPage() {
 
         return currentPage;
     }
 
-    public void setCurrentPage(int currentPage) {
+    /**
+     * @param pCurrentPage
+     *            the currentPage to set
+     */
+    public void setCurrentPage(final int pCurrentPage) {
 
-        this.currentPage = currentPage;
+        this.currentPage = pCurrentPage;
     }
 }

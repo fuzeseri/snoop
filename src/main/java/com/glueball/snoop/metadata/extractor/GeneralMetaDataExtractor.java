@@ -25,7 +25,7 @@ public class GeneralMetaDataExtractor implements MetaDataExtractor {
      * (org.apache.tika.metadata.Metadata)
      */
     @Override
-    public Meta extractMetaData(final Metadata metadata) {
+    public final Meta extractMetaData(final Metadata metadata) {
 
         String title = "";
         String author = "";

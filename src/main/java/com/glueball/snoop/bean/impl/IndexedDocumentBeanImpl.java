@@ -34,7 +34,7 @@ public class IndexedDocumentBeanImpl implements IndexedDocumentBean {
      *            the IndexedDocumentDao instance.
      */
     @Required
-    public void setDao(final IndexedDocumentDao pDao) {
+    public final void setDao(final IndexedDocumentDao pDao) {
 
         this.dao = pDao;
     }

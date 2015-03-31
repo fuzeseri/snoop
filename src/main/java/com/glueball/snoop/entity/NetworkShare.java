@@ -13,6 +13,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Entity class representing a network share.
+ *
+ * @author karesz
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(
         name = "share",
@@ -108,8 +113,8 @@ public final class NetworkShare implements Serializable {
     }
 
     /**
-     * @param active
-     *            the pActive to set
+     * @param pActive
+     *            the active to set
      */
     public void setActive(final boolean pActive) {
 

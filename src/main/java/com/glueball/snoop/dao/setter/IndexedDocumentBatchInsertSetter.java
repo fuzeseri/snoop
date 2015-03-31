@@ -62,8 +62,10 @@ public final class IndexedDocumentBatchInsertSetter implements
         pstmt.setString(index++, docs.get(i).getContentType());
         pstmt.setString(index++, docs.get(i).getIndexState());
         pstmt.setInt(index++, docs.get(i).getLock());
-        if (docs.get(i).getLockTime() != null)
+
+        if (docs.get(i).getLockTime() != null) {
             pstmt.setTimestamp(index++, docs.get(i).getLockTime());
+        }
     }
 
     /*

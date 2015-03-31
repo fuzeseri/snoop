@@ -38,42 +38,88 @@ import com.glueball.snoop.module.main.model.SearchResult;
 import com.glueball.snoop.module.main.model.SearchResults;
 import com.glueball.snoop.module.main.model.ServerMessage;
 
+/**
+ * Restful document search service.
+ *
+ * @author karesz
+ * @param <QueryParser>
+ */
 @Path("/search")
 public class SearchService<QueryParser> {
 
+    /**
+     * Logger instance.
+     */
     private static Logger LOG = LogManager
             .getLogger(SearchService.class);
 
+    /**
+     * Maximum number of document selected from the index.
+     */
     private static final int MAX_SCORE_DOCS = 1000;
 
+    /**
+     * Default maximum number of hits on a page.
+     */
+    private static final int DEFAULT_HITS_PER_PAGE = 50;
+    /**
+     * The lucene directory object.
+     */
     @Autowired
     private Directory directory;
 
-    public void setDirectory(final Directory directory) {
+    /**
+     * @param pDirectory
+     *            the directori instance to set
+     */
+    public final void setDirectory(final Directory pDirectory) {
 
-        this.directory = directory;
+        this.directory = pDirectory;
     }
 
+    /**
+     * Lucene index reader object.
+     */
     private IndexReader indexReader;
 
+    /**
+     * Lucene index searcher object.
+     */
     private IndexSearcher indexSearcher;
 
+    /**
+     * Lucene MultiFieldQueryParser object.
+     */
     @Autowired
     private MultiFieldQueryParser parser;
 
-    public void setParser(final MultiFieldQueryParser parser) {
+    /**
+     * @param pParser
+     *            the query parser instance to set.
+     */
+    public final void setParser(final MultiFieldQueryParser pParser) {
 
-        this.parser = parser;
+        this.parser = pParser;
     }
 
-    private int hitsPerPage = 50;
+    /**
+     * The maximum number of hits on a page.
+     */
+    private int hitsPerPage = DEFAULT_HITS_PER_PAGE;
 
-    public void setHitsPerPage(int hitsPerPage) {
+    /**
+     * @param pHitsPerPage
+     *            the number of hits per page to set.
+     */
+    public final void setHitsPerPage(final int pHitsPerPage) {
 
-        this.hitsPerPage = hitsPerPage;
+        this.hitsPerPage = pHitsPerPage;
     }
 
-    public void init() {
+    /**
+     * Initialization method.
+     */
+    public final void init() {
 
         try {
 
@@ -85,10 +131,20 @@ public class SearchService<QueryParser> {
         }
     }
 
+    /**
+     * Restful json search service.
+     *
+     * @param searchString
+     *            the text to search for.
+     * @param page
+     *            the exact page to get.
+     * @return HTTP response with the json representation of the SearchResults
+     *         entity.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{keyword}")
-    public Response search(
+    public final Response search(
             @PathParam(
                     value = "keyword") @DefaultValue("") String searchString,
             @FormParam("page") @DefaultValue("1") int page) {
@@ -120,7 +176,7 @@ public class SearchService<QueryParser> {
         ScoreDoc[] hits = new ScoreDoc[] {};
         try {
 
-            int startIndex = (page - 1) * hitsPerPage;
+            final int startIndex = (page - 1) * hitsPerPage;
             this.indexSearcher.search(query, collector);
             final TopDocs topDocs = collector.topDocs(startIndex, hitsPerPage);
             hits = topDocs.scoreDocs;
@@ -143,7 +199,17 @@ public class SearchService<QueryParser> {
         return Response.ok(results, MediaType.APPLICATION_JSON).build();
     }
 
-    private SearchResults extractResults(final ScoreDoc[] hits,
+    /**
+     * Extracts the search result from the hits array to the a SearchResult
+     * object.
+     *
+     * @param hits
+     *            the array on results provided by the index.
+     * @param indexSearcher
+     *            the lucene IndexSearcher object.
+     * @return the SearchResults object.
+     */
+    private final SearchResults extractResults(final ScoreDoc[] hits,
             final IndexSearcher indexSearcher) {
 
         final SearchResults results = new SearchResults(hits.length);
@@ -172,7 +238,13 @@ public class SearchService<QueryParser> {
         return results;
     }
 
-    private void refreshReader() throws IOException {
+    /**
+     * Reset the index reader filed if it was null or the index has changed.
+     *
+     * @throws IOException
+     *             on unsuccessful read of the index files.
+     */
+    private final void refreshReader() throws IOException {
 
         if (this.indexReader == null) {
 
@@ -190,7 +262,14 @@ public class SearchService<QueryParser> {
         }
     }
 
-    public synchronized Query createQuery(final String searchString) {
+    /**
+     * Creates a lucene query from the search string.
+     *
+     * @param searchString
+     *            the search string received from the client.
+     * @return the lucene query.
+     */
+    public final synchronized Query createQuery(final String searchString) {
 
         Query query = new WildcardQuery(new Term("content:"));
         try {
@@ -204,15 +283,23 @@ public class SearchService<QueryParser> {
         return query;
     }
 
-    private int[] getPages(int totalHits, final int hitsPerPage) {
+    /**
+     * Provides the array of page numbers of a result set.
+     *
+     * @param totalHits
+     *            the number of the total hits matched in the index at the
+     *            search.
+     * @param hitsPerPage
+     *            the maximum allowed number of results aon single page.
+     * @return the array of page numbers.
+     */
+    private static final int[] getPages(final int totalHits,
+            final int hitsPerPage) {
 
-        if (totalHits > MAX_SCORE_DOCS) {
+        int total = totalHits > MAX_SCORE_DOCS ? MAX_SCORE_DOCS : totalHits;
 
-            totalHits = MAX_SCORE_DOCS;
-        }
-
-        int pagesNum = totalHits < hitsPerPage ? 1
-                : ((totalHits / hitsPerPage) + (totalHits % hitsPerPage == 0 ? 0
+        int pagesNum = total < hitsPerPage ? 1
+                : ((total / hitsPerPage) + (total % hitsPerPage == 0 ? 0
                         : 1));
 
         int[] pages = new int[pagesNum];

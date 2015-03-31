@@ -8,8 +8,29 @@ package com.glueball.snoop.module.util;
  */
 import com.google.gwt.user.client.ui.ListBox;
 
-public class TextBoxUtil {
+/**
+ * Utility class to get numerical value of an index of a ListBox.
+ *
+ * @author karesz
+ */
+public final class ListBoxUtil {
 
+    /**
+     * Hide constructor.
+     */
+    private ListBoxUtil() {
+
+    }
+
+    /**
+     * Get the index of a listboxes text value.
+     *
+     * @param box
+     *            the listbox object.
+     * @param value
+     *            the value object.
+     * @return the index of the value.
+     */
     public static int getIndexByText(final ListBox box, final String value) {
 
         if (box == null)
@@ -26,6 +47,15 @@ public class TextBoxUtil {
         return 0;
     }
 
+    /**
+     * Get the index of a listboxes number value.
+     *
+     * @param box
+     *            the listbox object.
+     * @param value
+     *            the value object.
+     * @return the index of the value.
+     */
     public static int getIndexByInt(final ListBox box, final Integer value) {
 
         if (box == null)

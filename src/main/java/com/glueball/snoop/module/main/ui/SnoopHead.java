@@ -35,54 +35,121 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class SnoopHead extends Composite {
+/**
+ * The header box on the web ui.
+ *
+ * @author karesz
+ */
+public final class SnoopHead extends Composite {
 
-    public @UiField TextBox searchBox;
-    public @UiField Button searchButton;
+    /**
+     * Textbox to write in the search string.
+     */
+    @UiField
+    public TextBox searchBox;
 
+    /**
+     * Search button.
+     */
+    @UiField
+    public Button searchButton;
+
+    /**
+     * Snoop logo.
+     */
     @UiField
     Image logo;
+
+    /**
+     * HPanel to store the page selector links.
+     */
     @UiField
     HorizontalPanel pages;
+
+    /**
+     * Label to show the total hits value.
+     */
     @UiField
     Label totalHits;
 
+    /**
+     * Vertical panel to store the hits.
+     */
     private final VerticalPanel hits;
 
-    private static SnoopHeadUiBinder uiBinder = GWT
+    /**
+     * GWT uibinder instance.
+     */
+    private static SnoopHeadUiBinder UIBINDER = GWT
             .create(SnoopHeadUiBinder.class);
+
+    /**
+     * Widget object.
+     */
     private Widget widget;
 
+    /**
+     * GWT uibinder interface declaration.
+     * 
+     * @author karesz
+     */
     interface SnoopHeadUiBinder extends UiBinder<Widget, SnoopHead> {
     }
 
+    /**
+     * GWT searchcodec interface declaration.
+     * 
+     * @author karesz
+     */
     interface SearchCodec extends JsonEncoderDecoder<SearchResults> {
     }
 
+    /**
+     * Search codec instance.
+     */
     private final SearchCodec codec = GWT.create(SearchCodec.class);
 
-    private final SnoopRequest<SearchResults> req = new SnoopRequest<SearchResults>(
-            codec);
+    /**
+     * Http request object.
+     */
+    private final SnoopRequest<SearchResults> req =
+            new SnoopRequest<SearchResults>(codec);
 
-    public SnoopHead(final VerticalPanel _hits) {
+    /**
+     * Constructor.
+     *
+     * @param pHits
+     *            the vertical panel to store the hits.
+     */
+    public SnoopHead(final VerticalPanel pHits) {
 
-        this.hits = _hits;
-        this.widget = uiBinder.createAndBindUi(this);
+        this.hits = pHits;
+        this.widget = UIBINDER.createAndBindUi(this);
         logo.setAltText("snoop");
         logo.setHeight("26px");
         logo.setUrl(URLHelper.getImageUrl("VectorToons-dog4.jpg"));
     }
 
+    /**
+     * @return the searchBox
+     */
     public TextBox getSearchBox() {
 
         return searchBox;
     }
 
+    /**
+     * @return the searchButton
+     */
     public Button getSearchButton() {
 
         return searchButton;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.google.gwt.user.client.ui.Widget#asWidget()
+     */
     @Override
     public Widget asWidget() {
 
@@ -95,6 +162,12 @@ public class SnoopHead extends Composite {
         search(searchBox.getText(), 1);
     }
 
+    /**
+     * KeyDown event handler method of the searchBox.
+     *
+     * @param evt
+     *            KeyDownEvent to set.
+     */
     @UiHandler("searchBox")
     public void boxHandler(final KeyDownEvent evt) {
 
@@ -104,6 +177,14 @@ public class SnoopHead extends Composite {
         }
     }
 
+    /**
+     * Sends search query to the server and shows the response.
+     *
+     * @param keyword
+     *            the search String to send.
+     * @param page
+     *            the current page number.
+     */
     private void search(final String keyword, int page) {
 
         req.request(URLHelper.SEARCH + keyword + "?page=" + page,
@@ -119,43 +200,7 @@ public class SnoopHead extends Composite {
                             hits.add(result.asWidget());
                         }
 
-                        pages.clear();
-                        for (final int page : results.getPages()) {
-
-                            final Label pageNum = new Label();
-                            pageNum.setText(String.valueOf(page));
-                            pageNum.getElement().getStyle()
-                                    .setCursor(Cursor.POINTER);
-                            pageNum.getElement().getStyle()
-                                    .setPadding(1, Unit.PX);
-
-                            if (results.getCurrentPage() == page) {
-
-                                pageNum.getElement().getStyle()
-                                        .setColor("blue");
-                                pageNum.getElement().getStyle()
-                                        .setFontWeight(FontWeight.BOLD);
-                            } else {
-
-                                pageNum.getElement()
-                                        .getStyle()
-                                        .setTextDecoration(
-                                                TextDecoration.UNDERLINE);
-                            }
-
-                            pageNum.addClickHandler(new ClickHandler() {
-
-                                @Override
-                                public void onClick(ClickEvent event) {
-
-                                    search(searchBox.getText(), page);
-                                }
-
-                            });
-                            pages.add(pageNum.asWidget());
-                        }
-
-                        totalHits.setText(String.valueOf(results.getTotalHits()));
+                        refreshPages(results);
                     }
 
                     @Override
@@ -168,5 +213,53 @@ public class SnoopHead extends Composite {
                     }
 
                 });
+    }
+
+    /**
+     * Refreshes the page selector widget.
+     *
+     * @param results
+     *            the result object.
+     */
+    private void refreshPages(final SearchResults results) {
+
+        pages.clear();
+        for (final int page : results.getPages()) {
+
+            final Label pageNum = new Label();
+            pageNum.setText(String.valueOf(page));
+            pageNum.getElement().getStyle()
+                    .setCursor(Cursor.POINTER);
+            pageNum.getElement().getStyle()
+                    .setPadding(1, Unit.PX);
+
+            if (results.getCurrentPage() == page) {
+
+                pageNum.getElement().getStyle()
+                        .setColor("blue");
+                pageNum.getElement().getStyle()
+                        .setFontWeight(FontWeight.BOLD);
+            } else {
+
+                pageNum.getElement()
+                        .getStyle()
+                        .setTextDecoration(
+                                TextDecoration.UNDERLINE);
+            }
+
+            pageNum.addClickHandler(new ClickHandler() {
+
+                @Override
+                public void onClick(ClickEvent event) {
+
+                    search(searchBox.getText(), page);
+                }
+
+            });
+            pages.add(pageNum.asWidget());
+        }
+
+        totalHits.setText(String
+                .valueOf(results.getTotalHits()));
     }
 }
