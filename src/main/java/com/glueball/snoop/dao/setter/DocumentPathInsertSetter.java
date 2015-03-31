@@ -19,12 +19,13 @@ import com.glueball.snoop.entity.DocumentPath;
  *
  * @author karesz
  */
-public class DocumentPathInsertSetter implements PreparedStatementSetter {
+public final class DocumentPathInsertSetter
+        implements PreparedStatementSetter {
 
     /**
      * The DocumentPath object to insert to the database.
      */
-    final DocumentPath doc;
+    private final DocumentPath doc;
 
     /**
      * Constructor.
@@ -46,13 +47,14 @@ public class DocumentPathInsertSetter implements PreparedStatementSetter {
     @Override
     public void setValues(final PreparedStatement pstmt) throws SQLException {
 
-        pstmt.setString(1, doc.getId());
-        pstmt.setString(2, doc.getShareName());
-        pstmt.setString(3, doc.getFileName());
-        pstmt.setString(4, doc.getUri());
-        pstmt.setString(5, doc.getPath());
-        pstmt.setString(6, doc.getLocalPath());
-        pstmt.setTimestamp(7, doc.getLastModifiedTime());
-        pstmt.setString(8, doc.getContentType());
+        int index = 1;
+        pstmt.setString(index++, doc.getId());
+        pstmt.setString(index++, doc.getShareName());
+        pstmt.setString(index++, doc.getFileName());
+        pstmt.setString(index++, doc.getUri());
+        pstmt.setString(index++, doc.getPath());
+        pstmt.setString(index++, doc.getLocalPath());
+        pstmt.setTimestamp(index++, doc.getLastModifiedTime());
+        pstmt.setString(index++, doc.getContentType());
     }
 }

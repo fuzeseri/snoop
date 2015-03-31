@@ -12,23 +12,73 @@ import java.io.InputStream;
 import java.io.Writer;
 
 import org.apache.tika.exception.TikaException;
-import org.apache.tika.parser.Parser;
-import org.springframework.beans.factory.annotation.Required;
 import org.xml.sax.SAXException;
 
 import com.glueball.snoop.entity.Meta;
 
+/**
+ * Service to parse mate data and text content from a file.
+ *
+ * @author karesz
+ */
 public interface SnoopParser {
 
-    Meta parseContent(String _uri, Writer out) throws IOException,
+    /**
+     * Parse content from a file.
+     *
+     * @param uri
+     *            the uri path of the file.
+     * @param out
+     *            Writer object to write the file text content to it.
+     * @return Meta object filled with the parsed meta data.
+     * @throws IOException
+     *             on unsuccessful file read.
+     * @throws SAXException
+     *             on unsuccessful sax operation.
+     * @throws TikaException
+     *             on unsuccessful content parse operation (e.g. unsopported
+     *             font type)
+     */
+    Meta parseContent(final String uri, final Writer out) throws IOException,
             SAXException, TikaException;
 
-    Meta parseContent(File path, Writer out) throws IOException, SAXException,
+    /**
+     * Parse content from a file.
+     *
+     * @param path
+     *            the path of the file.
+     * @param out
+     *            Writer object to write the file text content to it.
+     * @return Meta object filled with the parsed meta data.
+     * @throws IOException
+     *             on unsuccessful file read.
+     * @throws SAXException
+     *             on unsuccessful sax operation.
+     * @throws TikaException
+     *             on unsuccessful content parse operation (e.g. unsopported
+     *             font type)
+     */
+    Meta parseContent(final File path, final Writer out) throws IOException,
+            SAXException,
             TikaException;
 
-    Meta parseContent(InputStream is, Writer out) throws IOException,
+    /**
+     * Parse content from a file.
+     *
+     * @param is
+     *            InputStream with the parsable content.
+     * @param out
+     *            Writer object to write the file text content to it.
+     * @return Meta object filled with the parsed meta data.
+     * @throws IOException
+     *             on unsuccessful file read.
+     * @throws SAXException
+     *             on unsuccessful sax operation.
+     * @throws TikaException
+     *             on unsuccessful content parse operation (e.g. unsopported
+     *             font type)
+     */
+    Meta parseContent(final InputStream is, final Writer out)
+            throws IOException,
             SAXException, TikaException;
-
-    @Required
-    void setLuceneParser(final Parser parser);
 }

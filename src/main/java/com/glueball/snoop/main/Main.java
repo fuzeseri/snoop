@@ -30,7 +30,7 @@ public final class Main {
     /**
      * Static SpringBusfactory instance.
      */
-    private static final SpringBusFactory busFactory = new SpringBusFactory();
+    private static final SpringBusFactory BUSFACTORY = new SpringBusFactory();
 
     /**
      * Spring context of the main application.
@@ -69,7 +69,7 @@ public final class Main {
 
         LOG.info("Initializing jetty server...");
 
-        bus = busFactory.createBus(new ClassPathResource(
+        bus = BUSFACTORY.createBus(new ClassPathResource(
                 "spring/jetty-server.xml").getPath());
 
         LOG.info("Jetty server successfully initailized");

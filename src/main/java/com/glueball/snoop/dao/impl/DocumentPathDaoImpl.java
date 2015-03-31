@@ -55,7 +55,7 @@ public class DocumentPathDaoImpl implements
      * @param pJdbcTemplate
      *            The Spring data jdbc template object.
      */
-    protected void setJdbcTemplate(final JdbcTemplate pJdbcTemplate) {
+    public final void setJdbcTemplate(final JdbcTemplate pJdbcTemplate) {
 
         this.jdbcTemplate = pJdbcTemplate;
     }
@@ -98,10 +98,10 @@ public class DocumentPathDaoImpl implements
      * @see com.glueball.snoop.dao.SnoopDao#findById(java.lang.String)
      */
     @Override
-    public final DocumentPath findById(final String Id) {
+    public final DocumentPath findById(final String id) {
 
         LOG.debug("Running query: " + DocumentPath.SELECT_BY_ID_QUERY
-                + " with parameter [id : " + Id + "]");
+                + " with parameter [id : " + id + "]");
 
         final DocumentPath doc = new DocumentPath();
 
@@ -112,7 +112,7 @@ public class DocumentPathDaoImpl implements
                     public void setValues(final PreparedStatement ps)
                             throws SQLException {
 
-                        ps.setString(1, Id);
+                        ps.setString(1, id);
                     }
                 }, new DocumentPathExtractor(doc));
         return doc;
@@ -177,7 +177,8 @@ public class DocumentPathDaoImpl implements
                 new ResultSetExtractor<Long>() {
 
                     @Override
-                    public Long extractData(ResultSet rs) throws SQLException,
+                    public Long extractData(final ResultSet rs)
+                            throws SQLException,
                             DataAccessException {
 
                         long rowNum = 0;
@@ -276,12 +277,11 @@ public class DocumentPathDaoImpl implements
 
     /*
      * (non-Javadoc)
-     * @see
-     * com.glueball.snoop.dao.DocumentPathDao#updateNewDocuments(java.lang.String
-     * )
+     * @see com.glueball.snoop.dao.DocumentPathDao#updateNewDocuments(
+     * java.lang.String)
      */
     @Override
-    public final void updateNewDocuments(String shareName) {
+    public final void updateNewDocuments(final String shareName) {
 
         final List<DocumentPath> docList = new ArrayList<DocumentPath>();
 
@@ -293,7 +293,8 @@ public class DocumentPathDaoImpl implements
         LOG.debug(docList.size() + " new documents successfully selected");
 
         final List<IndexedDocument> idocList = DocumentPath
-                .toIndexedDocumentList(docList, IndexedDocument.INDEX_STATE_NEW);
+                .toIndexedDocumentList(docList,
+                        IndexedDocument.INDEX_STATE_NEW);
 
         this.jdbcTemplate.batchUpdate(
                 IndexedDocument.INSERT_DOCUMENT_QUERY,
@@ -310,7 +311,7 @@ public class DocumentPathDaoImpl implements
      * .String)
      */
     @Override
-    public final void updateModifiedDocuments(String shareName) {
+    public final void updateModifiedDocuments(final String shareName) {
 
         final List<DocumentPath> docList = new ArrayList<DocumentPath>();
 

@@ -258,57 +258,56 @@ public final class IndexedDocument extends SnoopDocument {
                 + " ,contentType : " + getContentType() + " ,indexState : "
                 + getIndexState() + " ,lock : " + getLock() + " ,lock_time : "
                 + getLockTime();
-
     }
 
     /**
      * @return the indexState
      */
-    public final String getIndexState() {
+    public String getIndexState() {
 
         return indexState;
     }
 
     /**
-     * @param indexState
-     *            the indexState to set
+     * @param pIndexState
+     *            the pIndexState to set
      */
-    public final void setIndexState(final String indexState) {
+    public void setIndexState(final String pIndexState) {
 
-        this.indexState = indexState;
+        this.indexState = pIndexState;
     }
 
     /**
      * @return the lock
      */
-    public final Integer getLock() {
+    public Integer getLock() {
 
         return lock;
     }
 
     /**
-     * @param lock
+     * @param pLock
      *            the lock to set
      */
-    public final void setLock(final Integer lock) {
+    public void setLock(final Integer pLock) {
 
-        this.lock = lock;
+        this.lock = pLock;
     }
 
     /**
      * @return the lockTime
      */
-    public final Timestamp getLockTime() {
+    public Timestamp getLockTime() {
 
         return lockTime;
     }
 
     /**
-     * @param lockTime
+     * @param pLockTime
      *            the lockTime to set
      */
-    public final void setLockTime(final Timestamp lockTime) {
+    public void setLockTime(final Timestamp pLockTime) {
 
-        this.lockTime = lockTime;
+        this.lockTime = pLockTime;
     }
 }

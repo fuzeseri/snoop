@@ -20,13 +20,13 @@ import com.glueball.snoop.entity.DocumentPath;
  *
  * @author karesz
  */
-public class DocumentPathBatchInsertSetter implements
+public final class DocumentPathBatchInsertSetter implements
         BatchPreparedStatementSetter {
 
     /**
      * List of DocumentPaths to insert to the database.
      */
-    final List<DocumentPath> docs;
+    private final List<DocumentPath> docs;
 
     /**
      * Constructor.
@@ -49,20 +49,21 @@ public class DocumentPathBatchInsertSetter implements
     public void setValues(final PreparedStatement pstmt, final int i)
             throws SQLException {
 
-        pstmt.setString(1, docs.get(i).getId());
-        pstmt.setString(2, docs.get(i).getShareName());
-        pstmt.setString(3, docs.get(i).getFileName());
-        pstmt.setString(4, docs.get(i).getUri());
-        pstmt.setString(5, docs.get(i).getPath());
-        pstmt.setString(6, docs.get(i).getLocalPath());
-        pstmt.setTimestamp(7, docs.get(i).getLastModifiedTime());
-        pstmt.setString(8, docs.get(i).getContentType());
+        int index = 1;
+        pstmt.setString(index++, docs.get(i).getId());
+        pstmt.setString(index++, docs.get(i).getShareName());
+        pstmt.setString(index++, docs.get(i).getFileName());
+        pstmt.setString(index++, docs.get(i).getUri());
+        pstmt.setString(index++, docs.get(i).getPath());
+        pstmt.setString(index++, docs.get(i).getLocalPath());
+        pstmt.setTimestamp(index++, docs.get(i).getLastModifiedTime());
+        pstmt.setString(index++, docs.get(i).getContentType());
     }
 
     /*
      * (non-Javadoc)
-     * @see
-     * org.springframework.jdbc.core.BatchPreparedStatementSetter#getBatchSize()
+     * @see org.springframework.jdbc.core.BatchPreparedStatementSetter#
+     * getBatchSize()
      */
     @Override
     public int getBatchSize() {

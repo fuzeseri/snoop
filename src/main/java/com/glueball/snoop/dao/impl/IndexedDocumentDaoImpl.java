@@ -66,7 +66,7 @@ public class IndexedDocumentDaoImpl implements
     /**
      * Random number generator object to generate lock ids.
      */
-    private static final Random random = new Random();
+    private static final Random RANDOM = new Random();
 
     /*
      * (non-Javadoc)
@@ -129,9 +129,8 @@ public class IndexedDocumentDaoImpl implements
 
     /*
      * (non-Javadoc)
-     * @see
-     * com.glueball.snoop.dao.IndexedDocumentDao#findByShareName(java.lang.String
-     * )
+     * @see com.glueball.snoop.dao.IndexedDocumentDao#findByShareName(
+     * java.lang.String)
      */
     @Override
     public final List<IndexedDocument> findByShareName(final String share) {
@@ -283,7 +282,7 @@ public class IndexedDocumentDaoImpl implements
     @Override
     public final long lockDocuments(final int docNum) {
 
-        final int lock = random.nextInt();
+        final int lock = RANDOM.nextInt();
 
         LOG.debug("Running query: "
                 + IndexedDocument.GET_INDEXABLE_DOCUMENTS_QUERY);
@@ -293,7 +292,7 @@ public class IndexedDocumentDaoImpl implements
                 new PreparedStatementSetter() {
 
                     @Override
-                    public void setValues(PreparedStatement ps)
+                    public void setValues(final PreparedStatement ps)
                             throws SQLException {
 
                         ps.setInt(1, docNum);
@@ -306,7 +305,8 @@ public class IndexedDocumentDaoImpl implements
                 new BatchPreparedStatementSetter() {
 
                     @Override
-                    public void setValues(final PreparedStatement ps, int i)
+                    public void setValues(final PreparedStatement ps,
+                            final int i)
                             throws SQLException {
 
                         ps.setLong(1, lock);

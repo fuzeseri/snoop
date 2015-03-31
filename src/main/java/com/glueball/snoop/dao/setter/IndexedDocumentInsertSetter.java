@@ -19,12 +19,13 @@ import com.glueball.snoop.entity.IndexedDocument;
  *
  * @author karesz
  */
-public class IndexedDocumentInsertSetter implements PreparedStatementSetter {
+public final class IndexedDocumentInsertSetter implements
+        PreparedStatementSetter {
 
     /**
      * The IndexedDocument object to insert to the database.
      */
-    final IndexedDocument doc;
+    private final IndexedDocument doc;
 
     /**
      * Constructor.
@@ -44,19 +45,20 @@ public class IndexedDocumentInsertSetter implements PreparedStatementSetter {
      * sql.PreparedStatement)
      */
     @Override
-    public void setValues(PreparedStatement pstmt) throws SQLException {
+    public void setValues(final PreparedStatement pstmt) throws SQLException {
 
-        pstmt.setString(1, doc.getId());
-        pstmt.setString(2, doc.getShareName());
-        pstmt.setString(3, doc.getFileName());
-        pstmt.setString(4, doc.getUri());
-        pstmt.setString(5, doc.getPath());
-        pstmt.setString(6, doc.getLocalPath());
-        pstmt.setTimestamp(6, doc.getLastModifiedTime());
-        pstmt.setTimestamp(7, doc.getLastIndexedTime());
-        pstmt.setString(8, doc.getContentType());
-        pstmt.setString(9, doc.getIndexState());
-        pstmt.setInt(10, doc.getLock());
-        pstmt.setTimestamp(11, doc.getLockTime());
+        int index = 1;
+        pstmt.setString(index++, doc.getId());
+        pstmt.setString(index++, doc.getShareName());
+        pstmt.setString(index++, doc.getFileName());
+        pstmt.setString(index++, doc.getUri());
+        pstmt.setString(index++, doc.getPath());
+        pstmt.setString(index++, doc.getLocalPath());
+        pstmt.setTimestamp(index++, doc.getLastModifiedTime());
+        pstmt.setTimestamp(index++, doc.getLastIndexedTime());
+        pstmt.setString(index++, doc.getContentType());
+        pstmt.setString(index++, doc.getIndexState());
+        pstmt.setInt(index++, doc.getLock());
+        pstmt.setTimestamp(index++, doc.getLockTime());
     }
 }

@@ -69,12 +69,12 @@ public abstract class SnoopDocument {
     }
 
     /**
-     * @param id
+     * @param pId
      *            the id to set
      */
-    public final void setId(final String id) {
+    public final void setId(final String pId) {
 
-        this.id = id;
+        this.id = pId;
     }
 
     /**
@@ -86,12 +86,12 @@ public abstract class SnoopDocument {
     }
 
     /**
-     * @param shareName
+     * @param pShareName
      *            the shareName to set
      */
-    public final void setShareName(final String shareName) {
+    public final void setShareName(final String pShareName) {
 
-        this.shareName = shareName;
+        this.shareName = pShareName;
     }
 
     /**
@@ -103,12 +103,12 @@ public abstract class SnoopDocument {
     }
 
     /**
-     * @param fileName
+     * @param pFileName
      *            the fileName to set
      */
-    public final void setFileName(final String fileName) {
+    public final void setFileName(final String pFileName) {
 
-        this.fileName = fileName;
+        this.fileName = pFileName;
     }
 
     /**
@@ -120,12 +120,12 @@ public abstract class SnoopDocument {
     }
 
     /**
-     * @param uri
+     * @param pUri
      *            the uri to set
      */
-    public final void setUri(final String uri) {
+    public final void setUri(final String pUri) {
 
-        this.uri = uri;
+        this.uri = pUri;
     }
 
     /**
@@ -137,12 +137,12 @@ public abstract class SnoopDocument {
     }
 
     /**
-     * @param path
+     * @param pPath
      *            the path to set
      */
-    public final void setPath(final String path) {
+    public final void setPath(final String pPath) {
 
-        this.path = path;
+        this.path = pPath;
     }
 
     /**
@@ -154,12 +154,12 @@ public abstract class SnoopDocument {
     }
 
     /**
-     * @param localPath
+     * @param pLocalPath
      *            the localPath to set
      */
-    public final void setLocalPath(final String localPath) {
+    public final void setLocalPath(final String pLocalPath) {
 
-        this.localPath = localPath;
+        this.localPath = pLocalPath;
     }
 
     /**
@@ -171,12 +171,12 @@ public abstract class SnoopDocument {
     }
 
     /**
-     * @param lastModifiedTime
+     * @param pLastModifiedTime
      *            the lastModifiedTime to set
      */
-    public final void setLastModifiedTime(final Timestamp lastModifiedTime) {
+    public final void setLastModifiedTime(final Timestamp pLastModifiedTime) {
 
-        this.lastModifiedTime = lastModifiedTime;
+        this.lastModifiedTime = pLastModifiedTime;
     }
 
     /**
@@ -188,12 +188,12 @@ public abstract class SnoopDocument {
     }
 
     /**
-     * @param lastIndexedTime
+     * @param pLastIndexedTime
      *            the lastIndexedTime to set
      */
-    public final void setLastIndexedTime(final Timestamp lastIndexedTime) {
+    public final void setLastIndexedTime(final Timestamp pLastIndexedTime) {
 
-        this.lastIndexedTime = lastIndexedTime;
+        this.lastIndexedTime = pLastIndexedTime;
     }
 
     /**
@@ -205,11 +205,11 @@ public abstract class SnoopDocument {
     }
 
     /**
-     * @param contentType
+     * @param pContentType
      *            the contentType to set
      */
-    public final void setContentType(final String contentType) {
+    public final void setContentType(final String pContentType) {
 
-        this.contentType = contentType;
+        this.contentType = pContentType;
     }
 }

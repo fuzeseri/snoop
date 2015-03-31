@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(
         name = "share",
         namespace = "http://snoop.glueball.com/share")
-public class NetworkShare implements Serializable {
+public final class NetworkShare implements Serializable {
 
     /**
      * Serial version id.
@@ -51,7 +51,7 @@ public class NetworkShare implements Serializable {
     /**
      * @return the name
      */
-    public final String getName() {
+    public String getName() {
 
         return name;
     }
@@ -60,7 +60,7 @@ public class NetworkShare implements Serializable {
      * @param pName
      *            the name to set
      */
-    public final void setName(final String pName) {
+    public void setName(final String pName) {
 
         this.name = pName;
     }
@@ -68,7 +68,7 @@ public class NetworkShare implements Serializable {
     /**
      * @return the localPath
      */
-    public final String getLocalPath() {
+    public String getLocalPath() {
 
         return localPath;
     }
@@ -77,7 +77,7 @@ public class NetworkShare implements Serializable {
      * @param pLocalPath
      *            the localPath to set
      */
-    public final void setLocalPath(final String pLocalPath) {
+    public void setLocalPath(final String pLocalPath) {
 
         this.localPath = pLocalPath;
     }
@@ -85,7 +85,7 @@ public class NetworkShare implements Serializable {
     /**
      * @return the remotePath
      */
-    public final String getRemotePath() {
+    public String getRemotePath() {
 
         return remotePath;
     }
@@ -94,7 +94,7 @@ public class NetworkShare implements Serializable {
      * @param pRemotePath
      *            the remotePath to set
      */
-    public final void setRemotePath(final String pRemotePath) {
+    public void setRemotePath(final String pRemotePath) {
 
         this.remotePath = pRemotePath;
     }
@@ -102,7 +102,7 @@ public class NetworkShare implements Serializable {
     /**
      * @return the active
      */
-    public final boolean isActive() {
+    public boolean isActive() {
 
         return active;
     }
@@ -111,7 +111,7 @@ public class NetworkShare implements Serializable {
      * @param active
      *            the pActive to set
      */
-    public final void setActive(final boolean pActive) {
+    public void setActive(final boolean pActive) {
 
         this.active = pActive;
     }

@@ -12,23 +12,50 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Maps mime-type of the file content to the parser object of it.
+ *
+ * @author karesz
+ */
 public final class ParserMap {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOG = LogManager
             .getLogger(ParserMap.class);
 
-    private final Map<String, SnoopParser> parserMap = new HashMap<String, SnoopParser>();
+    /**
+     * Map to store the mime-types and parser objects.
+     */
+    private final Map<String, SnoopParser> parserMap =
+            new HashMap<String, SnoopParser>();
 
+    /**
+     * Hidden default constructor.
+     */
     @SuppressWarnings("unused")
     private ParserMap() {
 
     }
 
-    public ParserMap(final Map<String, SnoopParser> _parserMap) {
+    /**
+     * Constructor.
+     *
+     * @param pParserMap
+     */
+    public ParserMap(final Map<String, SnoopParser> pParserMap) {
 
-        this.parserMap.putAll(_parserMap);
+        this.parserMap.putAll(pParserMap);
     }
 
+    /**
+     * Check if the snoop software has a parser for the given mime-type.
+     *
+     * @param contentType
+     *            the mime-tyep to check.
+     * @return true if the snoop software has a parser for the given mime-type.
+     */
     public boolean hasParser(final String contentType) {
 
         boolean hasParser = this.parserMap.containsKey(contentType);
@@ -40,9 +67,21 @@ public final class ParserMap {
         return hasParser;
     }
 
+    /**
+     * Getter method of the SnoopParser.
+     *
+     * @param contentType
+     *            the mime-type.
+     * @return the parser object.
+     * @throws UnavialableParserException
+     *             if the given mime-type is not supported.
+     */
     public SnoopParser getParser(final String contentType)
             throws UnavialableParserException {
 
-        return this.parserMap.get(contentType);
+        if (hasParser(contentType)) {
+            return this.parserMap.get(contentType);
+        }
+        throw new UnavialableParserException();
     }
 }

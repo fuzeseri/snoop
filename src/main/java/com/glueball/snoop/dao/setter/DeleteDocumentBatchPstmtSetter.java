@@ -24,7 +24,7 @@ public final class DeleteDocumentBatchPstmtSetter implements
     /**
      * List of document ids to delete.
      */
-    final List<String> docIds;
+    private final List<String> docIds;
 
     /**
      * Constructor.
@@ -44,7 +44,7 @@ public final class DeleteDocumentBatchPstmtSetter implements
      * java.sql.PreparedStatement, int)
      */
     @Override
-    public void setValues(final PreparedStatement pstmt, int i)
+    public void setValues(final PreparedStatement pstmt, final int i)
             throws SQLException {
 
         pstmt.setString(1, this.docIds.get(i));
@@ -52,8 +52,8 @@ public final class DeleteDocumentBatchPstmtSetter implements
 
     /*
      * (non-Javadoc)
-     * @see
-     * org.springframework.jdbc.core.BatchPreparedStatementSetter#getBatchSize()
+     * @see org.springframework.jdbc.core.BatchPreparedStatementSetter#
+     * getBatchSize()
      */
     @Override
     public int getBatchSize() {

@@ -93,7 +93,7 @@ public final class DocumentPath extends SnoopDocument {
                     + "   idoc.id IS NULL ";
 
     /**
-     * SQL query to select modified documents from the database. It important to
+     * SQL query to select modified documents from the database. It important
      * refresh the DOCUMENT_PATH tables data from the file system before run
      * this query.
      */
@@ -115,8 +115,8 @@ public final class DocumentPath extends SnoopDocument {
 
     /**
      * SQL query to update the index status of the documents which was deleted
-     * on the file system. It important to refresh the DOCUMENT_PATH tables data
-     * from the file system before run this query.
+     * on the file system. It is important to refresh the DOCUMENT_PATH tables
+     * data from the file system before run this query.
      */
     public static final String UPDATE_DELETED_DOCUMENTS_QUERY =
             " UPDATE INDEXED_DOCUMENT SET "
@@ -153,14 +153,30 @@ public final class DocumentPath extends SnoopDocument {
     public static final List<String> CREATE_INDEX_QUERY = Collections
             .unmodifiableList(Arrays
                     .asList(new String[] {
-                            "CREATE INDEX IF NOT EXISTS ndxDocId ON DOCUMENT_PATH (id)",
-                            "CREATE INDEX IF NOT EXISTS ndxDocShareName ON DOCUMENT_PATH (share_name)",
-                            "CREATE INDEX IF NOT EXISTS ndxDocFileName ON DOCUMENT_PATH (file_name)",
-                            "CREATE INDEX IF NOT EXISTS ndxDocUri ON DOCUMENT_PATH (uri)",
-                            "CREATE INDEX IF NOT EXISTS ndxDocPath ON DOCUMENT_PATH (path)",
-                            "CREATE INDEX IF NOT EXISTS ndxDocLocalPath ON DOCUMENT_PATH (local_path)",
-                            "CREATE INDEX IF NOT EXISTS ndxDocLastModifiedTime ON DOCUMENT_PATH (last_modified_time)",
-                            "CREATE INDEX IF NOT EXISTS ndxDocContentType ON DOCUMENT_PATH (content_type)" }));
+                            "CREATE INDEX IF NOT EXISTS "
+                                    + "ndxDocId ON DOCUMENT_PATH (id)",
+
+                            "CREATE INDEX IF NOT EXISTS "
+                                    + "ndxDocShareName ON DOCUMENT_PATH (share_name)",
+
+                            "CREATE INDEX IF NOT EXISTS "
+                                    + "ndxDocFileName ON DOCUMENT_PATH (file_name)",
+
+                            "CREATE INDEX IF NOT EXISTS "
+                                    + "ndxDocUri ON DOCUMENT_PATH (uri)",
+
+                            "CREATE INDEX IF NOT EXISTS "
+                                    + "ndxDocPath ON DOCUMENT_PATH (path)",
+
+                            "CREATE INDEX IF NOT EXISTS "
+                                    + "ndxDocLocalPath ON DOCUMENT_PATH (local_path)",
+                            "CREATE INDEX IF NOT EXISTS "
+                                    + "ndxDocLastModifiedTime "
+                                    + "ON DOCUMENT_PATH (last_modified_time)",
+
+                            "CREATE INDEX IF NOT EXISTS "
+                                    + "ndxDocContentType "
+                                    + "ON DOCUMENT_PATH (content_type)" }));
 
     /*
      * (non-Javadoc)
@@ -186,7 +202,7 @@ public final class DocumentPath extends SnoopDocument {
      *            the index status of the returned IndexedDocuments.
      * @return list of IndexedDocuments.
      */
-    public static final List<IndexedDocument> toIndexedDocumentList(
+    public static List<IndexedDocument> toIndexedDocumentList(
             final List<DocumentPath> docList, final String indexStateNew) {
 
         final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>(

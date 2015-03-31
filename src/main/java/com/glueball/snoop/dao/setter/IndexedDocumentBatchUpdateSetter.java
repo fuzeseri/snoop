@@ -26,7 +26,7 @@ public class IndexedDocumentBatchUpdateSetter implements
     /**
      * The list of IndexedDocuments to update in the database.
      */
-    final List<IndexedDocument> docs;
+    private final List<IndexedDocument> docs;
 
     /**
      * Constructor.
@@ -34,7 +34,8 @@ public class IndexedDocumentBatchUpdateSetter implements
      * @param pDocs
      *            The list of IndexedDocuments to update in the database.
      */
-    public IndexedDocumentBatchUpdateSetter(final List<IndexedDocument> pDocs) {
+    public IndexedDocumentBatchUpdateSetter(
+            final List<IndexedDocument> pDocs) {
 
         this.docs = pDocs;
     }
@@ -46,18 +47,19 @@ public class IndexedDocumentBatchUpdateSetter implements
      * java.sql.PreparedStatement, int)
      */
     @Override
-    public void setValues(final PreparedStatement pstmt, int i)
+    public void setValues(final PreparedStatement pstmt, final int i)
             throws SQLException {
 
-        pstmt.setTimestamp(1, docs.get(i).getLastIndexedTime());
-        pstmt.setString(2, docs.get(i).getIndexState());
-        pstmt.setString(3, docs.get(i).getId());
+        int index = 1;
+        pstmt.setTimestamp(index++, docs.get(i).getLastIndexedTime());
+        pstmt.setString(index++, docs.get(i).getIndexState());
+        pstmt.setString(index++, docs.get(i).getId());
     }
 
     /*
      * (non-Javadoc)
-     * @see
-     * org.springframework.jdbc.core.BatchPreparedStatementSetter#getBatchSize()
+     * @see org.springframework.jdbc.core.BatchPreparedStatementSetter#
+     * getBatchSize()
      */
     @Override
     public int getBatchSize() {

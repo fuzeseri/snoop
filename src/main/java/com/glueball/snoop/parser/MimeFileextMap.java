@@ -12,37 +12,84 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Object to map mime-types and the matching file extensions.
+ *
+ * @author karesz
+ */
 public final class MimeFileextMap {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOG = LogManager
             .getLogger(MimeFileextMap.class);
 
-    private final Map<String, String[]> mimeExtMap = new HashMap<String, String[]>();
+    /**
+     * Map to store the mime-types and the matching file extensions.
+     */
+    private final Map<String, String[]> mimeExtMap =
+            new HashMap<String, String[]>();
 
-    public MimeFileextMap(final Map<String, String[]> _mimeExtMap) {
+    /**
+     * Constructor.
+     *
+     * @param pMmimeExtMap
+     *            the map containing the mime-types and the matching file
+     *            extensions. This parameter is designed to create in spring
+     *            application xml.
+     */
+    public MimeFileextMap(final Map<String, String[]> pMmimeExtMap) {
 
-        this.mimeExtMap.putAll(_mimeExtMap);
+        this.mimeExtMap.putAll(pMmimeExtMap);
     }
 
-    public boolean hasMime(final String key) {
+    /**
+     * Check if the given mime-type is supported.
+     *
+     * @param mimeType
+     *            the mime-tyep to check.
+     * @return true if mime-type is supported.
+     */
+    public boolean hasMime(final String mimeType) {
 
-        return this.mimeExtMap.containsKey(key);
+        return this.mimeExtMap.containsKey(mimeType);
     }
 
-    public String[] getExtensions(final String key)
+    /**
+     * @param mimeType
+     *            the mime-type.
+     * @return Array of file extensions related to the mime-type.
+     * @throws UnsupportedMimeTypeException
+     *             if the mime-type is not supported.
+     */
+    public String[] getExtensions(final String mimeType)
             throws UnsupportedMimeTypeException {
 
-        if (this.mimeExtMap.containsKey(key)) {
-            return this.mimeExtMap.get(key);
+        if (hasMime(mimeType)) {
+
+            return this.mimeExtMap.get(mimeType);
         }
-        throw new UnsupportedMimeTypeException(key);
+        throw new UnsupportedMimeTypeException(mimeType);
     }
 
+    /**
+     * Check the file if the extension of it is valid for the mime-type of its
+     * content.
+     *
+     * @param mimeType
+     *            The mime-type of the file content.
+     * @param fileName
+     *            the name of the file.
+     * @return true if the extension of it is valid for the mime-type of its
+     *         content.
+     */
     public boolean checkFile(final String mimeType, final String fileName) {
 
         boolean check = false;
         if (hasMime(mimeType)) {
             for (final String ext : this.mimeExtMap.get(mimeType)) {
+
                 if (fileName.toLowerCase().endsWith(ext.toLowerCase())) {
                     check = true;
                     break;
@@ -51,10 +98,10 @@ public final class MimeFileextMap {
         }
 
         if (!check) {
+
             LOG.debug("File has no parsable mime-type: " + fileName
                     + " mime-type: " + mimeType);
         }
-
         return check;
     }
 }

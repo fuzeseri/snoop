@@ -41,7 +41,7 @@ public final class NetworkShares implements Serializable {
     /**
      * @return the shares
      */
-    public final List<NetworkShare> getShares() {
+    public List<NetworkShare> getShares() {
 
         return shares;
     }
@@ -50,7 +50,7 @@ public final class NetworkShares implements Serializable {
      * @param pShares
      *            the shares to set
      */
-    public final void setShares(List<NetworkShare> pShares) {
+    public void setShares(List<NetworkShare> pShares) {
 
         this.shares = pShares;
     }

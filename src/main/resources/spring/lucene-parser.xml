@@ -6,224 +6,364 @@
         xsi:schemaLocation="http://www.springframework.org/schema/beans
             				http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
             				http://www.springframework.org/schema/util
-    						http://www.springframework.org/schema/util/spring-util-4.0.xsd">	
+    						http://www.springframework.org/schema/util/spring-util-4.0.xsd">
 	
-	<bean id="luceneTiffParser" class="org.apache.tika.parser.image.TiffParser" />
-	<bean id="lucenePSDParser" class="org.apache.tika.parser.image.PSDParser" />
-	<bean id="luceneImageParser" class="org.apache.tika.parser.image.ImageParser" />
-	<bean id="luceneAudioParser" class="org.apache.tika.parser.audio.AudioParser" />
-	<bean id="luceneMidiParser" class="org.apache.tika.parser.audio.MidiParser" />
-	<bean id="luceneFLVParser" class="org.apache.tika.parser.video.FLVParser" />
-	<bean id="luceneRFC822Parser" class="org.apache.tika.parser.mail.RFC822Parser" />
-	<bean id="luceneOutlookPSTParser" class="org.apache.tika.parser.mbox.OutlookPSTParser" />
-	<bean id="luceneMboxParser" class="org.apache.tika.parser.mbox.MboxParser" />
-	<bean id="luceneClassParser" class="org.apache.tika.parser.asm.ClassParser" />
-	<bean id="luceneExecutableParser" class="org.apache.tika.parser.executable.ExecutableParser" />
-	<bean id="luceneDWGParser" class="org.apache.tika.parser.dwg.DWGParser" />
-	<bean id="luceneOpenDocumentParser" class="org.apache.tika.parser.odf.OpenDocumentParser" />
-	<bean id="luceneJpegParser" class="org.apache.tika.parser.jpeg.JpegParser" />
-	<bean id="luceneMp3Parser" class="org.apache.tika.parser.mp3.Mp3Parser" />
-	<bean id="lucenePDFParser" class="org.apache.tika.parser.pdf.PDFParser" />
-	<bean id="luceneIWorkPackageParser" class="org.apache.tika.parser.iwork.IWorkPackageParser" />
-	<bean id="luceneRTFParser" class="org.apache.tika.parser.rtf.RTFParser" />
-	<bean id="luceneHtmlParser" class="org.apache.tika.parser.html.HtmlParser" />
-	<bean id="lucenePRTParser" class="org.apache.tika.parser.prt.PRTParser" />
-	<bean id="luceneMP4Parser" class="org.apache.tika.parser.mp4.MP4Parser" />
-	<bean id="lucenePackageParser" class="org.apache.tika.parser.pkg.PackageParser" />
-	<bean id="luceneCompressorParser" class="org.apache.tika.parser.pkg.CompressorParser" />
-	<bean id="luceneIptcAnpaParser" class="org.apache.tika.parser.iptc.IptcAnpaParser" />
-	<bean id="luceneChmParser" class="org.apache.tika.parser.chm.ChmParser" />
-	<bean id="luceneEnviHeaderParser" class="org.apache.tika.parser.envi.EnviHeaderParser" />
-	<bean id="luceneSourceCodeParser" class="org.apache.tika.parser.code.SourceCodeParser" />
-	<bean id="luceneEpubParser" class="org.apache.tika.parser.epub.EpubParser" />
-	<bean id="luceneTXTParser" class="org.apache.tika.parser.txt.TXTParser" />
-	<bean id="luceneOpenOfficeParser" class="org.apache.tika.parser.opendocument.OpenOfficeParser" />
-	<bean id="luceneFeedParser" class="org.apache.tika.parser.feed.FeedParser" />
-	<bean id="luceneDcXMLParser" class="org.apache.tika.parser.xml.DcXMLParser" />
-	<bean id="luceneFictionBookParser" class="org.apache.tika.parser.xml.FictionBookParser" />
-	<bean id="luceneXMLParser" class="org.apache.tika.parser.xml.XMLParser" />
-	<bean id="lucenePkcs7Parser" class="org.apache.tika.parser.crypto.Pkcs7Parser" />
-	<bean id="luceneOOXMLParser" class="org.apache.tika.parser.microsoft.ooxml.OOXMLParser" />
-	<bean id="luceneOfficeParser" class="org.apache.tika.parser.microsoft.OfficeParser" />
-	<bean id="luceneTNEFParser" class="org.apache.tika.parser.microsoft.TNEFParser" />
-	<bean id="luceneMatParser" class="org.apache.tika.parser.mat.MatParser" />
-	<bean id="luceneNetCDFParser" class="org.apache.tika.parser.netcdf.NetCDFParser" />
-	<bean id="luceneAdobeFontMetricParser" class="org.apache.tika.parser.font.AdobeFontMetricParser" />
-	<bean id="luceneTrueTypeParser" class="org.apache.tika.parser.font.TrueTypeParser" />
-	<bean id="luceneHDFParser" class="org.apache.tika.parser.hdf.HDFParser" />
+	<bean id="generalMetaDataExtractor" class="com.glueball.snoop.metadata.extractor.GeneralMetaDataExtractor"/>
+
+	<!-- Tiff -->
+	<bean id="tikaTiffParser" class="org.apache.tika.parser.image.TiffParser" />
 
 	<bean id="tiffParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneTiffParser" />
+		<property name="tikaParser" ref="tikaTiffParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- PSD -->
+	<bean id="tikaPSDParser" class="org.apache.tika.parser.image.PSDParser" />
 
 	<bean id="psdParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="lucenePSDParser" />
+		<property name="tikaParser" ref="tikaPSDParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- Image -->
+	<bean id="tikaImageParser" class="org.apache.tika.parser.image.ImageParser" />
 
 	<bean id="imageParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneImageParser" />
+		<property name="tikaParser" ref="tikaImageParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- Audio -->
+	<bean id="tikaAudioParser" class="org.apache.tika.parser.audio.AudioParser" />
 
 	<bean id="audioParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneAudioParser" />
+		<property name="tikaParser" ref="tikaAudioParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
 
+	<!-- Midi -->
+	<bean id="tikaMidiParser" class="org.apache.tika.parser.audio.MidiParser" />
+	
 	<bean id="midiParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneMidiParser" />
+		<property name="tikaParser" ref="tikaMidiParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- Flv -->
+	<bean id="tikaFLVParser" class="org.apache.tika.parser.video.FLVParser" />
 
 	<bean id="flvParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneFLVParser" />
+		<property name="tikaParser" ref="tikaFLVParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- RFC822 -->
+	<bean id="tikaRFC822Parser" class="org.apache.tika.parser.mail.RFC822Parser" />
 
 	<bean id="rfc822Parser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneRFC822Parser" />
+		<property name="tikaParser" ref="tikaRFC822Parser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- Outlook PST -->
+	<bean id="tikaOutlookPSTParser" class="org.apache.tika.parser.mbox.OutlookPSTParser" />
 
 	<bean id="outlookPSTParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneOutlookPSTParser" />
+		<property name="tikaParser" ref="tikaOutlookPSTParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- MBox -->
+	<bean id="tikaMboxParser" class="org.apache.tika.parser.mbox.MboxParser" />
 
 	<bean id="mboxParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneMboxParser" />
+		<property name="tikaParser" ref="tikaMboxParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- Class -->
+	<bean id="tikaClassParser" class="org.apache.tika.parser.asm.ClassParser" />
 
 	<bean id="classParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneClassParser" />
+		<property name="tikaParser" ref="tikaClassParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- Executable -->
+	<bean id="tikaExecutableParser" class="org.apache.tika.parser.executable.ExecutableParser" />
 
 	<bean id="executableParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneExecutableParser" />
+		<property name="tikaParser" ref="tikaExecutableParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- DWG -->
+	<bean id="tikaDWGParser" class="org.apache.tika.parser.dwg.DWGParser" />
 
 	<bean id="dwgParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneDWGParser" />
+		<property name="tikaParser" ref="tikaDWGParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- OpenDocument -->
+	<bean id="tikaOpenDocumentParser" class="org.apache.tika.parser.odf.OpenDocumentParser" />
 
 	<bean id="openDocumentParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneOpenDocumentParser" />
+		<property name="tikaParser" ref="tikaOpenDocumentParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- JPEG -->
+	<bean id="tikaJpegParser" class="org.apache.tika.parser.jpeg.JpegParser" />
 
 	<bean id="jpegParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneJpegParser" />
+		<property name="tikaParser" ref="tikaJpegParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- MP3 -->
+	<bean id="tikaMp3Parser" class="org.apache.tika.parser.mp3.Mp3Parser" />
 
 	<bean id="mp3Parser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneMp3Parser" />
+		<property name="tikaParser" ref="tikaMp3Parser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
 
-	<bean id="pdfParser" class="com.glueball.snoop.parser.SnoopPDFParser">
-		<property name="luceneParser" ref="lucenePDFParser" />
+	<!-- PDF -->	
+	<bean id="PDFParserConfig" class="org.apache.tika.parser.pdf.PDFParserConfig">
+		<property name="extractInlineImages" value="false"/>
+        <property name="enableAutoSpace" value="true"/>
+        <property name="extractAcroFormContent" value="true"/>
+        <property name="extractAnnotationText" value="true"/>
+        <property name="useNonSequentialParser" value="true"/>
 	</bean>
+
+	<bean id="tikaPDFParser" class="org.apache.tika.parser.pdf.PDFParser">
+		<property name="PDFParserConfig" ref="PDFParserConfig" />
+	</bean>	
+
+	<bean id="pdfParser" class="com.glueball.snoop.parser.SnoopParserImpl">
+		<property name="tikaParser" ref="tikaPDFParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
+	</bean>
+
+	<!-- iWork -->
+	<bean id="tikaIWorkPackageParser" class="org.apache.tika.parser.iwork.IWorkPackageParser" />
 
 	<bean id="iWorkPackageParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneIWorkPackageParser" />
+		<property name="tikaParser" ref="tikaIWorkPackageParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- RTF -->
+	<bean id="tikaRTFParser" class="org.apache.tika.parser.rtf.RTFParser" />
 
 	<bean id="rtfParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneRTFParser" />
+		<property name="tikaParser" ref="tikaRTFParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- HTML -->
+	<bean id="tikaHtmlParser" class="org.apache.tika.parser.html.HtmlParser" />
 
 	<bean id="htmlParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneHtmlParser" />
+		<property name="tikaParser" ref="tikaHtmlParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- PRT -->
+	<bean id="tikaPRTParser" class="org.apache.tika.parser.prt.PRTParser" />
 
 	<bean id="prtParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="lucenePRTParser" />
+		<property name="tikaParser" ref="tikaPRTParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- MP4 -->
+	<bean id="tikaMP4Parser" class="org.apache.tika.parser.mp4.MP4Parser" />
 
 	<bean id="mp4Parser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneMP4Parser" />
+		<property name="tikaParser" ref="tikaMP4Parser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- Package -->
+	<bean id="tikaPackageParser" class="org.apache.tika.parser.pkg.PackageParser" />
 
 	<bean id="packageParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="lucenePackageParser" />
+		<property name="tikaParser" ref="tikaPackageParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- Compressor -->
+	<bean id="tikaCompressorParser" class="org.apache.tika.parser.pkg.CompressorParser" />
 
 	<bean id="compressorParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneCompressorParser" />
+		<property name="tikaParser" ref="tikaCompressorParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- IptcAnpa -->
+	<bean id="tikaIptcAnpaParser" class="org.apache.tika.parser.iptc.IptcAnpaParser" />
 
 	<bean id="iptcAnpaParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneIptcAnpaParser" />
+		<property name="tikaParser" ref="tikaIptcAnpaParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- Chm -->
+	<bean id="tikaChmParser" class="org.apache.tika.parser.chm.ChmParser" />
 
 	<bean id="chmParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneChmParser" />
+		<property name="tikaParser" ref="tikaChmParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- EnviHeader -->
+	<bean id="tikaEnviHeaderParser" class="org.apache.tika.parser.envi.EnviHeaderParser" />
 
 	<bean id="enviHeaderParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneEnviHeaderParser" />
+		<property name="tikaParser" ref="tikaEnviHeaderParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- SourceCode -->
+	<bean id="tikaSourceCodeParser" class="org.apache.tika.parser.code.SourceCodeParser" />
 
 	<bean id="sourceCodeParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneSourceCodeParser" />
+		<property name="tikaParser" ref="tikaSourceCodeParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- epub -->
+	<bean id="tikaEpubParser" class="org.apache.tika.parser.epub.EpubParser" />
 
 	<bean id="epubParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneEpubParser" />
+		<property name="tikaParser" ref="tikaEpubParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- txt -->
+	<bean id="tikaTXTParser" class="org.apache.tika.parser.txt.TXTParser" />
 
 	<bean id="txtParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneTXTParser" />
+		<property name="tikaParser" ref="tikaTXTParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- OpenOffice -->
+	<bean id="tikaOpenOfficeParser" class="org.apache.tika.parser.opendocument.OpenOfficeParser" />
 
 	<bean id="openOfficeParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneOpenOfficeParser" />
+		<property name="tikaParser" ref="tikaOpenOfficeParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- Feed -->
+	<bean id="tikaFeedParser" class="org.apache.tika.parser.feed.FeedParser" />
 
 	<bean id="feedParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneFeedParser" />
+		<property name="tikaParser" ref="tikaFeedParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- dcXml -->
+	<bean id="tikaDcXMLParser" class="org.apache.tika.parser.xml.DcXMLParser" />
 
 	<bean id="dcXMLParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneDcXMLParser" />
+		<property name="tikaParser" ref="tikaDcXMLParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- FictionBook -->
+	<bean id="tikaFictionBookParser" class="org.apache.tika.parser.xml.FictionBookParser" />
 
 	<bean id="fictionBookParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneFictionBookParser" />
+		<property name="tikaParser" ref="tikaFictionBookParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- XML -->
+	<bean id="tikaXMLParser" class="org.apache.tika.parser.xml.XMLParser" />
 
 	<bean id="xmlParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneXMLParser" />
+		<property name="tikaParser" ref="tikaXMLParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- Pkcs7 -->
+	<bean id="tikaPkcs7Parser" class="org.apache.tika.parser.crypto.Pkcs7Parser" />
 
 	<bean id="pkcs7Parser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="lucenePkcs7Parser" />
+		<property name="tikaParser" ref="tikaPkcs7Parser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- OOXML -->
+	<bean id="tikaOOXMLParser" class="org.apache.tika.parser.microsoft.ooxml.OOXMLParser" />
 
 	<bean id="ooXMLParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneOOXMLParser" />
+		<property name="tikaParser" ref="tikaOOXMLParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- MS Office -->
+	<bean id="tikaOfficeParser" class="org.apache.tika.parser.microsoft.OfficeParser" />
 
 	<bean id="officeParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneOfficeParser" />
+		<property name="tikaParser" ref="tikaOfficeParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- MS TNEF -->
+	<bean id="tikaTNEFParser" class="org.apache.tika.parser.microsoft.TNEFParser" />
 
 	<bean id="tnefParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneTNEFParser" />
+		<property name="tikaParser" ref="tikaTNEFParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- mat -->
+	<bean id="tikaMatParser" class="org.apache.tika.parser.mat.MatParser" />
 
 	<bean id="matParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneMatParser" />
+		<property name="tikaParser" ref="tikaMatParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- CFD -->
+	<bean id="tikaNetCDFParser" class="org.apache.tika.parser.netcdf.NetCDFParser" />
 
 	<bean id="netCDFParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneNetCDFParser" />
+		<property name="tikaParser" ref="tikaNetCDFParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- Adobe Font Metric -->
+	<bean id="tikaAdobeFontMetricParser" class="org.apache.tika.parser.font.AdobeFontMetricParser" />
 
 	<bean id="adobeFontMetricParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneAdobeFontMetricParser" />
+		<property name="tikaParser" ref="tikaAdobeFontMetricParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
+
+	<!-- TrueType -->
+	<bean id="tikaTrueTypeParser" class="org.apache.tika.parser.font.TrueTypeParser" />
 
 	<bean id="trueTypeParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneTrueTypeParser" />
+		<property name="tikaParser" ref="tikaTrueTypeParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
 
+	<!-- HDF -->
+	<bean id="tikaHDFParser" class="org.apache.tika.parser.hdf.HDFParser" />
+
 	<bean id="hdfParser" class="com.glueball.snoop.parser.SnoopParserImpl">
-		<property name="luceneParser" ref="luceneHDFParser" />
+		<property name="tikaParser" ref="tikaHDFParser" />
+		<property name="metaDataExtractor" ref="generalMetaDataExtractor"/>
 	</bean>
-	
+
 	<bean id="parserMap" class="com.glueball.snoop.parser.ParserMap" scope="singleton">
 		<constructor-arg>
 			<map>
@@ -377,4 +517,5 @@
 			</map>
 		</constructor-arg>
 	</bean>
+
 </beans>
