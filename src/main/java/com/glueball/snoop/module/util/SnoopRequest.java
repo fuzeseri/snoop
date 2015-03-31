@@ -17,20 +17,52 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
 
-public class SnoopRequest<T> {
+/**
+ * Helper class to communicate with the server over json.
+ * 
+ * @author karesz
+ * @param <T>
+ *            the of the entity to send/receive.
+ */
+public final class SnoopRequest<T> {
 
+    /**
+     * ServerMessage codec interface declaration.
+     * 
+     * @author karesz
+     */
     interface MessageCodec extends JsonEncoderDecoder<ServerMessage> {
     }
 
+    /**
+     * ServerMessage codec instance.
+     */
     private final MessageCodec messageCodec = GWT.create(MessageCodec.class);
 
+    /**
+     * Generic codec.
+     */
     private final JsonEncoderDecoder<T> codec;
 
+    /**
+     * Constructor.
+     *
+     * @param codec
+     *            the codec of the entity type to send/receive.
+     */
     public SnoopRequest(final JsonEncoderDecoder<T> codec) {
 
         this.codec = codec;
     }
 
+    /**
+     * Sends a restful json request to server and handles the response.
+     *
+     * @param url
+     *            the url of the restful request.
+     * @param callback
+     *            the response handler callback.
+     */
     public void request(final String url, final SnoopRequestCallback<T> callback) {
 
         final Resource resource = new Resource(url);

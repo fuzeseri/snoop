@@ -20,28 +20,72 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Result extends Composite {
+/**
+ * View of the search results on web ui.
+ *
+ * @author karesz
+ */
+public final class Result extends Composite {
 
+    /**
+     * Title of the document.
+     */
     @UiField
     Label title;
+
+    /**
+     * Author of the document.
+     */
     @UiField
     Label author;
+
+    /**
+     * Description of the document.
+     */
     @UiField
     Label description;
+
+    /**
+     * Link to the uri of the file.
+     */
     @UiField
     Anchor link;
+
+    /**
+     * Mime icon image.
+     */
     @UiField
     Image mimeIcon;
 
+    /**
+     * GWT uibinder instance.
+     */
     private static ResultUiBinder uiBinder = GWT.create(ResultUiBinder.class);
 
+    /**
+     * GWT uibinder interface declaration.
+     * 
+     * @author karesz
+     */
     interface ResultUiBinder extends UiBinder<Widget, Result> {
     }
 
+    /**
+     * Widget object.
+     */
     private final Widget widget;
 
+    /**
+     * The search result.
+     */
     private final SearchResult result;
 
+    /**
+     * Constructor.
+     *
+     * @param res
+     *            the SearchResult to set.
+     */
     public Result(final SearchResult res) {
 
         this.widget = uiBinder.createAndBindUi(this);
@@ -49,6 +93,9 @@ public class Result extends Composite {
         init();
     }
 
+    /**
+     * Initialization method.
+     */
     private void init() {
 
         final String fileExt = this.result
@@ -66,12 +113,22 @@ public class Result extends Composite {
         link.setText(this.result.getFileName());
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.google.gwt.user.client.ui.Widget#asWidget()
+     */
     @Override
     public Widget asWidget() {
 
         return this.widget;
     }
 
+    /**
+     * OnClick event handler od the link.
+     *
+     * @param event
+     *            ClickEvent
+     */
     @UiHandler("link")
     public void linkClickHandler(final ClickEvent event) {
 

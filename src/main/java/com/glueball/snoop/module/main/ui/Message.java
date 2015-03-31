@@ -16,29 +16,64 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Message extends Composite {
+/**
+ * View of a server message on the GWT web ui.
+ * 
+ * @author karesz
+ */
+public final class Message extends Composite {
 
+    /**
+     * Icon image.
+     */
     @UiField
     Image icon;
+
+    /**
+     * Text message.
+     */
     @UiField
     Label message;
 
-    private static MessageUiBinder uiBinder = GWT.create(MessageUiBinder.class);
+    /**
+     * GWT uibinder instance.
+     */
+    private static MessageUiBinder UIBINDER = GWT.create(MessageUiBinder.class);
 
+    /**
+     * GWT uibinder interface declaration.
+     * 
+     * @author karesz
+     */
     interface MessageUiBinder extends UiBinder<Widget, Message> {
     }
 
+    /**
+     * Widget object.
+     */
     private final Widget widget;
 
+    /**
+     * The server message field.
+     */
     private final ServerMessage serverMessage;
 
+    /**
+     * Constructor.
+     *
+     * @param msg
+     *            The server message to set.
+     */
     public Message(final ServerMessage msg) {
 
-        this.widget = uiBinder.createAndBindUi(this);
+        this.widget = UIBINDER.createAndBindUi(this);
         this.serverMessage = msg;
         init();
     }
 
+    /**
+     * Initialization of the object.
+     */
     private void init() {
 
         icon.setAltText(ServerMessage.getTypeText(serverMessage
@@ -48,6 +83,10 @@ public class Message extends Composite {
         message.setText(serverMessage.getMessage());
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.google.gwt.user.client.ui.Widget#asWidget()
+     */
     @Override
     public Widget asWidget() {
 

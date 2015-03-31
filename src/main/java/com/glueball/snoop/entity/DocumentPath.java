@@ -154,22 +154,29 @@ public final class DocumentPath extends SnoopDocument {
             .unmodifiableList(Arrays
                     .asList(new String[] {
                             "CREATE INDEX IF NOT EXISTS "
-                                    + "ndxDocId ON DOCUMENT_PATH (id)",
+                                    + "ndxDocId "
+                                    + "ON DOCUMENT_PATH (id)",
 
                             "CREATE INDEX IF NOT EXISTS "
-                                    + "ndxDocShareName ON DOCUMENT_PATH (share_name)",
+                                    + "ndxDocShareName "
+                                    + "ON DOCUMENT_PATH (share_name)",
 
                             "CREATE INDEX IF NOT EXISTS "
-                                    + "ndxDocFileName ON DOCUMENT_PATH (file_name)",
+                                    + "ndxDocFileName "
+                                    + "ON DOCUMENT_PATH (file_name)",
 
                             "CREATE INDEX IF NOT EXISTS "
-                                    + "ndxDocUri ON DOCUMENT_PATH (uri)",
+                                    + "ndxDocUri "
+                                    + "ON DOCUMENT_PATH (uri)",
 
                             "CREATE INDEX IF NOT EXISTS "
-                                    + "ndxDocPath ON DOCUMENT_PATH (path)",
+                                    + "ndxDocPath "
+                                    + "ON DOCUMENT_PATH (path)",
 
                             "CREATE INDEX IF NOT EXISTS "
-                                    + "ndxDocLocalPath ON DOCUMENT_PATH (local_path)",
+                                    + "ndxDocLocalPath "
+                                    + "ON DOCUMENT_PATH (local_path)",
+
                             "CREATE INDEX IF NOT EXISTS "
                                     + "ndxDocLastModifiedTime "
                                     + "ON DOCUMENT_PATH (last_modified_time)",

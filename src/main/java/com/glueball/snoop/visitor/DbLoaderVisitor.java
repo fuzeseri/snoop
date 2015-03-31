@@ -26,29 +26,68 @@ import com.glueball.snoop.parser.MimeFileextMap;
 import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.util.MD5;
 
+/**
+ * File Visitor implementation. Check if the visited file has a parsable content
+ * and puts it to the documentpaths list if it has.
+ * 
+ * @author karesz
+ */
 public class DbLoaderVisitor implements FileVisitor<Path> {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOG = LogManager
             .getLogger(DbLoaderVisitor.class);
 
+    /**
+     * ParserMap containing the supporter parser for the mime-types.
+     */
     private final ParserMap parserMap;
 
+    /**
+     * MimeFileextMap object to check if the file extension is valid for the
+     * mime-type of its content.
+     */
     private final MimeFileextMap mimeFileextMap;
 
+    /**
+     * The DocumentPath list to put the supported files into it.
+     */
     private final List<DocumentPath> docs;
 
+    /**
+     * The network share object.
+     */
     private final NetworkShare share;
 
-    public DbLoaderVisitor(final List<DocumentPath> _docs,
-            final ParserMap _parserMap, final MimeFileextMap _mimeFileextMap,
-            final NetworkShare _share) {
+    /**
+     * Constructor.
+     *
+     * @param pDocs
+     *            the DocumentPath list to set.
+     * @param pParserMap
+     *            the ParserMap to set.
+     * @param pMimeFileextMap
+     *            the MimeFileextMap to set.
+     * @param pShare
+     *            the NetworkShare to set.
+     */
+    public DbLoaderVisitor(final List<DocumentPath> pDocs,
+            final ParserMap pParserMap, final MimeFileextMap pMimeFileextMap,
+            final NetworkShare pShare) {
 
-        this.docs = _docs;
-        this.parserMap = _parserMap;
-        this.mimeFileextMap = _mimeFileextMap;
-        this.share = _share;
+        this.docs = pDocs;
+        this.parserMap = pParserMap;
+        this.mimeFileextMap = pMimeFileextMap;
+        this.share = pShare;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.nio.file.FileVisitor#preVisitDirectory(java.lang.Object,
+     * java.nio.file.attribute.BasicFileAttributes)
+     */
     @Override
     public FileVisitResult preVisitDirectory(final Path dir,
             final BasicFileAttributes attrs) throws IOException {
@@ -56,6 +95,11 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
         return FileVisitResult.CONTINUE;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.nio.file.FileVisitor#visitFile(java.lang.Object,
+     * java.nio.file.attribute.BasicFileAttributes)
+     */
     @Override
     public FileVisitResult visitFile(final Path file,
             final BasicFileAttributes attrs) throws IOException {
@@ -100,6 +144,11 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
         return FileVisitResult.CONTINUE;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.nio.file.FileVisitor#visitFileFailed(java.lang.Object,
+     * java.io.IOException)
+     */
     @Override
     public FileVisitResult visitFileFailed(final Path file,
             final IOException exc) throws IOException {
@@ -107,6 +156,11 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
         return FileVisitResult.CONTINUE;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.nio.file.FileVisitor#postVisitDirectory(java.lang.Object,
+     * java.io.IOException)
+     */
     @Override
     public FileVisitResult postVisitDirectory(final Path dir,
             final IOException exc) throws IOException {

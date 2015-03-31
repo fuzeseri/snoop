@@ -43,7 +43,7 @@ public class DocumentPathBeanImpl implements DocumentPathBean {
      *            the DocumentPathDao instance.
      */
     @Required
-    public void setDao(final DocumentPathDao pDao) {
+    public final void setDao(final DocumentPathDao pDao) {
 
         this.dao = pDao;
     }

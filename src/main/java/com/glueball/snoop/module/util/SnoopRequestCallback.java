@@ -8,9 +8,28 @@ package com.glueball.snoop.module.util;
  */
 import com.glueball.snoop.module.main.model.ServerMessage;
 
+/**
+ * Callback interface to handle the server reponse.
+ *
+ * @author karesz
+ * @param <T>
+ *            the type of the received object.
+ */
 public interface SnoopRequestCallback<T> {
 
-    public void onSuccess(T entity);
+    /**
+     * Callback method to call on successful request/response.
+     *
+     * @param entity
+     *            the entity received.
+     */
+    void onSuccess(final T entity);
 
-    public void onMessage(ServerMessage message);
+    /**
+     * Callback method to call on unsuccessful request/response.
+     *
+     * @param message
+     *            the ServeMessage object received.
+     */
+    void onMessage(final ServerMessage message);
 }

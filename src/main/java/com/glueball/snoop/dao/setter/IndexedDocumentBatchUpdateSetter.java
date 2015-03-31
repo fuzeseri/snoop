@@ -20,7 +20,7 @@ import com.glueball.snoop.entity.IndexedDocument;
  *
  * @author karesz
  */
-public class IndexedDocumentBatchUpdateSetter implements
+public final class IndexedDocumentBatchUpdateSetter implements
         BatchPreparedStatementSetter {
 
     /**

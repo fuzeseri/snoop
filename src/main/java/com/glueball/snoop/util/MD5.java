@@ -10,8 +10,34 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class MD5 {
+/**
+ * Utility class to create md5 digest.
+ *
+ * @author karesz
+ */
+public final class MD5 {
 
+    /**
+     * Hide constructor.
+     */
+    private MD5() {
+
+    }
+
+    /**
+     * Hexadecimal value 0xFF.
+     */
+    private static final int HEXFF = 0xff;
+
+    /**
+     * Created an md5 digest.
+     *
+     * @param original
+     *            the original string.
+     * @return the md5 digest created.
+     * @throws NoSuchAlgorithmException
+     *             if the md5 algorithm is not supported.
+     */
     public static final String md5Digest(final String original)
             throws NoSuchAlgorithmException {
 
@@ -23,9 +49,10 @@ public class MD5 {
         final StringBuffer hexString = new StringBuffer();
         for (int i = 0; i < mdbytes.length; i++) {
 
-            String hex = Integer.toHexString(0xff & mdbytes[i]);
-            if (hex.length() == 1)
+            final String hex = Integer.toHexString(HEXFF & mdbytes[i]);
+            if (hex.length() == 1) {
                 hexString.append('0');
+            }
             hexString.append(hex);
         }
         return hexString.toString();

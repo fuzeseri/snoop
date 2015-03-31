@@ -23,8 +23,11 @@ import com.glueball.snoop.metadata.extractor.MetaDataExtractor;
 /**
  * @author karesz
  */
-public final class SnoopParserImpl implements SnoopParser {
+public class SnoopParserImpl implements SnoopParser {
 
+    /**
+     * Tika parser instance.
+     */
     private Parser tikaParser;
 
     /**
@@ -32,7 +35,7 @@ public final class SnoopParserImpl implements SnoopParser {
      *            the tika parser to set
      */
     @Required
-    public void setTikaParser(final Parser pParser) {
+    public final void setTikaParser(final Parser pParser) {
 
         this.tikaParser = pParser;
     }
@@ -43,11 +46,12 @@ public final class SnoopParserImpl implements SnoopParser {
     private MetaDataExtractor metaDataExtractor;
 
     /**
-     * @param metaDataExtractor
+     * @param pMetaDataExtractor
      *            the metaDataExtractor to set
      */
     @Required
-    public void setMetaDataExtractor(final MetaDataExtractor pMetaDataExtractor) {
+    public final void setMetaDataExtractor(
+            final MetaDataExtractor pMetaDataExtractor) {
 
         this.metaDataExtractor = pMetaDataExtractor;
     }
@@ -58,10 +62,10 @@ public final class SnoopParserImpl implements SnoopParser {
      * java.io.Writer)
      */
     @Override
-    public final Meta parseContent(final String _uri, final Writer output)
+    public final Meta parseContent(final String pUri, final Writer output)
             throws IOException, SAXException, TikaException {
 
-        try (final InputStream is = new FileInputStream(new File(_uri))) {
+        try (final InputStream is = new FileInputStream(new File(pUri))) {
 
             return parse(is, output);
         }
@@ -98,9 +102,9 @@ public final class SnoopParserImpl implements SnoopParser {
     /**
      * Parse content from a file.
      *
-     * @param is
-     *            InputStream with the parsable content.
-     * @param out
+     * @param input
+     *            InputStream with the file content.
+     * @param output
      *            Writer object to write the file text content to it.
      * @return Meta object filled with the parsed meta data.
      * @throws IOException

@@ -13,11 +13,27 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.RootPanel;
 
-public class MainApp implements EntryPoint {
+/**
+ * Main class of the GWT serach web ui application.
+ *
+ * @author karesz
+ */
+public final class MainApp implements EntryPoint {
 
-    final MainWindow window = new MainWindow();
-    final SnoopHead head = new SnoopHead(window.getHits());
+    /**
+     * The main windows of the screen.
+     */
+    private final MainWindow window = new MainWindow();
 
+    /**
+     * The header with the search bar.
+     */
+    private final SnoopHead head = new SnoopHead(window.getHits());
+
+    /*
+     * (non-Javadoc)
+     * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
+     */
     @Override
     public void onModuleLoad() {
 

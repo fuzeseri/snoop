@@ -13,7 +13,7 @@ import org.apache.cxf.common.util.StringUtils;
  *
  * @author karesz
  */
-public final class Meta {
+public class Meta {
 
     /**
      * The author of the document.
@@ -77,7 +77,7 @@ public final class Meta {
      *
      * @return true if metadata has parsed from the file.
      */
-    public boolean hasContent() {
+    public final boolean hasContent() {
 
         return (title.length() + author.length() + description.length()) > 0;
     }
@@ -87,7 +87,7 @@ public final class Meta {
      *
      * @return true if title has parsed from the file.
      */
-    public boolean hasTitle() {
+    public final boolean hasTitle() {
 
         return !StringUtils.isEmpty(title);
     }
@@ -97,7 +97,7 @@ public final class Meta {
      *
      * @return true if author has parsed from the file.
      */
-    public boolean hasAuthor() {
+    public final boolean hasAuthor() {
 
         return !StringUtils.isEmpty(author);
     }
@@ -107,7 +107,7 @@ public final class Meta {
      *
      * @return true if description has parsed from the file.
      */
-    public boolean hasDescription() {
+    public final boolean hasDescription() {
 
         return !StringUtils.isEmpty(description);
     }
@@ -117,7 +117,7 @@ public final class Meta {
      * @see java.lang.Object#toString()
      */
     @Override
-    public String toString() {
+    public final String toString() {
 
         return "author: " + author + " ,title: " + title + " ,description: "
                 + description;

@@ -12,9 +12,29 @@ import java.io.InputStream;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+/**
+ * Utility class to help providing the file binary data.
+ *
+ * @author karesz
+ */
 final class FileServerUtil {
 
-    public static String getContent(String filename) throws IOException {
+    /**
+     * Hide constructor.
+     */
+    private FileServerUtil() {
+
+    }
+
+    /**
+     * Converts the content of a file to character stream.
+     *
+     * @param filename
+     * @return
+     * @throws IOException
+     */
+    public static final String getContent(final String filename)
+            throws IOException {
 
         final Resource res = new ClassPathResource(filename);
 
