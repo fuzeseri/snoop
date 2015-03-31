@@ -51,10 +51,9 @@ public final class SearchResults implements Serializable,
     private int currentPage;
 
     /**
-     * Hidden default Constructor.
+     * Default Constructor.
      */
-    @SuppressWarnings("unused")
-    private SearchResults() {
+    public SearchResults() {
 
     }
 
