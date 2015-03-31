@@ -8,55 +8,114 @@ package com.glueball.snoop.entity;
  */
 import org.apache.cxf.common.util.StringUtils;
 
-public class Meta {
+/**
+ * Representation of the document metadata.
+ *
+ * @author karesz
+ */
+public final class Meta {
 
+    /**
+     * The author of the document.
+     */
     private final String author;
+
+    /**
+     * The title of the document.
+     */
     private final String title;
+
+    /**
+     * The description of the document.
+     */
     private final String description;
 
-    public Meta(final String _author, final String _title,
-            final String _description) {
+    /**
+     * Constructor.
+     *
+     * @param pAuthor
+     *            The author of the document.
+     * @param pTitle
+     *            The title of the document.
+     * @param pDescription
+     *            The description of the document.
+     */
+    public Meta(final String pAuthor, final String pTitle,
+            final String pDescription) {
 
-        this.author = _author;
-        this.title = _title;
-        this.description = _description;
+        this.author = pAuthor;
+        this.title = pTitle;
+        this.description = pDescription;
     }
 
-    public String getAuthor() {
+    /**
+     * @return the author
+     */
+    public final String getAuthor() {
 
         return author;
     }
 
-    public String getTitle() {
+    /**
+     * @return the title
+     */
+    public final String getTitle() {
 
         return title;
     }
 
-    public String getDescription() {
+    /**
+     * @return the description
+     */
+    public final String getDescription() {
 
         return description;
     }
 
+    /**
+     * Checks if the document has parsed metadata.
+     *
+     * @return true if metadata has parsed from the file.
+     */
     public boolean hasContent() {
 
         return (title.length() + author.length() + description.length()) > 0;
     }
 
+    /**
+     * Checks if the document has title.
+     *
+     * @return true if title has parsed from the file.
+     */
     public boolean hasTitle() {
 
         return !StringUtils.isEmpty(title);
     }
 
+    /**
+     * Checks if the document has author.
+     *
+     * @return true if author has parsed from the file.
+     */
     public boolean hasAuthor() {
 
         return !StringUtils.isEmpty(author);
     }
 
+    /**
+     * Checks if the document has description.
+     *
+     * @return true if description has parsed from the file.
+     */
     public boolean hasDescription() {
 
         return !StringUtils.isEmpty(description);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
 

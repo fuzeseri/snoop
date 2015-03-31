@@ -8,42 +8,208 @@ package com.glueball.snoop.entity;
  */
 import java.sql.Timestamp;
 
-public interface SnoopDocument {
+/**
+ * Abstract entity class to represent the snoop document.
+ *
+ * @author karesz
+ */
+public abstract class SnoopDocument {
 
-    public String getId();
+    /**
+     * Primary key to identify the document.
+     */
+    private String id;
 
-    public void setId(String id);
+    /**
+     * The name of the network share where file replaced.
+     */
+    private String shareName;
 
-    public String getShareName();
+    /**
+     * The name of the file.
+     */
+    private String fileName;
 
-    public void setShareName(String shareName);
+    /**
+     * The path of the file as an uri.
+     */
+    private String uri;
 
-    public String getFileName();
+    /**
+     * The path of the file.
+     */
+    private String path;
 
-    public void setFileName(String fileName);
+    /**
+     * The local path of the file.
+     */
+    private String localPath;
 
-    public String getUri();
+    /**
+     * The timestamp when the file was modified last time.
+     */
+    private Timestamp lastModifiedTime;
 
-    public void setUri(String uri);
+    /**
+     * The timestamp when the file was indexed last time.
+     */
+    private Timestamp lastIndexedTime;
 
-    public String getPath();
+    /**
+     * The mime type of the file content.
+     */
+    private String contentType;
 
-    public void setPath(String path);
+    /**
+     * @return the id
+     */
+    public final String getId() {
 
-    public Timestamp getLastModifiedTime();
+        return id;
+    }
 
-    public void setLastModifiedTime(Timestamp lastModifiedTime);
+    /**
+     * @param id
+     *            the id to set
+     */
+    public final void setId(final String id) {
 
-    public String getContentType();
+        this.id = id;
+    }
 
-    public void setContentType(String contentType);
+    /**
+     * @return the shareName
+     */
+    public final String getShareName() {
 
-    public Timestamp getLastIndexedTime();
+        return shareName;
+    }
 
-    public void setLastIndexedTime(Timestamp lastIndexedTime);
+    /**
+     * @param shareName
+     *            the shareName to set
+     */
+    public final void setShareName(final String shareName) {
 
-    public String getLocalPath();
+        this.shareName = shareName;
+    }
 
-    public void setLocalPath(String localPath);
+    /**
+     * @return the fileName
+     */
+    public final String getFileName() {
 
+        return fileName;
+    }
+
+    /**
+     * @param fileName
+     *            the fileName to set
+     */
+    public final void setFileName(final String fileName) {
+
+        this.fileName = fileName;
+    }
+
+    /**
+     * @return the uri
+     */
+    public final String getUri() {
+
+        return uri;
+    }
+
+    /**
+     * @param uri
+     *            the uri to set
+     */
+    public final void setUri(final String uri) {
+
+        this.uri = uri;
+    }
+
+    /**
+     * @return the path
+     */
+    public final String getPath() {
+
+        return path;
+    }
+
+    /**
+     * @param path
+     *            the path to set
+     */
+    public final void setPath(final String path) {
+
+        this.path = path;
+    }
+
+    /**
+     * @return the localPath
+     */
+    public final String getLocalPath() {
+
+        return localPath;
+    }
+
+    /**
+     * @param localPath
+     *            the localPath to set
+     */
+    public final void setLocalPath(final String localPath) {
+
+        this.localPath = localPath;
+    }
+
+    /**
+     * @return the lastModifiedTime
+     */
+    public final Timestamp getLastModifiedTime() {
+
+        return lastModifiedTime;
+    }
+
+    /**
+     * @param lastModifiedTime
+     *            the lastModifiedTime to set
+     */
+    public final void setLastModifiedTime(final Timestamp lastModifiedTime) {
+
+        this.lastModifiedTime = lastModifiedTime;
+    }
+
+    /**
+     * @return the lastIndexedTime
+     */
+    public final Timestamp getLastIndexedTime() {
+
+        return lastIndexedTime;
+    }
+
+    /**
+     * @param lastIndexedTime
+     *            the lastIndexedTime to set
+     */
+    public final void setLastIndexedTime(final Timestamp lastIndexedTime) {
+
+        this.lastIndexedTime = lastIndexedTime;
+    }
+
+    /**
+     * @return the contentType
+     */
+    public final String getContentType() {
+
+        return contentType;
+    }
+
+    /**
+     * @param contentType
+     *            the contentType to set
+     */
+    public final void setContentType(final String contentType) {
+
+        this.contentType = contentType;
+    }
 }

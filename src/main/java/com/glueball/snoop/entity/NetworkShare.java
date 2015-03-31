@@ -15,64 +15,104 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(
-        name = "share", namespace = "http://snoop.glueball.com/share")
+        name = "share",
+        namespace = "http://snoop.glueball.com/share")
 public class NetworkShare implements Serializable {
 
+    /**
+     * Serial version id.
+     */
     private static final long serialVersionUID = 1L;
 
-    @XmlElement(
-            namespace = "http://snoop.glueball.com/share")
+    /**
+     * The name of the share.
+     */
+    @XmlElement(namespace = "http://snoop.glueball.com/share")
     private String name;
 
-    @XmlElement(
-            namespace = "http://snoop.glueball.com/share")
+    /**
+     * The local path of the file system directory.
+     */
+    @XmlElement(namespace = "http://snoop.glueball.com/share")
     private String localPath;
 
-    @XmlElement(
-            namespace = "http://snoop.glueball.com/share")
+    /**
+     * The remote path of the file system directory.
+     */
+    @XmlElement(namespace = "http://snoop.glueball.com/share")
     private String remotePath;
 
-    @XmlElement(
-            namespace = "http://snoop.glueball.com/share")
-    private boolean aktiv = true;
+    /**
+     * Active.
+     */
+    @XmlElement(namespace = "http://snoop.glueball.com/share")
+    private boolean active = true;
 
-    public String getName() {
+    /**
+     * @return the name
+     */
+    public final String getName() {
 
         return name;
     }
 
-    public void setName(String name) {
+    /**
+     * @param pName
+     *            the name to set
+     */
+    public final void setName(final String pName) {
 
-        this.name = name;
+        this.name = pName;
     }
 
-    public String getLocalPath() {
+    /**
+     * @return the localPath
+     */
+    public final String getLocalPath() {
 
         return localPath;
     }
 
-    public void setLocalPath(String localPath) {
+    /**
+     * @param pLocalPath
+     *            the localPath to set
+     */
+    public final void setLocalPath(final String pLocalPath) {
 
-        this.localPath = localPath;
+        this.localPath = pLocalPath;
     }
 
-    public String getRemotePath() {
+    /**
+     * @return the remotePath
+     */
+    public final String getRemotePath() {
 
         return remotePath;
     }
 
-    public void setRemotePath(String remotePath) {
+    /**
+     * @param pRemotePath
+     *            the remotePath to set
+     */
+    public final void setRemotePath(final String pRemotePath) {
 
-        this.remotePath = remotePath;
+        this.remotePath = pRemotePath;
     }
 
-    public boolean isAktiv() {
+    /**
+     * @return the active
+     */
+    public final boolean isActive() {
 
-        return aktiv;
+        return active;
     }
 
-    public void setAktiv(boolean aktiv) {
+    /**
+     * @param active
+     *            the pActive to set
+     */
+    public final void setActive(final boolean pActive) {
 
-        this.aktiv = aktiv;
+        this.active = pActive;
     }
 }

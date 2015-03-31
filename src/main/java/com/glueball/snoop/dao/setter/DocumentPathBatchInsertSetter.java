@@ -14,18 +14,40 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
 import com.glueball.snoop.entity.DocumentPath;
 
+/**
+ * BatchPreparedStatementSetter implementation used in batch insert statements
+ * to insert a set of DocumentPaths to the relational database.
+ *
+ * @author karesz
+ */
 public class DocumentPathBatchInsertSetter implements
         BatchPreparedStatementSetter {
 
+    /**
+     * List of DocumentPaths to insert to the database.
+     */
     final List<DocumentPath> docs;
 
-    public DocumentPathBatchInsertSetter(final List<DocumentPath> docs) {
+    /**
+     * Constructor.
+     *
+     * @param pDocs
+     *            The list of DocumentPaths to insert to the database.
+     */
+    public DocumentPathBatchInsertSetter(final List<DocumentPath> pDocs) {
 
-        this.docs = docs;
+        this.docs = pDocs;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.BatchPreparedStatementSetter#setValues(
+     * java.sql.PreparedStatement, int)
+     */
     @Override
-    public void setValues(PreparedStatement pstmt, int i) throws SQLException {
+    public void setValues(final PreparedStatement pstmt, final int i)
+            throws SQLException {
 
         pstmt.setString(1, docs.get(i).getId());
         pstmt.setString(2, docs.get(i).getShareName());
@@ -37,6 +59,11 @@ public class DocumentPathBatchInsertSetter implements
         pstmt.setString(8, docs.get(i).getContentType());
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.BatchPreparedStatementSetter#getBatchSize()
+     */
     @Override
     public int getBatchSize() {
 

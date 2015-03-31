@@ -29,28 +29,30 @@ public class ClientMain {
         final Random rand = new Random(1000);
 
         final List<Thread> ths = new ArrayList<Thread>();
-        for (int ind = 0; ind < 300; ind++) {
+        for (int ind = 0; ind < 100; ind++) {
 
             final Thread th = new Thread(new Runnable() {
 
                 @Override
                 public void run() {
 
-                    for (int i = 0; i < 50; i++) {
+                    for (int i = 0; i < 100; i++) {
 
                         try {
                             Thread.sleep(500 + rand.nextInt(500));
                         } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
+
                             e.printStackTrace();
                         }
 
                         final WebClient client = WebClient.create(
                                 "http://localhost:8080/", providers);
+
                         final SearchResults results = client
                                 .path("search/java").query("page=1")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .get(SearchResults.class);
+
                         System.out.println(i);
                         client.close();
                     }
@@ -61,13 +63,10 @@ public class ClientMain {
             ths.add(th);
         }
 
-        for (final Thread th : ths)
+        for (final Thread th : ths) {
             th.join();
+        }
 
         System.out.println("Runtime: " + (System.currentTimeMillis() - start));
-        /*
-         * for (final SearchResult result : results) {
-         * System.out.println(result.toString()); }
-         */
     }
 }

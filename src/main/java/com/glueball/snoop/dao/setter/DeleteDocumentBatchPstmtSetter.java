@@ -12,16 +12,37 @@ import java.util.List;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
-public class DeleteDocumentBatchPstmtSetter implements
+/**
+ * BatchPreparedStatementSetter implementation to set document ids in batch
+ * delete statements.
+ *
+ * @author karesz
+ */
+public final class DeleteDocumentBatchPstmtSetter implements
         BatchPreparedStatementSetter {
 
+    /**
+     * List of document ids to delete.
+     */
     final List<String> docIds;
 
-    public DeleteDocumentBatchPstmtSetter(final List<String> _docIds) {
+    /**
+     * Constructor.
+     *
+     * @param pDocIds
+     *            The list of document ids to delete.
+     */
+    public DeleteDocumentBatchPstmtSetter(final List<String> pDocIds) {
 
-        this.docIds = _docIds;
+        this.docIds = pDocIds;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.BatchPreparedStatementSetter#setValues(
+     * java.sql.PreparedStatement, int)
+     */
     @Override
     public void setValues(final PreparedStatement pstmt, int i)
             throws SQLException {
@@ -29,6 +50,11 @@ public class DeleteDocumentBatchPstmtSetter implements
         pstmt.setString(1, this.docIds.get(i));
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.BatchPreparedStatementSetter#getBatchSize()
+     */
     @Override
     public int getBatchSize() {
 

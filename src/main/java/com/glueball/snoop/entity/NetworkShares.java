@@ -15,24 +15,43 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Object to store the list of network shares.
+ *
+ * @author karesz
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(
-        name = "shares", namespace = "http://snoop.glueball.com/share")
-public class NetworkShares implements Serializable {
+        name = "shares",
+        namespace = "http://snoop.glueball.com/share")
+public final class NetworkShares implements Serializable {
 
+    /**
+     * Serial version id.
+     */
     private static final long serialVersionUID = 1L;
 
-    @XmlElement(
-            name = "share", namespace = "http://snoop.glueball.com/share")
+    /**
+     * List of network shares.
+     */
+    @XmlElement(name = "share",
+            namespace = "http://snoop.glueball.com/share")
     private List<NetworkShare> shares = new ArrayList<NetworkShare>();
 
-    public List<NetworkShare> getShares() {
+    /**
+     * @return the shares
+     */
+    public final List<NetworkShare> getShares() {
 
         return shares;
     }
 
-    public void setShares(List<NetworkShare> shares) {
+    /**
+     * @param pShares
+     *            the shares to set
+     */
+    public final void setShares(List<NetworkShare> pShares) {
 
-        this.shares = shares;
+        this.shares = pShares;
     }
 }

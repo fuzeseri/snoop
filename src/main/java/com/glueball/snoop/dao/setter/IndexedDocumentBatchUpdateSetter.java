@@ -14,16 +14,37 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
 import com.glueball.snoop.entity.IndexedDocument;
 
+/**
+ * BatchPreparedStatementSetter implementation to update index status of a set
+ * of IndexedDocuments in the database.
+ *
+ * @author karesz
+ */
 public class IndexedDocumentBatchUpdateSetter implements
         BatchPreparedStatementSetter {
 
+    /**
+     * The list of IndexedDocuments to update in the database.
+     */
     final List<IndexedDocument> docs;
 
-    public IndexedDocumentBatchUpdateSetter(final List<IndexedDocument> docs) {
+    /**
+     * Constructor.
+     *
+     * @param pDocs
+     *            The list of IndexedDocuments to update in the database.
+     */
+    public IndexedDocumentBatchUpdateSetter(final List<IndexedDocument> pDocs) {
 
-        this.docs = docs;
+        this.docs = pDocs;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.BatchPreparedStatementSetter#setValues(
+     * java.sql.PreparedStatement, int)
+     */
     @Override
     public void setValues(final PreparedStatement pstmt, int i)
             throws SQLException {
@@ -33,6 +54,11 @@ public class IndexedDocumentBatchUpdateSetter implements
         pstmt.setString(3, docs.get(i).getId());
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.BatchPreparedStatementSetter#getBatchSize()
+     */
     @Override
     public int getBatchSize() {
 

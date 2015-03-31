@@ -13,15 +13,36 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 
 import com.glueball.snoop.entity.IndexedDocument;
 
+/**
+ * PreparedStatementSetter implementation to insert a single IndexedDocument to
+ * the database.
+ *
+ * @author karesz
+ */
 public class IndexedDocumentInsertSetter implements PreparedStatementSetter {
 
+    /**
+     * The IndexedDocument object to insert to the database.
+     */
     final IndexedDocument doc;
 
-    public IndexedDocumentInsertSetter(final IndexedDocument _doc) {
+    /**
+     * Constructor.
+     *
+     * @param pDoc
+     *            The IndexedDocument object to insert to the database.
+     */
+    public IndexedDocumentInsertSetter(final IndexedDocument pDoc) {
 
-        this.doc = _doc;
+        this.doc = pDoc;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.PreparedStatementSetter#setValues(java.
+     * sql.PreparedStatement)
+     */
     @Override
     public void setValues(PreparedStatement pstmt) throws SQLException {
 

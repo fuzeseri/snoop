@@ -13,15 +13,36 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 
 import com.glueball.snoop.entity.DocumentPath;
 
+/**
+ * PreparedStatementSetter implementation ot insert a single DocumentPath to the
+ * database.
+ *
+ * @author karesz
+ */
 public class DocumentPathInsertSetter implements PreparedStatementSetter {
 
+    /**
+     * The DocumentPath object to insert to the database.
+     */
     final DocumentPath doc;
 
-    public DocumentPathInsertSetter(final DocumentPath _doc) {
+    /**
+     * Constructor.
+     *
+     * @param pDoc
+     *            The DocumentPath object to insert to the database.
+     */
+    public DocumentPathInsertSetter(final DocumentPath pDoc) {
 
-        this.doc = _doc;
+        this.doc = pDoc;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.PreparedStatementSetter#setValues(java.
+     * sql.PreparedStatement)
+     */
     @Override
     public void setValues(final PreparedStatement pstmt) throws SQLException {
 

@@ -14,16 +14,38 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
 import com.glueball.snoop.entity.IndexedDocument;
 
+/**
+ * BatchPreparedStatementSetter implementation to insert a set of
+ * IndexedDocuments to the database.
+ *
+ * @author karesz
+ */
 public class IndexedDocumentBatchInsertSetter implements
         BatchPreparedStatementSetter {
 
+    /**
+     * The list of IndexedDocuments to insert to the database.
+     */
     final List<IndexedDocument> docs;
 
-    public IndexedDocumentBatchInsertSetter(final List<IndexedDocument> docs) {
+    /**
+     * Constructor.
+     *
+     * @param pDocs
+     *            The list of IndexedDocuments to insert to the database.
+     */
+    public IndexedDocumentBatchInsertSetter(
+            final List<IndexedDocument> pDocs) {
 
-        this.docs = docs;
+        this.docs = pDocs;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.BatchPreparedStatementSetter#setValues(
+     * java.sql.PreparedStatement, int)
+     */
     @Override
     public void setValues(final PreparedStatement pstmt, int i)
             throws SQLException {
@@ -43,6 +65,11 @@ public class IndexedDocumentBatchInsertSetter implements
             pstmt.setTimestamp(12, docs.get(i).getLockTime());
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.jdbc.core.BatchPreparedStatementSetter#getBatchSize()
+     */
     @Override
     public int getBatchSize() {
 
