@@ -42,10 +42,9 @@ import com.glueball.snoop.module.main.model.ServerMessage;
  * Restful document search service.
  *
  * @author karesz
- * @param <QueryParser>
  */
 @Path("/search")
-public class SearchService<QueryParser> {
+public class SearchService {
 
     /**
      * Logger instance.

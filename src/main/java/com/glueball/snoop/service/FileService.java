@@ -33,7 +33,6 @@ public class FileService {
      * @param module
      *            the name of the ui module.
      * @return html with the modules javasript content.
-     * @throws IOException
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)

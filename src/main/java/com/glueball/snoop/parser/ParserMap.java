@@ -43,6 +43,7 @@ public final class ParserMap {
      * Constructor.
      *
      * @param pParserMap
+     *            the parserMap object to set.
      */
     public ParserMap(final Map<String, SnoopParser> pParserMap) {
 
