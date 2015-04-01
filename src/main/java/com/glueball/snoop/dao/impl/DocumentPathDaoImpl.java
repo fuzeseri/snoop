@@ -27,6 +27,7 @@ import com.glueball.snoop.dao.extractor.ListDocumentPathExtractor;
 import com.glueball.snoop.dao.setter.DocumentPathBatchInsertSetter;
 import com.glueball.snoop.dao.setter.DocumentPathInsertSetter;
 import com.glueball.snoop.dao.setter.IndexedDocumentBatchInsertSetter;
+import com.glueball.snoop.dao.setter.IndexedDocumentBatchUpdateSetter;
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.IndexedDocument;
 
@@ -305,8 +306,8 @@ public class DocumentPathDaoImpl implements
                         IndexedDocument.INDEX_STATE_MODIFIED);
 
         this.jdbcTemplate.batchUpdate(
-                IndexedDocument.INSERT_DOCUMENT_QUERY,
-                new IndexedDocumentBatchInsertSetter(idocList));
+                IndexedDocument.UPDATE_STATE_QUERY,
+                new IndexedDocumentBatchUpdateSetter(idocList));
 
         LOG.debug("Modified documents status successfully updated on share : "
                 + shareName);

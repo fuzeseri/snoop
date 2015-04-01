@@ -8,10 +8,10 @@ package com.glueball.snoop.test.dao.impl;
  */
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,11 +22,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import com.glueball.snoop.dao.DocumentPathDao;
+import com.glueball.snoop.dao.extractor.IndexedDocumentExtractor;
 import com.glueball.snoop.dao.impl.DocumentPathDaoImpl;
+import com.glueball.snoop.dao.setter.IndexedDocumentBatchInsertSetter;
 import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.entity.IndexedDocument;
 import com.glueball.snoop.util.MD5;
 
 /**
@@ -233,6 +238,33 @@ public class DocumentPathDaoImplTest {
 
     /**
      * Test method for
+     * {@link com.glueball.snoop.dao.impl.DocumentPathDaoImpl#dropTable()}.
+     *
+     * @throws SQLException
+     *             on any SQL failure.
+     */
+    @Test
+    public final void testDropTable() throws SQLException {
+
+        boolean tableExists = false;
+
+        dao.dropTable();
+
+        try (final Connection conn = ds.getConnection()) {
+            try (final ResultSet rset =
+                    conn.getMetaData().getTables(null, null, "DOCUMENT_PATH",
+                            null)) {
+                if (rset.next()) {
+                    tableExists = true;
+                }
+            }
+        }
+        assertTrue(!tableExists);
+        dao.createTable();
+    }
+
+    /**
+     * Test method for
      * {@link com.glueball.snoop.dao.impl.DocumentPathDaoImpl#rowNum()}.
      */
     @Test
@@ -377,33 +409,277 @@ public class DocumentPathDaoImplTest {
      * Test method for
      * {@link com.glueball.snoop.dao.impl.DocumentPathDaoImpl# updateDeletedDocuments(java.lang.String)}
      * .
+     * 
+     * @throws NoSuchAlgorithmException
+     *             if md5 algorithm is not supported.
      */
     @Test
-    public final void testUpdateDeletedDocuments() {
+    public final void testUpdateDeletedDocuments()
+            throws NoSuchAlgorithmException {
 
-        fail("Not yet implemented"); // TODO
+        final List<DocumentPath> list = new ArrayList<DocumentPath>();
+
+        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+
+        final DocumentPath doc1 = new DocumentPath();
+        doc1.setContentType("application/pdf");
+        doc1.setFileName("filename_a.pdf");
+        doc1.setId(fileId1);
+        doc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc1.setLocalPath("/testdir/filename_a.pdf");
+        doc1.setPath("/testdir/filename_a.pdf");
+        doc1.setShareName("test-share");
+        doc1.setUri("file:///testdir/filename_a.pdf");
+
+        list.add(doc1);
+
+        final DocumentPath doc2 = new DocumentPath();
+        doc2.setContentType("application/pdf");
+        doc2.setFileName("filename_b.pdf");
+        doc2.setId(fileId2);
+        doc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc2.setLocalPath("/testdir/filename_b.pdf");
+        doc2.setPath("/testdir/filename_b.pdf");
+        doc2.setShareName("test-share");
+        doc2.setUri("file:///testdir/filename_b.pdf");
+
+        list.add(doc2);
+
+        final List<IndexedDocument> idocList =
+                DocumentPath.toIndexedDocumentList(list,
+                        IndexedDocument.INDEX_STATE_INDEXED);
+
+        list.remove(1);
+
+        dao.truncateTable();
+        dao.insertList(list);
+
+        final JdbcTemplate template = new JdbcTemplate(ds);
+
+        template.execute(IndexedDocument.TRUNCATE_TABLE_QUERY);
+
+        template.batchUpdate(IndexedDocument.INSERT_DOCUMENT_QUERY,
+                new IndexedDocumentBatchInsertSetter(idocList));
+
+        dao.updateDeletedDocuments("test-share");
+
+        final IndexedDocument idoc1 = new IndexedDocument();
+
+        template.query(IndexedDocument.SELECT_BY_ID_QUERY,
+                new PreparedStatementSetter() {
+
+                    @Override
+                    public void setValues(final PreparedStatement ps)
+                            throws SQLException {
+
+                        ps.setString(1, fileId1);
+                    }
+
+                }, new IndexedDocumentExtractor(idoc1));
+
+        assertEquals(IndexedDocument.INDEX_STATE_INDEXED,
+                idoc1.getIndexState());
+
+        final IndexedDocument idoc2 = new IndexedDocument();
+
+        template.query(IndexedDocument.SELECT_BY_ID_QUERY,
+                new PreparedStatementSetter() {
+
+                    @Override
+                    public void setValues(final PreparedStatement ps)
+                            throws SQLException {
+
+                        ps.setString(1, fileId2);
+                    }
+
+                }, new IndexedDocumentExtractor(idoc2));
+
+        assertEquals(IndexedDocument.INDEX_STATE_DELETED,
+                idoc2.getIndexState());
     }
 
     /**
      * Test method for
      * {@link com.glueball.snoop.dao.impl.DocumentPathDaoImpl #updateNewDocuments(java.lang.String)}
-     * .
+     *
+     * @throws NoSuchAlgorithmException
+     *             if md5 algorithm is not supported.
      */
     @Test
-    public final void testUpdateNewDocuments() {
+    public final void testUpdateNewDocuments() throws NoSuchAlgorithmException {
 
-        fail("Not yet implemented"); // TODO
+        final List<DocumentPath> list = new ArrayList<DocumentPath>();
+
+        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+
+        final DocumentPath doc1 = new DocumentPath();
+        doc1.setContentType("application/pdf");
+        doc1.setFileName("filename_a.pdf");
+        doc1.setId(fileId1);
+        doc1.setLastModifiedTime(new java.sql.Timestamp(
+                new Date().getTime() - 100000));
+        doc1.setLocalPath("/testdir/filename_a.pdf");
+        doc1.setPath("/testdir/filename_a.pdf");
+        doc1.setShareName("test-share");
+        doc1.setUri("file:///testdir/filename_a.pdf");
+
+        list.add(doc1);
+
+        final DocumentPath doc2 = new DocumentPath();
+        doc2.setContentType("application/pdf");
+        doc2.setFileName("filename_b.pdf");
+        doc2.setId(fileId2);
+        doc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc2.setLocalPath("/testdir/filename_b.pdf");
+        doc2.setPath("/testdir/filename_b.pdf");
+        doc2.setShareName("test-share");
+        doc2.setUri("file:///testdir/filename_b.pdf");
+
+        list.add(doc2);
+
+        dao.truncateTable();
+        dao.insertList(list);
+
+        final JdbcTemplate template = new JdbcTemplate(ds);
+
+        template.execute(IndexedDocument.TRUNCATE_TABLE_QUERY);
+
+        dao.updateNewDocuments("test-share");
+
+        final IndexedDocument idoc1 = new IndexedDocument();
+
+        template.query(IndexedDocument.SELECT_BY_ID_QUERY,
+                new PreparedStatementSetter() {
+
+                    @Override
+                    public void setValues(final PreparedStatement ps)
+                            throws SQLException {
+
+                        ps.setString(1, fileId1);
+                    }
+
+                }, new IndexedDocumentExtractor(idoc1));
+
+        assertEquals(IndexedDocument.INDEX_STATE_NEW, idoc1
+                .getIndexState());
+
+        final IndexedDocument idoc2 = new IndexedDocument();
+
+        template.query(IndexedDocument.SELECT_BY_ID_QUERY,
+                new PreparedStatementSetter() {
+
+                    @Override
+                    public void setValues(final PreparedStatement ps)
+                            throws SQLException {
+
+                        ps.setString(1, fileId2);
+                    }
+
+                }, new IndexedDocumentExtractor(idoc2));
+
+        assertEquals(IndexedDocument.INDEX_STATE_NEW, idoc2
+                .getIndexState());
     }
 
     /**
      * Test method for
      * {@link com.glueball.snoop.dao.impl.DocumentPathDaoImpl# updateModifiedDocuments(java.lang.String)}
-     * .
+     * 
+     * @throws NoSuchAlgorithmException
+     *             if md5 algorithm is not supported.
      */
     @Test
-    public final void testUpdateModifiedDocuments() {
+    public final void testUpdateModifiedDocuments()
+            throws NoSuchAlgorithmException {
 
-        fail("Not yet implemented"); // TODO
+        final List<DocumentPath> list = new ArrayList<DocumentPath>();
+
+        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+
+        final DocumentPath doc1 = new DocumentPath();
+        doc1.setContentType("application/pdf");
+        doc1.setFileName("filename_a.pdf");
+        doc1.setId(fileId1);
+        doc1.setLastModifiedTime(new java.sql.Timestamp(
+                new Date().getTime() - 100000));
+        doc1.setLocalPath("/testdir/filename_a.pdf");
+        doc1.setPath("/testdir/filename_a.pdf");
+        doc1.setShareName("test-share");
+        doc1.setUri("file:///testdir/filename_a.pdf");
+
+        list.add(doc1);
+
+        final DocumentPath doc2 = new DocumentPath();
+        doc2.setContentType("application/pdf");
+        doc2.setFileName("filename_b.pdf");
+        doc2.setId(fileId2);
+        doc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc2.setLocalPath("/testdir/filename_b.pdf");
+        doc2.setPath("/testdir/filename_b.pdf");
+        doc2.setShareName("test-share");
+        doc2.setUri("file:///testdir/filename_b.pdf");
+
+        list.add(doc2);
+
+        final List<IndexedDocument> idocList =
+                DocumentPath.toIndexedDocumentList(list,
+                        IndexedDocument.INDEX_STATE_INDEXED);
+
+        list.get(0).setLastModifiedTime(
+                new java.sql.Timestamp(new Date().getTime()));
+
+        assertTrue(list.get(0).getLastModifiedTime().after(idocList.get(0)
+                .getLastModifiedTime()));
+
+        dao.truncateTable();
+        dao.insertList(list);
+
+        final JdbcTemplate template = new JdbcTemplate(ds);
+
+        template.execute(IndexedDocument.TRUNCATE_TABLE_QUERY);
+
+        template.batchUpdate(IndexedDocument.INSERT_DOCUMENT_QUERY,
+                new IndexedDocumentBatchInsertSetter(idocList));
+
+        dao.updateModifiedDocuments("test-share");
+
+        final IndexedDocument idoc1 = new IndexedDocument();
+
+        template.query(IndexedDocument.SELECT_BY_ID_QUERY,
+                new PreparedStatementSetter() {
+
+                    @Override
+                    public void setValues(final PreparedStatement ps)
+                            throws SQLException {
+
+                        ps.setString(1, fileId1);
+                    }
+
+                }, new IndexedDocumentExtractor(idoc1));
+
+        assertEquals(IndexedDocument.INDEX_STATE_MODIFIED, idoc1
+                .getIndexState());
+
+        final IndexedDocument idoc2 = new IndexedDocument();
+
+        template.query(IndexedDocument.SELECT_BY_ID_QUERY,
+                new PreparedStatementSetter() {
+
+                    @Override
+                    public void setValues(final PreparedStatement ps)
+                            throws SQLException {
+
+                        ps.setString(1, fileId2);
+                    }
+
+                }, new IndexedDocumentExtractor(idoc2));
+
+        assertEquals(IndexedDocument.INDEX_STATE_INDEXED, idoc2
+                .getIndexState());
+
     }
 
 }

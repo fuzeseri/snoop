@@ -80,8 +80,8 @@ public final class IndexedDocument extends SnoopDocument {
             " SELECT "
                     + " id,share_name,file_name,uri,path,local_path,"
                     + " last_modified_time,last_indexed_time, content_type,"
-                    + " index_state,lock,lock_time,"
-                    + " lock,lock_time FROM INDEXED_DOCUMENT WHERE id = ?";
+                    + " index_state,lock,lock_time "
+                    + " FROM INDEXED_DOCUMENT WHERE id = ?";
 
     /**
      * SQL query to select entities by shareName from the INDEXED_DOCUMENT

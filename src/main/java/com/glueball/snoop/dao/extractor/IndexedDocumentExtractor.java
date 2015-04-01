@@ -59,7 +59,7 @@ public final class IndexedDocumentExtractor implements
             doc.setContentType(rs.getString("content_type"));
             doc.setIndexState(rs.getString("index_state"));
             doc.setLock(rs.getInt("lock"));
-            doc.setLockTime(rs.getTimestamp("lockTime"));
+            doc.setLockTime(rs.getTimestamp("lock_time"));
         }
 
         return doc;
