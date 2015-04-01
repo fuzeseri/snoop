@@ -72,6 +72,13 @@ public final class DocumentPath extends SnoopDocument {
             "DELETE FROM DOCUMENT_PATH";
 
     /**
+     * SQL query to drop the DOCUMENT_PATH table in the database if it is
+     * exists.
+     */
+    public static final String DROP_TABLE_QUERY =
+            "DROP TABLE IF EXISTS DOCUMENT_PATH";
+
+    /**
      * SQL query to select new documents from the database. It important to
      * refresh the DOCUMENT_PATH tables data from the file system before run
      * this query.

@@ -114,6 +114,13 @@ public final class IndexedDocument extends SnoopDocument {
             "DELETE FROM INDEXED_DOCUMENT";
 
     /**
+     * SQL query to drop the INDEXED_DOCUMENT table in the database if it is
+     * exists.
+     */
+    public static final String DROP_TABLE_QUERY =
+            "DROP TABLE IF EXISTS INDEXED_DOCUMENT";
+
+    /**
      * SQL query to select a limited set of documents to indexing. It is
      * important to use this query in transaction with the LOCK_DOCUMENTS_QUERY
      * query in a multi-threaded environment.
@@ -309,5 +316,54 @@ public final class IndexedDocument extends SnoopDocument {
     public void setLockTime(final Timestamp pLockTime) {
 
         this.lockTime = pLockTime;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                + ((indexState == null) ? 0 : indexState.hashCode());
+        result = prime * result + ((lock == null) ? 0 : lock.hashCode());
+        result = prime * result
+                + ((lockTime == null) ? 0 : lockTime.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        IndexedDocument other = (IndexedDocument) obj;
+        if (indexState == null) {
+            if (other.indexState != null)
+                return false;
+        } else if (!indexState.equals(other.indexState))
+            return false;
+        if (lock == null) {
+            if (other.lock != null)
+                return false;
+        } else if (!lock.equals(other.lock))
+            return false;
+        if (lockTime == null) {
+            if (other.lockTime != null)
+                return false;
+        } else if (!lockTime.equals(other.lockTime))
+            return false;
+        return true;
     }
 }

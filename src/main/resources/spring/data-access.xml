@@ -15,7 +15,7 @@
 		<!-- context:component-scan base-package="com.glueball.snoop.*" / -->
 
 		<import resource="classpath:spring/h2database.xml" />
-		<import resource="classpath:spring/lucene-index.xml" />
+		<!-- import resource="classpath:spring/lucene-index.xml" / -->
 
 		<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager" />
 

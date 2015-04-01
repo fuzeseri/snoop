@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.cxf.common.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,33 +116,8 @@ public class DocumentPathDaoImpl implements
                         ps.setString(1, id);
                     }
                 }, new DocumentPathExtractor(doc));
-        return doc;
-    }
 
-    /*
-     * (non-Javadoc)
-     * @see com.glueball.snoop.dao.DocumentPathDao#findBySum(java.lang.String)
-     */
-    @Override
-    public final DocumentPath findBySum(final String md5sum)
-            throws DataAccessException {
-
-        LOG.debug("Running query: " + DocumentPath.SELECT_BY_SUM_QUERY
-                + " with parameter [id : " + md5sum + "]");
-
-        final DocumentPath doc = new DocumentPath();
-
-        this.jdbcTemplate.query(DocumentPath.SELECT_BY_SUM_QUERY,
-                new PreparedStatementSetter() {
-
-                    @Override
-                    public void setValues(final PreparedStatement ps)
-                            throws SQLException {
-
-                        ps.setString(1, md5sum);
-                    }
-                }, new DocumentPathExtractor(doc));
-        return doc;
+        return StringUtils.isEmpty(doc.getId()) ? null : doc;
     }
 
     /*
@@ -334,5 +310,21 @@ public class DocumentPathDaoImpl implements
 
         LOG.debug("Modified documents status successfully updated on share : "
                 + shareName);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#dropTable()
+     */
+    @Override
+    public void dropTable() {
+
+        LOG.debug("Running query: "
+                + DocumentPath.DROP_TABLE_QUERY);
+
+        this.jdbcTemplate.execute(DocumentPath.DROP_TABLE_QUERY);
+
+        LOG.debug("Table: DOCUMENT_PATH successfully has droppped.");
+
     }
 }

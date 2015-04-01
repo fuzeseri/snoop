@@ -20,7 +20,4 @@
 			<property name="dataSource" ref="h2DataSource"></property>
 		</bean>
 
-		<!--  bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
-			<property name="transactionManager" ref="transactionManager"></property>
-		</bean -->
 </beans>

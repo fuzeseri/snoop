@@ -17,15 +17,6 @@ import com.glueball.snoop.entity.DocumentPath;
 public interface DocumentPathDao extends SnoopDao<DocumentPath> {
 
     /**
-     * Finds a document by the md5sum field.
-     *
-     * @param md5sum
-     *            the md5sum string.
-     * @return the matching DocumentPath object.
-     */
-    DocumentPath findBySum(final String md5sum);
-
-    /**
      * Updates the index status in the relational database of the new documents
      * on a specific share.
      *

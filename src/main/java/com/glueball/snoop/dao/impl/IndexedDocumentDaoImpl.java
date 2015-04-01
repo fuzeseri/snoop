@@ -388,4 +388,19 @@ public class IndexedDocumentDaoImpl implements
 
         LOG.debug(idocList.size() + " documents successfully updated.");
     }
+
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.dao.SnoopDao#dropTable()
+     */
+    @Override
+    public void dropTable() {
+
+        LOG.debug("Running query: "
+                + IndexedDocument.DROP_TABLE_QUERY);
+
+        this.jdbcTemplate.execute(IndexedDocument.DROP_TABLE_QUERY);
+
+        LOG.debug("Table: INDEXED_DOCUMENT successfully has droppped.");
+    }
 }

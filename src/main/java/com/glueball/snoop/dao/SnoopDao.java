@@ -58,6 +58,11 @@ public interface SnoopDao<T> {
     void createTable();
 
     /**
+     * Drops and existing table in the database.
+     */
+    void dropTable();
+
+    /**
      * Delete all entities from the relational database.
      */
     void truncateTable();
