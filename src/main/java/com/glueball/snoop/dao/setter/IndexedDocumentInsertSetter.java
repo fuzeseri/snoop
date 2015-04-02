@@ -58,7 +58,7 @@ public final class IndexedDocumentInsertSetter implements
         pstmt.setTimestamp(index++, doc.getLastIndexedTime());
         pstmt.setString(index++, doc.getContentType());
         pstmt.setString(index++, doc.getIndexState());
-        pstmt.setInt(index++, doc.getLock());
+        pstmt.setLong(index++, doc.getLock());
         pstmt.setTimestamp(index++, doc.getLockTime());
     }
 }

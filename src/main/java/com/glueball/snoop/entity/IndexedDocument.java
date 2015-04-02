@@ -243,7 +243,7 @@ public final class IndexedDocument extends SnoopDocument {
     /**
      * Lock.
      */
-    private Integer lock = 0;
+    private long lock = 0L;
 
     /**
      * The exact time when the docuemnt was locked.
@@ -287,7 +287,7 @@ public final class IndexedDocument extends SnoopDocument {
     /**
      * @return the lock
      */
-    public Integer getLock() {
+    public long getLock() {
 
         return lock;
     }
@@ -296,7 +296,7 @@ public final class IndexedDocument extends SnoopDocument {
      * @param pLock
      *            the lock to set
      */
-    public void setLock(final Integer pLock) {
+    public void setLock(final long pLock) {
 
         this.lock = pLock;
     }
@@ -329,7 +329,7 @@ public final class IndexedDocument extends SnoopDocument {
         int result = super.hashCode();
         result = prime * result
                 + ((indexState == null) ? 0 : indexState.hashCode());
-        result = prime * result + ((lock == null) ? 0 : lock.hashCode());
+        result = prime * result + (int) (lock ^ (lock >>> 32));
         result = prime * result
                 + ((lockTime == null) ? 0 : lockTime.hashCode());
         return result;
@@ -354,10 +354,7 @@ public final class IndexedDocument extends SnoopDocument {
                 return false;
         } else if (!indexState.equals(other.indexState))
             return false;
-        if (lock == null) {
-            if (other.lock != null)
-                return false;
-        } else if (!lock.equals(other.lock))
+        if (lock != other.lock)
             return false;
         if (lockTime == null) {
             if (other.lockTime != null)
@@ -366,4 +363,5 @@ public final class IndexedDocument extends SnoopDocument {
             return false;
         return true;
     }
+
 }

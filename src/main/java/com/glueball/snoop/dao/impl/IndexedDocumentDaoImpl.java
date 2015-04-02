@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.cxf.common.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,9 +123,8 @@ public class IndexedDocumentDaoImpl implements
 
                         ps.setString(1, id);
                     }
-
                 }, new IndexedDocumentExtractor(doc));
-        return doc;
+        return StringUtils.isEmpty(doc.getId()) ? null : doc;
     }
 
     /*

@@ -207,6 +207,7 @@ public class DocumentPathDaoImplTest {
         dao.insertOne(doc);
 
         assertEquals(doc, dao.findById(fileId));
+        assertEquals(1, dao.rowNum());
     }
 
     /**
