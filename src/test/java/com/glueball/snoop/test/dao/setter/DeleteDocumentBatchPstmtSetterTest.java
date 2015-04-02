@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.gleuball.snoop.test.dao.setter;
+package com.glueball.snoop.test.dao.setter;
 
 import static org.junit.Assert.assertEquals;
 
