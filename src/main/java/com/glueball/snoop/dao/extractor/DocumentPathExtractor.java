@@ -9,7 +9,6 @@ package com.glueball.snoop.dao.extractor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.DocumentPath;
@@ -46,8 +45,7 @@ public final class DocumentPathExtractor
      * .ResultSet)
      */
     @Override
-    public DocumentPath extractData(final ResultSet rs) throws SQLException,
-            DataAccessException {
+    public DocumentPath extractData(final ResultSet rs) throws SQLException {
 
         if (rs.next()) {
 
