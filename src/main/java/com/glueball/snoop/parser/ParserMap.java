@@ -6,8 +6,9 @@ package com.glueball.snoop.parser;
  * regarding copyright ownership. You may obtain a copy of the License at
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,16 +29,7 @@ public final class ParserMap {
     /**
      * Map to store the mime-types and parser objects.
      */
-    private final Map<String, SnoopParser> parserMap =
-            new HashMap<String, SnoopParser>();
-
-    /**
-     * Hidden default constructor.
-     */
-    @SuppressWarnings("unused")
-    private ParserMap() {
-
-    }
+    private final Map<String, SnoopParser> parserMap;
 
     /**
      * Constructor.
@@ -47,7 +39,7 @@ public final class ParserMap {
      */
     public ParserMap(final Map<String, SnoopParser> pParserMap) {
 
-        this.parserMap.putAll(pParserMap);
+        this.parserMap = Collections.unmodifiableMap(pParserMap);
     }
 
     /**
@@ -84,5 +76,15 @@ public final class ParserMap {
             return this.parserMap.get(contentType);
         }
         throw new UnavialableParserException();
+    }
+
+    /**
+     * Method to get the list of supported mime-types.
+     * 
+     * @return the list of supported mime-types.
+     */
+    public Set<String> getMimeTypes() {
+
+        return this.parserMap.keySet();
     }
 }

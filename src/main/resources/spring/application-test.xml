@@ -22,18 +22,5 @@
 
 		<import resource="classpath:spring/data-access.xml" />
 		<import resource="classpath:spring/lucene-parser.xml" />
-		<import resource="classpath:spring/mimes.xml" />
-
-		<!-- import resource="classpath:spring/cxf-servlet.xml" / -->
-
-		<!-- task:annotation-driven / -->
-
-		<!-- bean id="dataLoader" class="com.glueball.snoop.bean.DataLoader" scope="singleton">
-			<constructor-arg value="${snoop.sharesxml.path}" />
-		</bean -->
-
-		<!-- bean id="dataIndexer" class="com.glueball.snoop.bean.DataIndexer" scope="singleton">
-			<property name="maxDoc" value="${snoop.dataindexer.maxdoc:100}" />
-		</bean -->
 
 </beans>

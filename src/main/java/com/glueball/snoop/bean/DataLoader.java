@@ -28,7 +28,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.NetworkShare;
 import com.glueball.snoop.entity.NetworkShares;
-import com.glueball.snoop.parser.MimeFileextMap;
 import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.visitor.DbLoaderVisitor;
 
@@ -83,24 +82,6 @@ public final class DataLoader {
     }
 
     /**
-     * This map contains the related file extensions for the specific
-     * mime-types.
-     */
-    @Autowired
-    private MimeFileextMap mimeFileextMap;
-
-    /**
-     * Setter method of the mimeFileextMap field.
-     *
-     * @param pMimeFileextMap
-     *            MimeFileextMap instance.
-     */
-    public void setMimeFileextMap(final MimeFileextMap pMimeFileextMap) {
-
-        this.mimeFileextMap = pMimeFileextMap;
-    }
-
-    /**
      * Path of the xml file containing the set of network shares to scan and
      * index its' content's.
      */
@@ -145,7 +126,7 @@ public final class DataLoader {
 
             final List<DocumentPath> docs = new ArrayList<DocumentPath>();
             final FileVisitor<Path> visitor = new DbLoaderVisitor(docs,
-                    parserMap, mimeFileextMap, share);
+                    parserMap, share);
 
             try {
 

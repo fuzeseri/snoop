@@ -22,7 +22,6 @@
 
 		<import resource="classpath:spring/data-access.xml" />
 		<import resource="classpath:spring/lucene-parser.xml" />
-		<import resource="classpath:spring/mimes.xml" />
         <import resource="classpath:spring/lucene-index.xml" />
 		<import resource="classpath:spring/cxf-servlet.xml" />
 

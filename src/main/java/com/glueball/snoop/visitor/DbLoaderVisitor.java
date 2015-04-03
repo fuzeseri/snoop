@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.NetworkShare;
-import com.glueball.snoop.parser.MimeFileextMap;
 import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.util.MD5;
 
@@ -46,12 +45,6 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
     private final ParserMap parserMap;
 
     /**
-     * MimeFileextMap object to check if the file extension is valid for the
-     * mime-type of its content.
-     */
-    private final MimeFileextMap mimeFileextMap;
-
-    /**
      * The DocumentPath list to put the supported files into it.
      */
     private final List<DocumentPath> docs;
@@ -68,18 +61,14 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
      *            the DocumentPath list to set.
      * @param pParserMap
      *            the ParserMap to set.
-     * @param pMimeFileextMap
-     *            the MimeFileextMap to set.
      * @param pShare
      *            the NetworkShare to set.
      */
     public DbLoaderVisitor(final List<DocumentPath> pDocs,
-            final ParserMap pParserMap, final MimeFileextMap pMimeFileextMap,
-            final NetworkShare pShare) {
+            final ParserMap pParserMap, final NetworkShare pShare) {
 
         this.docs = pDocs;
         this.parserMap = pParserMap;
-        this.mimeFileextMap = pMimeFileextMap;
         this.share = pShare;
     }
 
@@ -108,9 +97,7 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 
             final String contentType = Files.probeContentType(file);
 
-            if (parserMap.hasParser(contentType)
-                    && mimeFileextMap.checkFile(contentType, file.getFileName()
-                            .toString())) {
+            if (parserMap.hasParser(contentType)) {
 
                 final DocumentPath doc = new DocumentPath();
 
