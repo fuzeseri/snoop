@@ -196,8 +196,8 @@ public final class IndexedDocument extends SnoopDocument {
                     + ")";
 
     /**
-     * SQL query to create indexes on the INDEXED_DOCUMENT table in the database
-     * they are not exists.
+     * SQL query to create indexes on the INDEXED_DOCUMENT table if they aren't
+     * exists.
      */
     public static final List<String> CREATE_INDEX_QUERY = Collections
             .unmodifiableList(Arrays
@@ -366,24 +366,30 @@ public final class IndexedDocument extends SnoopDocument {
 
         final IndexedDocument other = (IndexedDocument) obj;
 
-        if (indexState == null && other.indexState != null) {
+        if (indexState == null) {
+            if (other.indexState != null) {
 
-            return false;
+                return false;
+            }
         } else if (!indexState.equals(other.indexState)) {
+
             return false;
         }
 
         if (lock != other.lock) {
+
             return false;
         }
 
-        if (lockTime == null && other.lockTime != null) {
-            return false;
+        if (lockTime == null) {
+            if (other.lockTime != null) {
+
+                return false;
+            }
         } else if (!lockTime.equals(other.lockTime)) {
             return false;
         }
 
         return true;
     }
-
 }

@@ -263,73 +263,83 @@ public abstract class SnoopDocument {
 
         final SnoopDocument other = (SnoopDocument) obj;
 
-        if (id == null && other.id != null) {
-
-            return false;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
         } else if (!id.equals(other.id)) {
 
             return false;
         }
 
-        if (fileName == null && other.fileName != null) {
+        if (fileName == null) {
+            if (other.fileName != null) {
 
-            return false;
+                return false;
+            }
         } else if (!fileName.equals(other.fileName)) {
 
             return false;
         }
 
-        if (localPath == null && other.localPath != null) {
-
-            return false;
+        if (localPath == null) {
+            if (other.localPath != null) {
+                return false;
+            }
         } else if (!localPath.equals(other.localPath)) {
 
             return false;
         }
 
-        if (path == null && other.path != null) {
-
-            return false;
+        if (path == null) {
+            if (other.path != null) {
+                return false;
+            }
         } else if (!path.equals(other.path)) {
 
             return false;
         }
 
-        if (contentType == null && other.contentType != null) {
-
-            return false;
+        if (contentType == null) {
+            if (other.contentType != null) {
+                return false;
+            }
         } else if (!contentType.equals(other.contentType)) {
 
             return false;
         }
 
-        if (lastIndexedTime == null && other.lastIndexedTime != null) {
-
-            return false;
+        if (lastIndexedTime == null) {
+            if (other.lastIndexedTime != null) {
+                return false;
+            }
         } else if (!lastIndexedTime.equals(other.lastIndexedTime)) {
 
             return false;
         }
 
-        if (lastModifiedTime == null && other.lastModifiedTime != null) {
-
-            return false;
+        if (lastModifiedTime == null) {
+            if (other.lastModifiedTime != null) {
+                return false;
+            }
         } else if (!lastModifiedTime.equals(other.lastModifiedTime)) {
 
             return false;
         }
 
-        if (shareName == null && other.shareName != null) {
-
-            return false;
+        if (shareName == null) {
+            if (other.shareName != null) {
+                return false;
+            }
         } else if (!shareName.equals(other.shareName)) {
 
             return false;
         }
 
-        if (uri == null && other.uri != null) {
-
-            return false;
+        if (uri == null) {
+            if (other.uri != null) {
+                return false;
+            }
         } else if (!uri.equals(other.uri)) {
 
             return false;
