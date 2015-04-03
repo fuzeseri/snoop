@@ -61,6 +61,8 @@ public class IndexedDocumentBatchUpdateSetterTest {
 
         int index = 1;
         Mockito.verify(pstmt).setTimestamp(index++,
+                idocList.get(i).getLastModifiedTime());
+        Mockito.verify(pstmt).setTimestamp(index++,
                 idocList.get(i).getLastIndexedTime());
         Mockito.verify(pstmt).setString(index++,
                 idocList.get(i).getIndexState());
