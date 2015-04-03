@@ -231,7 +231,8 @@ public abstract class SnoopDocument {
                 + ((lastIndexedTime == null) ? 0 : lastIndexedTime.hashCode());
         result = prime
                 * result
-                + ((lastModifiedTime == null) ? 0 : lastModifiedTime.hashCode());
+                + ((lastModifiedTime == null) ? 0 :
+                        lastModifiedTime.hashCode());
         result = prime * result
                 + ((localPath == null) ? 0 : localPath.hashCode());
         result = prime * result + ((path == null) ? 0 : path.hashCode());
@@ -246,60 +247,94 @@ public abstract class SnoopDocument {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
 
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+
+        if (getClass() != obj.getClass()) {
             return false;
-        SnoopDocument other = (SnoopDocument) obj;
-        if (contentType == null) {
-            if (other.contentType != null)
-                return false;
-        } else if (!contentType.equals(other.contentType))
+        }
+
+        final SnoopDocument other = (SnoopDocument) obj;
+
+        if (id == null && other.id != null) {
+
             return false;
-        if (fileName == null) {
-            if (other.fileName != null)
-                return false;
-        } else if (!fileName.equals(other.fileName))
+        } else if (!id.equals(other.id)) {
+
             return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
+        }
+
+        if (fileName == null && other.fileName != null) {
+
             return false;
-        if (lastIndexedTime == null) {
-            if (other.lastIndexedTime != null)
-                return false;
-        } else if (!lastIndexedTime.equals(other.lastIndexedTime))
+        } else if (!fileName.equals(other.fileName)) {
+
             return false;
-        if (lastModifiedTime == null) {
-            if (other.lastModifiedTime != null)
-                return false;
-        } else if (!lastModifiedTime.equals(other.lastModifiedTime))
+        }
+
+        if (localPath == null && other.localPath != null) {
+
             return false;
-        if (localPath == null) {
-            if (other.localPath != null)
-                return false;
-        } else if (!localPath.equals(other.localPath))
+        } else if (!localPath.equals(other.localPath)) {
+
             return false;
-        if (path == null) {
-            if (other.path != null)
-                return false;
-        } else if (!path.equals(other.path))
+        }
+
+        if (path == null && other.path != null) {
+
             return false;
-        if (shareName == null) {
-            if (other.shareName != null)
-                return false;
-        } else if (!shareName.equals(other.shareName))
+        } else if (!path.equals(other.path)) {
+
             return false;
-        if (uri == null) {
-            if (other.uri != null)
-                return false;
-        } else if (!uri.equals(other.uri))
+        }
+
+        if (contentType == null && other.contentType != null) {
+
             return false;
+        } else if (!contentType.equals(other.contentType)) {
+
+            return false;
+        }
+
+        if (lastIndexedTime == null && other.lastIndexedTime != null) {
+
+            return false;
+        } else if (!lastIndexedTime.equals(other.lastIndexedTime)) {
+
+            return false;
+        }
+
+        if (lastModifiedTime == null && other.lastModifiedTime != null) {
+
+            return false;
+        } else if (!lastModifiedTime.equals(other.lastModifiedTime)) {
+
+            return false;
+        }
+
+        if (shareName == null && other.shareName != null) {
+
+            return false;
+        } else if (!shareName.equals(other.shareName)) {
+
+            return false;
+        }
+
+        if (uri == null && other.uri != null) {
+
+            return false;
+        } else if (!uri.equals(other.uri)) {
+
+            return false;
+        }
+
         return true;
     }
 }

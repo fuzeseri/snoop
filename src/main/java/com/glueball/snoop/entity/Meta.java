@@ -79,7 +79,8 @@ public class Meta {
      */
     public final boolean hasContent() {
 
-        return (title.length() + author.length() + description.length()) > 0;
+        return !StringUtils.isEmpty(title) || !StringUtils.isEmpty(author)
+                || !StringUtils.isEmpty(description);
     }
 
     /**

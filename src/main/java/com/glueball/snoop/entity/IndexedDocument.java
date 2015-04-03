@@ -347,27 +347,42 @@ public final class IndexedDocument extends SnoopDocument {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
 
-        if (this == obj)
+        if (this == obj) {
+
             return true;
-        if (!super.equals(obj))
+        }
+
+        if (!super.equals(obj)) {
+
             return false;
-        if (getClass() != obj.getClass())
+        }
+
+        if (getClass() != obj.getClass()) {
+
             return false;
-        IndexedDocument other = (IndexedDocument) obj;
-        if (indexState == null) {
-            if (other.indexState != null)
-                return false;
-        } else if (!indexState.equals(other.indexState))
+        }
+
+        final IndexedDocument other = (IndexedDocument) obj;
+
+        if (indexState == null && other.indexState != null) {
+
             return false;
-        if (lock != other.lock)
+        } else if (!indexState.equals(other.indexState)) {
             return false;
-        if (lockTime == null) {
-            if (other.lockTime != null)
-                return false;
-        } else if (!lockTime.equals(other.lockTime))
+        }
+
+        if (lock != other.lock) {
             return false;
+        }
+
+        if (lockTime == null && other.lockTime != null) {
+            return false;
+        } else if (!lockTime.equals(other.lockTime)) {
+            return false;
+        }
+
         return true;
     }
 
