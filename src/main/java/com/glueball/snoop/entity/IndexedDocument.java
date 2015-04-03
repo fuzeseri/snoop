@@ -156,7 +156,9 @@ public final class IndexedDocument extends SnoopDocument {
      */
     public static final String UPDATE_STATE_QUERY =
             "UPDATE INDEXED_DOCUMENT "
-                    + " SET last_indexed_time = ?,"
+                    + " SET "
+                    + " last_modified_time = ?,"
+                    + " last_indexed_time = ?,"
                     + "index_state = ? WHERE id = ?";
 
     /**
@@ -165,8 +167,13 @@ public final class IndexedDocument extends SnoopDocument {
      */
     public static final String UNLOCK_UPDATE_STATE_QUERY =
             "UPDATE INDEXED_DOCUMENT "
-                    + " SET last_indexed_time = ?, index_state = ?, "
-                    + " lock = 0, lock_time = null WHERE id = ?";
+                    + " SET "
+                    + " last_modified_time = ?,"
+                    + " last_indexed_time = ?, "
+                    + " index_state = ?, "
+                    + " lock = 0,"
+                    + " lock_time = null "
+                    + "WHERE id = ?";
 
     /**
      * SQL query to create the INDEXED_DOCUMENT table in the database if it not

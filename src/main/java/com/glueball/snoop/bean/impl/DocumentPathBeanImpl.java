@@ -51,7 +51,7 @@ public class DocumentPathBeanImpl implements DocumentPathBean {
     /**
      * Initialization method.
      */
-    public final void init() {
+    public void init() {
 
         dao.createTable();
     }

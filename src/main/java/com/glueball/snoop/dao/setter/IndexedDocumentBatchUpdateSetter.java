@@ -51,6 +51,7 @@ public final class IndexedDocumentBatchUpdateSetter implements
             throws SQLException {
 
         int index = 1;
+        pstmt.setTimestamp(index++, docs.get(i).getLastModifiedTime());
         pstmt.setTimestamp(index++, docs.get(i).getLastIndexedTime());
         pstmt.setString(index++, docs.get(i).getIndexState());
         pstmt.setString(index++, docs.get(i).getId());

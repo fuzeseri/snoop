@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -595,6 +596,10 @@ public class DocumentPathDaoImplTest {
     public final void testUpdateModifiedDocuments()
             throws NoSuchAlgorithmException {
 
+        final Timestamp now = new java.sql.Timestamp(new Date().getTime());
+        final Timestamp later =
+                new java.sql.Timestamp(new Date().getTime() + 10000);
+
         final List<DocumentPath> list = new ArrayList<DocumentPath>();
 
         final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
@@ -604,8 +609,7 @@ public class DocumentPathDaoImplTest {
         doc1.setContentType("application/pdf");
         doc1.setFileName("filename_a.pdf");
         doc1.setId(fileId1);
-        doc1.setLastModifiedTime(new java.sql.Timestamp(
-                new Date().getTime() - 100000));
+        doc1.setLastModifiedTime(now);
         doc1.setLocalPath("/testdir/filename_a.pdf");
         doc1.setPath("/testdir/filename_a.pdf");
         doc1.setShareName("test-share");
@@ -617,7 +621,7 @@ public class DocumentPathDaoImplTest {
         doc2.setContentType("application/pdf");
         doc2.setFileName("filename_b.pdf");
         doc2.setId(fileId2);
-        doc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc2.setLastModifiedTime(now);
         doc2.setLocalPath("/testdir/filename_b.pdf");
         doc2.setPath("/testdir/filename_b.pdf");
         doc2.setShareName("test-share");
@@ -629,8 +633,7 @@ public class DocumentPathDaoImplTest {
                 DocumentPath.toIndexedDocumentList(list,
                         IndexedDocument.INDEX_STATE_INDEXED);
 
-        list.get(0).setLastModifiedTime(
-                new java.sql.Timestamp(new Date().getTime()));
+        list.get(0).setLastModifiedTime(later);
 
         assertTrue(list.get(0).getLastModifiedTime().after(idocList.get(0)
                 .getLastModifiedTime()));
@@ -664,6 +667,8 @@ public class DocumentPathDaoImplTest {
         assertEquals(IndexedDocument.INDEX_STATE_MODIFIED, idoc1
                 .getIndexState());
 
+        assertEquals(later, idoc1.getLastModifiedTime());
+
         final IndexedDocument idoc2 = new IndexedDocument();
 
         template.query(IndexedDocument.SELECT_BY_ID_QUERY,
@@ -681,6 +686,6 @@ public class DocumentPathDaoImplTest {
         assertEquals(IndexedDocument.INDEX_STATE_INDEXED, idoc2
                 .getIndexState());
 
+        assertEquals(now, idoc2.getLastModifiedTime());
     }
-
 }
