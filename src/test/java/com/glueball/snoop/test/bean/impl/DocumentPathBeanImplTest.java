@@ -227,14 +227,21 @@ public class DocumentPathBeanImplTest {
                 selectIndexedDocumentById(fileId1)
                         .getIndexState());
         assertEquals(IndexedDocument.INDEX_STATE_MODIFIED,
-                selectIndexedDocumentById(fileId1)
+                selectIndexedDocumentById(fileId2)
                         .getIndexState());
         assertEquals(IndexedDocument.INDEX_STATE_MODIFIED,
-                selectIndexedDocumentById(fileId1)
+                selectIndexedDocumentById(fileId3)
                         .getIndexState());
 
     }
 
+    /**
+     * Helper method to get IndexedDocument from the database.
+     *
+     * @param id
+     *            the document id.
+     * @return the IndexedDocument selected.
+     */
     private final IndexedDocument selectIndexedDocumentById(final String id) {
 
         final IndexedDocument retVal = new IndexedDocument();
