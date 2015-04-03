@@ -161,11 +161,11 @@ public final class DataIndexer {
      * @param haveToIndexList
      *            the list of IndexedDocument to load.
      */
-    private void indexList(final List<IndexedDocument> haveToIndexList) {
+    private void indexList(final List<IndexedDocument> indexList) {
 
         try {
 
-            for (final IndexedDocument idoc : haveToIndexList) {
+            for (final IndexedDocument idoc : indexList) {
 
                 if (!this.parserMap.hasParser(idoc.getContentType())) {
 
@@ -190,7 +190,6 @@ public final class DataIndexer {
             try {
 
                 indexWriter.commit();
-                this.indexedDocumentBean.unLockUpdateState(haveToIndexList);
             } catch (IOException e) {
 
                 LOG.error("ERROR while trying to commit index changes");
@@ -207,12 +206,23 @@ public final class DataIndexer {
     @Scheduled(fixedDelay = 600000)
     public void index() {
 
-        final List<IndexedDocument> haveToIndexList =
+        final List<IndexedDocument> haveToIndexList = indexedDocumentBean
+                .haveToIndex(maxDoc);
+
+        final List<IndexedDocument> toIndexList =
                 new ArrayList<IndexedDocument>(maxDoc);
 
-        final List<String> toRemove = new ArrayList<String>();
-        for (final IndexedDocument idoc : indexedDocumentBean
-                .haveToIndex(maxDoc)) {
+        final List<String> toRemoveList = new ArrayList<String>();
+
+        for (final IndexedDocument idoc : haveToIndexList) {
+
+            if (!IndexedDocument.INDEX_STATE_INDEXED.equals(idoc
+                    .getIndexState())
+                    && !IndexedDocument.INDEX_STATE_DELETED.equals(idoc
+                            .getIndexState())) {
+
+                toIndexList.add(idoc);
+            }
 
             if (IndexedDocument.INDEX_STATE_DELETED
                     .equals(idoc.getIndexState())
@@ -221,16 +231,30 @@ public final class DataIndexer {
                     || IndexedDocument.INDEX_STATE_REINDEX.equals(idoc
                             .getIndexState())) {
 
-                toRemove.add(idoc.getId());
-                if (!IndexedDocument.INDEX_STATE_DELETED.equals(idoc
-                        .getIndexState())) {
-
-                    haveToIndexList.add(idoc);
-                }
+                toRemoveList.add(idoc.getId());
             }
         }
-        removeDocsFromIndex(toRemove);
-        indexList(haveToIndexList);
+
+        try {
+
+            LOG.debug("Removing deleted documents from the index.");
+            removeDocsFromIndex(toRemoveList);
+            LOG.debug("Deleted documents removed from the index.");
+
+            LOG.debug("Indexing new and modified documents. "
+                    + "Documents to index: "
+                    + toIndexList.size());
+
+            indexList(toIndexList);
+            LOG.debug("New and modified documents indexing finished");
+        } finally {
+
+            LOG.debug("Unlocking documents...");
+            this.indexedDocumentBean.unLockUpdateState(haveToIndexList);
+            LOG.debug(haveToIndexList.size()
+                    + " documents successfully unlocked.");
+        }
+
     }
 
     /**
