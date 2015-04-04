@@ -115,7 +115,7 @@ public final class DataLoader {
      * updates the statuses of the documents in the relational database.
      */
     @Scheduled(
-            fixedDelay = 300000)
+            fixedDelay = 1800000)
     public void load() {
 
         for (final NetworkShare share : getShares()) {

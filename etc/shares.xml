@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <shares xmlns="http://snoop.glueball.com/share">
     <share>
-        <name>laptop-java</name>
-        <localPath>/home/karesz/dokumentumok/java</localPath>
-        <remotePath>//laptop/dokumentumok/java</remotePath>
+        <name>karesz-home</name>
+        <localPath>/home/karesz</localPath>
+        <remotePath>/home/karesz</remotePath>
         <aktiv>true</aktiv>
     </share>
-    <share>
+    <!-- share>
         <name>laptop-mysql</name>
         <localPath>/home/karesz/dokumentumok/MySQL</localPath>
         <remotePath>//laptop/dokumentumok/MySQL</remotePath>
@@ -17,5 +17,5 @@
         <localPath>/home/karesz/dokumentumok/ebooks</localPath>
         <remotePath>//laptop/dokumentumok/ebooks</remotePath>
         <aktiv>true</aktiv>
-    </share>
+    </share -->
 </shares>

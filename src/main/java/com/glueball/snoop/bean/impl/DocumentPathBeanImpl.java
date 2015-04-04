@@ -6,6 +6,7 @@ package com.glueball.snoop.bean.impl;
  * regarding copyright ownership. You may obtain a copy of the License at
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -67,7 +68,27 @@ public class DocumentPathBeanImpl implements DocumentPathBean {
             final List<DocumentPath> docs) {
 
         dao.truncateTable();
-        dao.insertList(docs);
+
+        if (docs.size() > 100) {
+
+            int counter = 0;
+            final List<DocumentPath> chunk = new ArrayList<DocumentPath>(100);
+            for (final DocumentPath doc : docs) {
+
+                chunk.add(doc);
+                if (counter++ == 100) {
+
+                    dao.insertList(chunk);
+                    counter = 0;
+                    chunk.clear();
+                }
+            }
+            dao.insertList(chunk);
+        } else {
+
+            dao.insertList(docs);
+        }
+
         dao.updateNewDocuments(shareName);
         dao.updateModifiedDocuments(shareName);
         dao.updateDeletedDocuments(shareName);

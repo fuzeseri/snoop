@@ -81,6 +81,11 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
     public FileVisitResult preVisitDirectory(final Path dir,
             final BasicFileAttributes attrs) throws IOException {
 
+        if (attrs.isDirectory()
+                && dir.getFileName().toString().startsWith(".")) {
+            LOG.debug(dir.getFileName().toString());
+            return FileVisitResult.SKIP_SUBTREE;
+        }
         return FileVisitResult.CONTINUE;
     }
 
@@ -116,7 +121,8 @@ public class DbLoaderVisitor implements FileVisitor<Path> {
 
                 final String remotePath = !StringUtils.isEmpty(share
                         .getLocalPath()) ? file.toAbsolutePath().toString()
-                        .replace(share.getLocalPath(), share.getRemotePath())
+                        .replace(share.getLocalPath(),
+                                share.getRemotePath())
                         : file.toAbsolutePath().toString();
 
                 doc.setPath(remotePath);
