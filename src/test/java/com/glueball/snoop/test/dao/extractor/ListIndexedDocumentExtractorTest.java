@@ -58,7 +58,7 @@ public class ListIndexedDocumentExtractorTest {
 
         Mockito.when(rs.next()).thenReturn(true, false);
 
-        Mockito.when(rs.getString("id")).thenReturn("id");
+        Mockito.when(rs.getString("id")).thenReturn(MD5.md5DigestHexStr("id"));
         Mockito.when(rs.getString("share_name")).thenReturn("test-share");
         Mockito.when(rs.getString("file_name")).thenReturn("filename_a.pdf");
         Mockito.when(rs.getString("uri")).thenReturn(

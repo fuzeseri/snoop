@@ -8,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Date;
 
 import org.junit.Test;
@@ -54,7 +53,7 @@ public class DocumentPathExtractorTest {
 
         Mockito.when(rs.next()).thenReturn(true);
 
-        Mockito.when(rs.getString("id")).thenReturn("id");
+        Mockito.when(rs.getString("id")).thenReturn(MD5.md5DigestHexStr("id"));
         Mockito.when(rs.getString("share_name")).thenReturn("test-share");
         Mockito.when(rs.getString("file_name")).thenReturn("filename_a.pdf");
         Mockito.when(rs.getString("uri")).thenReturn(
@@ -83,7 +82,7 @@ public class DocumentPathExtractorTest {
     @Test
     public final void testExtractDataNoResult() throws SQLException {
 
-        final Timestamp now = new Timestamp(new Date().getTime());
+        final long now = new Date().getTime();
 
         final DocumentPath doc = new DocumentPath();
         final DocumentPathExtractor extractor = new DocumentPathExtractor(doc);
@@ -100,7 +99,7 @@ public class DocumentPathExtractorTest {
                 .thenReturn("/testdir/filename_a.pdf");
         Mockito.when(rs.getString("local_path")).thenReturn(
                 "/testdir/filename_a.pdf");
-        Mockito.when(rs.getTimestamp("last_modified_time")).thenReturn(now);
+        Mockito.when(rs.getLong("last_modified_time")).thenReturn(now);
         Mockito.when(rs.getString("content_type"))
                 .thenReturn("application/pdf");
 

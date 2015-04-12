@@ -21,6 +21,11 @@ import java.util.List;
 public final class IndexedDocument extends SnoopDocument {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Index status of a the new document. Pre-index state.
      */
     public static final String INDEX_STATE_NEW = "NEW";
@@ -137,7 +142,9 @@ public final class IndexedDocument extends SnoopDocument {
      */
     public static final String LOCK_DOCUMENTS_QUERY =
             "UPDATE INDEXED_DOCUMENT "
-                    + " SET lock = ?, lock_time = now() WHERE id = ?";
+                    + " SET lock = ?, "
+                    + " lock_time = ? "
+                    + " WHERE id = ?";
 
     /**
      * SQL query to select documents locked with the given lock id.
@@ -186,12 +193,12 @@ public final class IndexedDocument extends SnoopDocument {
                     + "   uri varchar(1024),"
                     + "   path varchar(1024),"
                     + "   locaL_path varchar(1024),"
-                    + "   last_modified_time timestamp,"
-                    + "   last_indexed_time timestamp,"
+                    + "   last_modified_time BIGINT,"
+                    + "   last_indexed_time BIGINT,"
                     + "   content_type varchar(100),"
                     + "   index_state varchar(10),"
-                    + "   lock integer,"
-                    + "   lock_time timestamp"
+                    + "   lock BIGINT,"
+                    + "   lock_time BIGINT"
                     + ")";
 
     /**
@@ -335,6 +342,8 @@ public final class IndexedDocument extends SnoopDocument {
         int result = super.hashCode();
         result = prime * result
                 + ((indexState == null) ? 0 : indexState.hashCode());
+        result = prime * result + (int) (lock ^ (lock >>> 32));
+        result = prime * result + (int) (lockTime ^ (lockTime >>> 32));
         return result;
     }
 
@@ -343,35 +352,32 @@ public final class IndexedDocument extends SnoopDocument {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
 
         if (this == obj) {
-
             return true;
         }
-
         if (!super.equals(obj)) {
-
             return false;
         }
-
-        if (getClass() != obj.getClass()) {
-
+        if (!(obj instanceof IndexedDocument)) {
             return false;
         }
-
-        final IndexedDocument other = (IndexedDocument) obj;
-
+        IndexedDocument other = (IndexedDocument) obj;
         if (indexState == null) {
             if (other.indexState != null) {
-
                 return false;
             }
         } else if (!indexState.equals(other.indexState)) {
-
             return false;
         }
-
+        if (lock != other.lock) {
+            return false;
+        }
+        if (lockTime != other.lockTime) {
+            return false;
+        }
         return true;
     }
+
 }

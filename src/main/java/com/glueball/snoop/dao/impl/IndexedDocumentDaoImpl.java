@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -310,7 +311,8 @@ public class IndexedDocumentDaoImpl implements
                             throws SQLException {
 
                         ps.setLong(1, lock);
-                        ps.setString(2, ids.get(i));
+                        ps.setLong(2, new Date().getTime());
+                        ps.setString(3, ids.get(i));
                     }
 
                     @Override

@@ -7,6 +7,7 @@ package com.glueball.snoop.entity;
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -230,4 +231,103 @@ public abstract class SnoopDocument implements Serializable {
 
         this.contentType = pContentType;
     }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((contentType == null) ? 0 : contentType.hashCode());
+        result = prime * result
+                + ((fileName == null) ? 0 : fileName.hashCode());
+        result = prime * result + Arrays.hashCode(id);
+        result = prime * result
+                + (int) (lastIndexedTime ^ (lastIndexedTime >>> 32));
+        result = prime * result
+                + (int) (lastModifiedTime ^ (lastModifiedTime >>> 32));
+        result = prime * result
+                + ((localPath == null) ? 0 : localPath.hashCode());
+        result = prime * result + ((path == null) ? 0 : path.hashCode());
+        result = prime * result
+                + ((shareName == null) ? 0 : shareName.hashCode());
+        result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof SnoopDocument)) {
+            return false;
+        }
+        SnoopDocument other = (SnoopDocument) obj;
+        if (contentType == null) {
+            if (other.contentType != null) {
+                return false;
+            }
+        } else if (!contentType.equals(other.contentType)) {
+            return false;
+        }
+        if (fileName == null) {
+            if (other.fileName != null) {
+                return false;
+            }
+        } else if (!fileName.equals(other.fileName)) {
+            return false;
+        }
+        if (!Arrays.equals(id, other.id)) {
+            return false;
+        }
+        if (lastIndexedTime != other.lastIndexedTime) {
+            return false;
+        }
+        if (lastModifiedTime != other.lastModifiedTime) {
+            return false;
+        }
+        if (localPath == null) {
+            if (other.localPath != null) {
+                return false;
+            }
+        } else if (!localPath.equals(other.localPath)) {
+            return false;
+        }
+        if (path == null) {
+            if (other.path != null) {
+                return false;
+            }
+        } else if (!path.equals(other.path)) {
+            return false;
+        }
+        if (shareName == null) {
+            if (other.shareName != null) {
+                return false;
+            }
+        } else if (!shareName.equals(other.shareName)) {
+            return false;
+        }
+        if (uri == null) {
+            if (other.uri != null) {
+                return false;
+            }
+        } else if (!uri.equals(other.uri)) {
+            return false;
+        }
+        return true;
+    }
+
 }

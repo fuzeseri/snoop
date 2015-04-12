@@ -160,7 +160,7 @@ public final class DocumentPath extends SnoopDocument {
                     + "uri varchar(1024),"
                     + "path varchar(1024),"
                     + "local_path varchar(1024),"
-                    + "last_modified_time timestamp,"
+                    + "last_modified_time BIGINT,"
                     + "content_type varchar(100)"
                     + ")";
 

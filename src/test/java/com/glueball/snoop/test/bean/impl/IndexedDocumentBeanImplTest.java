@@ -334,7 +334,7 @@ public class IndexedDocumentBeanImplTest {
 
     /**
      * Helper method to lock documents.
-     * 
+     *
      * @return lock id.
      */
     private final long lockDocuments(final List<IndexedDocument> docList) {
@@ -350,7 +350,8 @@ public class IndexedDocumentBeanImplTest {
                             throws SQLException {
 
                         ps.setLong(1, lock);
-                        ps.setString(2,
+                        ps.setLong(2, new Date().getTime());
+                        ps.setString(3,
                                 MD5.toHexString(docList.get(i).getId()));
                     }
 
