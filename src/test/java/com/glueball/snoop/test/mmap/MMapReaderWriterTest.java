@@ -18,7 +18,7 @@ import com.glueball.snoop.entity.FileData;
 import com.glueball.snoop.mmap.MMapReader;
 import com.glueball.snoop.mmap.MMapWriter;
 import com.glueball.snoop.mmap.Mappable;
-import com.glueball.snoop.performance.util.DocumentPathUtil;
+import com.glueball.snoop.util.DocumentPathUtil;
 
 /**
  * @author karesz

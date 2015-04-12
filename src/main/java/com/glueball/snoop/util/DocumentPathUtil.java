@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.glueball.snoop.performance.util;
+package com.glueball.snoop.util;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.glueball.snoop.entity.DocumentPath;
-import com.glueball.snoop.util.MD5;
 
 /**
  * Utility class to generate DocumentPath object for performance tests.

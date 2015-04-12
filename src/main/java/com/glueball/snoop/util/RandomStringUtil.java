@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.glueball.snoop.performance.util;
+package com.glueball.snoop.util;
 
 import java.util.Random;
 

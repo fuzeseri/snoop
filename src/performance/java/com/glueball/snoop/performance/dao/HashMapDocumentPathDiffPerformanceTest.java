@@ -13,7 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.glueball.snoop.entity.DocumentPath;
-import com.glueball.snoop.performance.util.DocumentPathUtil;
+import com.glueball.snoop.util.DocumentPathUtil;
 
 /**
  * Test class to measure performance of has based diff algorithms.

@@ -5,10 +5,7 @@ package com.glueball.snoop.performance.jaxb;
 
 import java.io.File;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -20,22 +17,12 @@ import org.junit.Test;
 
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.DocumentPaths;
-import com.glueball.snoop.performance.util.DocumentPathUtil;
+import com.glueball.snoop.util.DocumentPathUtil;
 
 /**
  * @author karesz
  */
 public class DocumentJaxbPerformanceTest {
-
-    /**
-     * Hash map to simulate the set of documents found on the file system.
-     */
-    private static Map<String, Timestamp> left = new HashMap<String, Timestamp>();
-
-    /**
-     * Hash map simulate the set a documents stored in the index.
-     */
-    private static Map<String, Timestamp> rigth = new HashMap<String, Timestamp>();
 
     /**
      * List to store the generated documents.
@@ -93,6 +80,7 @@ public class DocumentJaxbPerformanceTest {
                 .newInstance(DocumentPaths.class);
         final Unmarshaller jaxbUnmarshaller = jaxbContext
                 .createUnmarshaller();
+        @SuppressWarnings("unused")
         final DocumentPaths paths = (DocumentPaths) jaxbUnmarshaller
                 .unmarshal(new File("performance-share.xml"));
     }

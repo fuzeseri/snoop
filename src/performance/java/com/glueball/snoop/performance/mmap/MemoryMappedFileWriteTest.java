@@ -18,8 +18,8 @@ import org.junit.Test;
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.FileData;
 import com.glueball.snoop.entity.FilePath;
-import com.glueball.snoop.performance.util.DocumentPathUtil;
 import com.glueball.snoop.util.ByteUtil;
+import com.glueball.snoop.util.DocumentPathUtil;
 
 /**
  * @author karesz

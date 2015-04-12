@@ -14,7 +14,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.glueball.snoop.dao.DocumentPathDao;
 import com.glueball.snoop.dao.impl.DocumentPathDaoImpl;
 import com.glueball.snoop.entity.DocumentPath;
-import com.glueball.snoop.performance.util.DocumentPathUtil;
+import com.glueball.snoop.util.DocumentPathUtil;
 
 /**
  * Test class to measure the performance of DocumentPathDao.
