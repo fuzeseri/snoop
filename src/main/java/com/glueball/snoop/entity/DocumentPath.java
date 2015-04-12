@@ -15,6 +15,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.glueball.snoop.util.MD5;
+
 /**
  * Entity class. Representation of the document found on the file system.
  * Containing the related relational queries to store and read the entities from
@@ -210,7 +212,8 @@ public final class DocumentPath extends SnoopDocument {
     @Override
     public String toString() {
 
-        return " id : " + getId() + " ,shareName : " + getShareName()
+        return " id : " + MD5.toHexString(getId()) + " ,shareName : "
+                + getShareName()
                 + " ,fileName : " + getFileName() + " ,uri : " + getUri()
                 + " ,path : " + getPath() + " ,localPath : " + getLocalPath()
                 + " ,lastModifiedTime : " + getLastModifiedTime()

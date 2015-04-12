@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.glueball.snoop.util.MD5;
+
 /**
  * Entity class. Relational database representation of the document stored in
  * the index. Containing the related relational queries to store and read the
@@ -270,7 +272,8 @@ public final class IndexedDocument extends SnoopDocument {
     @Override
     public String toString() {
 
-        return " id : " + getId() + " ,fileName : " + getFileName()
+        return " id : " + MD5.toHexString(getId()) + " ,fileName : "
+                + getFileName()
                 + " ,shareName : " + getShareName() + " ,uri : " + getUri()
                 + " ,path : " + getPath() + " ,localPath : " + getLocalPath()
                 + " ,lastModifiedTime : " + getLastModifiedTime()

@@ -1,7 +1,11 @@
-/**
- * 
- */
 package com.glueball.snoop.entity;
+
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,10 +15,15 @@ import com.glueball.snoop.mmap.Mappable;
 import com.glueball.snoop.util.ByteUtil;
 
 /**
+ * Mappable object to store file data.
+ * 
  * @author karesz
  */
 public final class FileData implements Mappable {
 
+    /**
+     * The lenght of the ids.
+     */
     private static final int ID_LENGHT = 16;
 
     private long position = 0L;
