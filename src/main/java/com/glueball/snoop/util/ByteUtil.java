@@ -5,6 +5,7 @@ package com.glueball.snoop.util;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 /**
@@ -56,7 +57,7 @@ public final class ByteUtil {
     public static byte[][] stringToByteArrays(final String str,
             final int sliceSize) {
 
-        final byte[] strToByte = str.getBytes();
+        final byte[] strToByte = str.getBytes(Charset.defaultCharset());
         int sliceCount = (strToByte.length / sliceSize)
                 + (strToByte.length % sliceSize == 0 ? 0 : 1);
 
@@ -64,7 +65,8 @@ public final class ByteUtil {
 
         for (int i = 0; i < sliceCount; i++) {
 
-            slices[i] = Arrays.copyOfRange(strToByte, i * 80, i * 80 + 80);
+            slices[i] = Arrays.copyOfRange(strToByte, i * sliceSize, i
+                    * sliceSize + sliceSize);
         }
         return slices;
     }
