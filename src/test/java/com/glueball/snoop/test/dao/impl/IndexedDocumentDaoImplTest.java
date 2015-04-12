@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.bouncycastle.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -652,9 +653,9 @@ public class IndexedDocumentDaoImplTest {
 
         assertEquals(3, lockedList.size());
 
-        assertEquals(idoc1.getId(), lockedList.get(0).getId());
-        assertEquals(idoc2.getId(), lockedList.get(1).getId());
-        assertEquals(idoc3.getId(), lockedList.get(2).getId());
+        assertTrue(Arrays.areEqual(idoc1.getId(), lockedList.get(0).getId()));
+        assertTrue(Arrays.areEqual(idoc2.getId(), lockedList.get(1).getId()));
+        assertTrue(Arrays.areEqual(idoc3.getId(), lockedList.get(2).getId()));
 
         assertEquals(lock, lockedList.get(0).getLock());
         assertEquals(lock, lockedList.get(1).getLock());
@@ -840,9 +841,9 @@ public class IndexedDocumentDaoImplTest {
 
         assertEquals(3, lockedList.size());
 
-        assertEquals(idoc1.getId(), lockedList.get(0).getId());
-        assertEquals(idoc2.getId(), lockedList.get(1).getId());
-        assertEquals(idoc3.getId(), lockedList.get(2).getId());
+        assertTrue(Arrays.areEqual(idoc1.getId(), lockedList.get(0).getId()));
+        assertTrue(Arrays.areEqual(idoc2.getId(), lockedList.get(1).getId()));
+        assertTrue(Arrays.areEqual(idoc3.getId(), lockedList.get(2).getId()));
 
         assertEquals(lock, lockedList.get(0).getLock());
         assertEquals(lock, lockedList.get(1).getLock());

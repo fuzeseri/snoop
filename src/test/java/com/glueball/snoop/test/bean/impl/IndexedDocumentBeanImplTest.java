@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import org.bouncycastle.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -301,9 +302,9 @@ public class IndexedDocumentBeanImplTest {
         assertTrue(indexList.get(1).getLockTime() != 0L);
         assertTrue(indexList.get(2).getLockTime() != 0L);
 
-        assertEquals(idoc1.getId(), indexList.get(0).getId());
-        assertEquals(idoc2.getId(), indexList.get(1).getId());
-        assertEquals(idoc3.getId(), indexList.get(2).getId());
+        assertTrue(Arrays.areEqual(idoc1.getId(), indexList.get(0).getId()));
+        assertTrue(Arrays.areEqual(idoc2.getId(), indexList.get(1).getId()));
+        assertTrue(Arrays.areEqual(idoc3.getId(), indexList.get(2).getId()));
     }
 
     /**
