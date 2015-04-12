@@ -7,7 +7,7 @@
 
         <bean id="h2DataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
            <property name="driverClassName" value="org.h2.Driver" />
-           <property name="url" value="jdbc:h2:${snoop.db.path:#{ systemProperties['user.dir'] + systemProperties['file.separator'] + 'data' + systemProperties['file.separator'] + 'snoop'}};LOCK_TIMEOUT=${snoop.db.lock.timeout:60000}" />
+           <property name="url" value="jdbc:h2:${snoop.db.path:#{ systemProperties['user.dir'] + systemProperties['file.separator'] + 'data' + systemProperties['file.separator'] + 'snoop'}};LOCK_TIMEOUT=${snoop.db.lock.timeout:1200000;MAX_OPERATION_MEMORY=1000000;DB_CLOSE_DELAY=-1}" />
            <property name="username" value="sa" />
            <property name="password" value="sa" />
         </bean>

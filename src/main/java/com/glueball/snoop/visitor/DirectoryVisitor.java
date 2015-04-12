@@ -6,11 +6,15 @@ package com.glueball.snoop.visitor;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.security.NoSuchAlgorithmException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.glueball.snoop.util.MD5;
 
 /**
  * @author karesz
@@ -53,13 +57,21 @@ public class DirectoryVisitor implements FileVisitor<Path> {
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
             throws IOException {
 
-        if (file.getFileName().toString().startsWith(".")) {
+        final String dirn = file.toUri().toString();
 
-            // LOG.debug(dir.getFileName().toString());
-            return FileVisitResult.CONTINUE;
-
-        }
         fileCounter++;
+
+        try {
+            String str = " -  " + MD5.md5Digest(dirn)
+                    + " - " + dirn + " -- "
+                    + fileCounter;
+
+            final String contentType = Files.probeContentType(file);
+
+        } catch (NoSuchAlgorithmException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         return FileVisitResult.CONTINUE;
     }
@@ -85,8 +97,19 @@ public class DirectoryVisitor implements FileVisitor<Path> {
     public FileVisitResult postVisitDirectory(Path dir, IOException exc)
             throws IOException {
 
-        LOG.debug(++dirCounter + " " + dir.toUri().toString() + " -- "
-                + fileCounter);
+        final String dirn = dir.toUri().toString();
+
+        try {
+            String str = ++dirCounter + " -  " + MD5.md5Digest(dirn)
+                    + " - " + dirn + " -- "
+                    + fileCounter;
+
+            LOG.debug(str);
+
+        } catch (NoSuchAlgorithmException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         fileCounter = 0;
 

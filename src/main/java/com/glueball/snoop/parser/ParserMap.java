@@ -54,7 +54,7 @@ public final class ParserMap {
         boolean hasParser = this.parserMap.containsKey(contentType);
 
         if (!hasParser) {
-            LOG.debug("No parser available for mime-type: " + contentType);
+            LOG.info("No parser available for mime-type: " + contentType);
         }
 
         return hasParser;

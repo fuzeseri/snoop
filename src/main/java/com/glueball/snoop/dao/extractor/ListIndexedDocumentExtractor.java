@@ -14,6 +14,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.IndexedDocument;
+import com.glueball.snoop.util.MD5;
 
 /**
  * ResultseExtractor implementation to extract data to List of IndexedDocument
@@ -53,18 +54,18 @@ public final class ListIndexedDocumentExtractor implements
         while (rs.next()) {
 
             final IndexedDocument doc = new IndexedDocument();
-            doc.setId(rs.getString("id"));
+            doc.setId(MD5.hexStringToByteArray(rs.getString("id")));
             doc.setShareName(rs.getString("share_name"));
             doc.setFileName(rs.getString("file_name"));
             doc.setUri(rs.getString("uri"));
             doc.setPath(rs.getString("path"));
             doc.setLocalPath(rs.getString("local_path"));
-            doc.setLastModifiedTime(rs.getTimestamp("last_modified_time"));
-            doc.setLastIndexedTime(rs.getTimestamp("last_indexed_time"));
+            doc.setLastModifiedTime(rs.getLong("last_modified_time"));
+            doc.setLastIndexedTime(rs.getLong("last_indexed_time"));
             doc.setContentType(rs.getString("content_type"));
             doc.setIndexState(rs.getString("index_state"));
             doc.setLock(rs.getInt("lock"));
-            doc.setLockTime(rs.getTimestamp("lock_time"));
+            doc.setLockTime(rs.getLong("lock_time"));
             docList.add(doc);
         }
         return docList;

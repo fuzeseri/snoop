@@ -14,7 +14,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -82,14 +81,14 @@ public class DocumentPathDaoImplTest {
     @Test
     public final void testInsertOne() throws NoSuchAlgorithmException {
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
 
         final DocumentPath doc1 = new DocumentPath();
         doc1.setContentType("application/pdf");
         doc1.setFileName("filename_a.pdf");
         doc1.setId(fileId1);
-        doc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc1.setLastModifiedTime(new Date().getTime());
         doc1.setLocalPath("/testdir/filename_a.pdf");
         doc1.setPath("/testdir/filename_a.pdf");
         doc1.setShareName("test-share");
@@ -99,13 +98,13 @@ public class DocumentPathDaoImplTest {
         dao.insertOne(doc1);
 
         assertEquals(1, dao.rowNum());
-        assertEquals(doc1, dao.findById(fileId1));
+        assertEquals(doc1, dao.findById(MD5.toHexString(fileId1)));
 
         final DocumentPath doc2 = new DocumentPath();
         doc2.setContentType("application/pdf");
         doc2.setFileName("filename_b.pdf");
         doc2.setId(fileId2);
-        doc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc2.setLastModifiedTime(new Date().getTime());
         doc2.setLocalPath("/testdir/filename_b.pdf");
         doc2.setPath("/testdir/filename_b.pdf");
         doc2.setShareName("test-share");
@@ -114,8 +113,8 @@ public class DocumentPathDaoImplTest {
         dao.insertOne(doc2);
 
         assertEquals(2, dao.rowNum());
-        assertEquals(doc2, dao.findById(fileId2));
-        assertEquals(doc1, dao.findById(fileId1));
+        assertEquals(doc2, dao.findById(MD5.toHexString(fileId2)));
+        assertEquals(doc1, dao.findById(MD5.toHexString(fileId1)));
     }
 
     /**
@@ -131,15 +130,15 @@ public class DocumentPathDaoImplTest {
 
         final List<DocumentPath> list = new ArrayList<DocumentPath>();
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
-        final String fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
 
         final DocumentPath doc1 = new DocumentPath();
         doc1.setContentType("application/pdf");
         doc1.setFileName("filename_a.pdf");
         doc1.setId(fileId1);
-        doc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc1.setLastModifiedTime(new Date().getTime());
         doc1.setLocalPath("/testdir/filename_a.pdf");
         doc1.setPath("/testdir/filename_a.pdf");
         doc1.setShareName("test-share");
@@ -151,7 +150,7 @@ public class DocumentPathDaoImplTest {
         doc2.setContentType("application/pdf");
         doc2.setFileName("filename_b.pdf");
         doc2.setId(fileId2);
-        doc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc2.setLastModifiedTime(new Date().getTime());
         doc2.setLocalPath("/testdir/filename_b.pdf");
         doc2.setPath("/testdir/filename_b.pdf");
         doc2.setShareName("test-share");
@@ -163,7 +162,7 @@ public class DocumentPathDaoImplTest {
         doc3.setContentType("application/pdf");
         doc3.setFileName("filename_c.pdf");
         doc3.setId(fileId3);
-        doc3.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc3.setLastModifiedTime(new Date().getTime());
         doc3.setLocalPath("/testdir/filename_c.pdf");
         doc3.setPath("/testdir/filename_c.pdf");
         doc3.setShareName("test-share");
@@ -175,9 +174,9 @@ public class DocumentPathDaoImplTest {
         dao.insertList(list);
 
         assertEquals(3, dao.rowNum());
-        assertEquals(doc1, dao.findById(fileId1));
-        assertEquals(doc2, dao.findById(fileId2));
-        assertEquals(doc3, dao.findById(fileId3));
+        assertEquals(doc1, dao.findById(MD5.toHexString(fileId1)));
+        assertEquals(doc2, dao.findById(MD5.toHexString(fileId2)));
+        assertEquals(doc3, dao.findById(MD5.toHexString(fileId3)));
     }
 
     /**
@@ -193,12 +192,12 @@ public class DocumentPathDaoImplTest {
 
         final DocumentPath doc = new DocumentPath();
 
-        final String fileId = MD5.md5Digest("/testdir/filename.pdf");
+        final byte[] fileId = MD5.md5Digest("/testdir/filename.pdf");
 
         doc.setContentType("application/pdf");
         doc.setFileName("filename.pdf");
         doc.setId(fileId);
-        doc.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc.setLastModifiedTime(new Date().getTime());
         doc.setLocalPath("/testdir/filename.pdf");
         doc.setPath("/testdir/filename.pdf");
         doc.setShareName("test-share");
@@ -207,7 +206,7 @@ public class DocumentPathDaoImplTest {
         dao.truncateTable();
         dao.insertOne(doc);
 
-        assertEquals(doc, dao.findById(fileId));
+        assertEquals(doc, dao.findById(MD5.toHexString(fileId)));
         assertEquals(1, dao.rowNum());
     }
 
@@ -268,16 +267,18 @@ public class DocumentPathDaoImplTest {
     /**
      * Test method for
      * {@link com.glueball.snoop.dao.impl.DocumentPathDaoImpl#rowNum()}.
+     * 
+     * @throws NoSuchAlgorithmException
      */
     @Test
-    public final void testRowNum() {
+    public final void testRowNum() throws NoSuchAlgorithmException {
 
         dao.truncateTable();
 
         final List<DocumentPath> docList = new ArrayList<DocumentPath>();
         for (int i = 0; i < 100; i++) {
             final DocumentPath doc = new DocumentPath();
-            doc.setId("" + i);
+            doc.setId(MD5.md5Digest("" + i));
             docList.add(doc);
         }
 
@@ -288,16 +289,18 @@ public class DocumentPathDaoImplTest {
     /**
      * Test method for
      * {@link com.glueball.snoop.dao.impl.DocumentPathDaoImpl#truncateTable()}.
+     * 
+     * @throws NoSuchAlgorithmException
      */
     @Test
-    public final void testTruncateTable() {
+    public final void testTruncateTable() throws NoSuchAlgorithmException {
 
         dao.truncateTable();
 
         final List<DocumentPath> docList = new ArrayList<DocumentPath>();
         for (int i = 0; i < 100; i++) {
             final DocumentPath doc = new DocumentPath();
-            doc.setId("" + i);
+            doc.setId(MD5.md5Digest("" + i));
             docList.add(doc);
         }
 
@@ -320,15 +323,15 @@ public class DocumentPathDaoImplTest {
 
         final List<DocumentPath> list = new ArrayList<DocumentPath>();
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
-        final String fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
 
         final DocumentPath doc1 = new DocumentPath();
         doc1.setContentType("application/pdf");
         doc1.setFileName("filename_a.pdf");
         doc1.setId(fileId1);
-        doc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc1.setLastModifiedTime(new Date().getTime());
         doc1.setLocalPath("/testdir/filename_a.pdf");
         doc1.setPath("/testdir/filename_a.pdf");
         doc1.setShareName("test-share");
@@ -340,7 +343,7 @@ public class DocumentPathDaoImplTest {
         doc2.setContentType("application/pdf");
         doc2.setFileName("filename_b.pdf");
         doc2.setId(fileId2);
-        doc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc2.setLastModifiedTime(new Date().getTime());
         doc2.setLocalPath("/testdir/filename_b.pdf");
         doc2.setPath("/testdir/filename_b.pdf");
         doc2.setShareName("test-share");
@@ -352,7 +355,7 @@ public class DocumentPathDaoImplTest {
         doc3.setContentType("application/pdf");
         doc3.setFileName("filename_c.pdf");
         doc3.setId(fileId3);
-        doc3.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc3.setLastModifiedTime(new Date().getTime());
         doc3.setLocalPath("/testdir/filename_c.pdf");
         doc3.setPath("/testdir/filename_c.pdf");
         doc3.setShareName("test-share");
@@ -384,12 +387,12 @@ public class DocumentPathDaoImplTest {
 
         final DocumentPath doc = new DocumentPath();
 
-        final String fileId = MD5.md5Digest("/testdir/filename.pdf");
+        final byte[] fileId = MD5.md5Digest("/testdir/filename.pdf");
 
         doc.setContentType("application/pdf");
         doc.setFileName("filename.pdf");
         doc.setId(fileId);
-        doc.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc.setLastModifiedTime(new Date().getTime());
         doc.setLocalPath("/testdir/filename.pdf");
         doc.setPath("/testdir/filename.pdf");
         doc.setShareName("test-share");
@@ -398,12 +401,12 @@ public class DocumentPathDaoImplTest {
         dao.truncateTable();
         dao.insertOne(doc);
 
-        assertEquals(doc, dao.findById(fileId));
+        assertEquals(doc, dao.findById(MD5.toHexString(fileId)));
         assertEquals(1, dao.rowNum());
 
-        dao.deleteById(fileId);
+        dao.deleteById(MD5.toHexString(fileId));
 
-        assertEquals(null, dao.findById(fileId));
+        assertEquals(null, dao.findById(MD5.toHexString(fileId)));
         assertEquals(0, dao.rowNum());
     }
 
@@ -421,14 +424,14 @@ public class DocumentPathDaoImplTest {
 
         final List<DocumentPath> list = new ArrayList<DocumentPath>();
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
 
         final DocumentPath doc1 = new DocumentPath();
         doc1.setContentType("application/pdf");
         doc1.setFileName("filename_a.pdf");
         doc1.setId(fileId1);
-        doc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc1.setLastModifiedTime(new Date().getTime());
         doc1.setLocalPath("/testdir/filename_a.pdf");
         doc1.setPath("/testdir/filename_a.pdf");
         doc1.setShareName("test-share");
@@ -440,7 +443,7 @@ public class DocumentPathDaoImplTest {
         doc2.setContentType("application/pdf");
         doc2.setFileName("filename_b.pdf");
         doc2.setId(fileId2);
-        doc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc2.setLastModifiedTime(new Date().getTime());
         doc2.setLocalPath("/testdir/filename_b.pdf");
         doc2.setPath("/testdir/filename_b.pdf");
         doc2.setShareName("test-share");
@@ -475,7 +478,7 @@ public class DocumentPathDaoImplTest {
                     public void setValues(final PreparedStatement ps)
                             throws SQLException {
 
-                        ps.setString(1, fileId1);
+                        ps.setString(1, MD5.toHexString(fileId1));
                     }
 
                 }, new IndexedDocumentExtractor(idoc1));
@@ -492,7 +495,7 @@ public class DocumentPathDaoImplTest {
                     public void setValues(final PreparedStatement ps)
                             throws SQLException {
 
-                        ps.setString(1, fileId2);
+                        ps.setString(1, MD5.toHexString(fileId2));
                     }
 
                 }, new IndexedDocumentExtractor(idoc2));
@@ -513,15 +516,14 @@ public class DocumentPathDaoImplTest {
 
         final List<DocumentPath> list = new ArrayList<DocumentPath>();
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
 
         final DocumentPath doc1 = new DocumentPath();
         doc1.setContentType("application/pdf");
         doc1.setFileName("filename_a.pdf");
         doc1.setId(fileId1);
-        doc1.setLastModifiedTime(new java.sql.Timestamp(
-                new Date().getTime() - 100000));
+        doc1.setLastModifiedTime(new Date().getTime() - 100000);
         doc1.setLocalPath("/testdir/filename_a.pdf");
         doc1.setPath("/testdir/filename_a.pdf");
         doc1.setShareName("test-share");
@@ -533,7 +535,7 @@ public class DocumentPathDaoImplTest {
         doc2.setContentType("application/pdf");
         doc2.setFileName("filename_b.pdf");
         doc2.setId(fileId2);
-        doc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        doc2.setLastModifiedTime(new Date().getTime());
         doc2.setLocalPath("/testdir/filename_b.pdf");
         doc2.setPath("/testdir/filename_b.pdf");
         doc2.setShareName("test-share");
@@ -559,7 +561,7 @@ public class DocumentPathDaoImplTest {
                     public void setValues(final PreparedStatement ps)
                             throws SQLException {
 
-                        ps.setString(1, fileId1);
+                        ps.setString(1, MD5.toHexString(fileId1));
                     }
 
                 }, new IndexedDocumentExtractor(idoc1));
@@ -576,7 +578,7 @@ public class DocumentPathDaoImplTest {
                     public void setValues(final PreparedStatement ps)
                             throws SQLException {
 
-                        ps.setString(1, fileId2);
+                        ps.setString(1, MD5.toHexString(fileId2));
                     }
 
                 }, new IndexedDocumentExtractor(idoc2));
@@ -596,14 +598,13 @@ public class DocumentPathDaoImplTest {
     public final void testUpdateModifiedDocuments()
             throws NoSuchAlgorithmException {
 
-        final Timestamp now = new java.sql.Timestamp(new Date().getTime());
-        final Timestamp later =
-                new java.sql.Timestamp(new Date().getTime() + 10000);
+        final long now = new Date().getTime();
+        final long later = new Date().getTime() + 10000;
 
         final List<DocumentPath> list = new ArrayList<DocumentPath>();
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
 
         final DocumentPath doc1 = new DocumentPath();
         doc1.setContentType("application/pdf");
@@ -635,7 +636,7 @@ public class DocumentPathDaoImplTest {
 
         list.get(0).setLastModifiedTime(later);
 
-        assertTrue(list.get(0).getLastModifiedTime().after(idocList.get(0)
+        assertTrue(list.get(0).getLastModifiedTime() > (idocList.get(0)
                 .getLastModifiedTime()));
 
         dao.truncateTable();
@@ -659,7 +660,7 @@ public class DocumentPathDaoImplTest {
                     public void setValues(final PreparedStatement ps)
                             throws SQLException {
 
-                        ps.setString(1, fileId1);
+                        ps.setString(1, MD5.toHexString(fileId1));
                     }
 
                 }, new IndexedDocumentExtractor(idoc1));
@@ -678,7 +679,7 @@ public class DocumentPathDaoImplTest {
                     public void setValues(final PreparedStatement ps)
                             throws SQLException {
 
-                        ps.setString(1, fileId2);
+                        ps.setString(1, MD5.toHexString(fileId2));
                     }
 
                 }, new IndexedDocumentExtractor(idoc2));

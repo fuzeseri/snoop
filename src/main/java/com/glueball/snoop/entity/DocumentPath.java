@@ -11,6 +11,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Entity class. Representation of the document found on the file system.
  * Containing the related relational queries to store and read the entities from
@@ -19,7 +23,14 @@ import java.util.List;
  *
  * @author karesz
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "path")
 public final class DocumentPath extends SnoopDocument {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * SQL query insert an entity to the DOCUMENT_PATH table.
@@ -233,7 +244,7 @@ public final class DocumentPath extends SnoopDocument {
             idoc.setLastModifiedTime(doc.getLastModifiedTime());
             idoc.setLocalPath(doc.getLocalPath());
             idoc.setLock(0);
-            idoc.setLockTime(null);
+            idoc.setLockTime(0L);
             idoc.setPath(doc.getPath());
             idoc.setShareName(doc.getShareName());
             idoc.setUri(doc.getUri());

@@ -75,46 +75,46 @@ public class IndexedDocumentDaoImplTest {
     @Test
     public final void testInsertOne() throws NoSuchAlgorithmException {
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
 
         final IndexedDocument idoc1 = new IndexedDocument();
         idoc1.setContentType("application/pdf");
         idoc1.setFileName("filename_a.pdf");
         idoc1.setId(fileId1);
-        idoc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastModifiedTime(new Date().getTime());
         idoc1.setLocalPath("/testdir/filename_a.pdf");
         idoc1.setPath("/testdir/filename_a.pdf");
         idoc1.setShareName("test-share");
         idoc1.setUri("file:///testdir/filename_a.pdf");
-        idoc1.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastIndexedTime(new Date().getTime());
         idoc1.setLock(0);
-        idoc1.setLockTime(null);
+        idoc1.setLockTime(0L);
 
         dao.truncateTable();
         dao.insertOne(idoc1);
 
         assertEquals(1, dao.rowNum());
-        assertEquals(idoc1, dao.findById(fileId1));
+        assertEquals(idoc1, dao.findById(MD5.toHexString(fileId1)));
 
         final IndexedDocument idoc2 = new IndexedDocument();
         idoc2.setContentType("application/pdf");
         idoc2.setFileName("filename_b.pdf");
         idoc2.setId(fileId2);
-        idoc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastModifiedTime(new Date().getTime());
         idoc2.setLocalPath("/testdir/filename_b.pdf");
         idoc2.setPath("/testdir/filename_b.pdf");
         idoc2.setShareName("test-share");
         idoc2.setUri("file:///testdir/filename_b.pdf");
-        idoc2.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastIndexedTime(new Date().getTime());
         idoc2.setLock(0);
-        idoc2.setLockTime(null);
+        idoc2.setLockTime(0L);
 
         dao.insertOne(idoc2);
 
         assertEquals(2, dao.rowNum());
-        assertEquals(idoc2, dao.findById(fileId2));
-        assertEquals(idoc1, dao.findById(fileId1));
+        assertEquals(idoc2, dao.findById(MD5.toHexString(fileId2)));
+        assertEquals(idoc1, dao.findById(MD5.toHexString(fileId1)));
 
     }
 
@@ -129,9 +129,9 @@ public class IndexedDocumentDaoImplTest {
     @Test
     public final void testInsertList() throws NoSuchAlgorithmException {
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
-        final String fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
 
         final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
 
@@ -139,51 +139,51 @@ public class IndexedDocumentDaoImplTest {
         idoc1.setContentType("application/pdf");
         idoc1.setFileName("filename_a.pdf");
         idoc1.setId(fileId1);
-        idoc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastModifiedTime(new Date().getTime());
         idoc1.setLocalPath("/testdir/filename_a.pdf");
         idoc1.setPath("/testdir/filename_a.pdf");
         idoc1.setShareName("test-share");
         idoc1.setUri("file:///testdir/filename_a.pdf");
-        idoc1.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastIndexedTime(new Date().getTime());
         idoc1.setLock(0);
-        idoc1.setLockTime(null);
+        idoc1.setLockTime(0L);
         idocList.add(idoc1);
 
         final IndexedDocument idoc2 = new IndexedDocument();
         idoc2.setContentType("application/pdf");
         idoc2.setFileName("filename_b.pdf");
         idoc2.setId(fileId2);
-        idoc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastModifiedTime(new Date().getTime());
         idoc2.setLocalPath("/testdir/filename_b.pdf");
         idoc2.setPath("/testdir/filename_b.pdf");
         idoc2.setShareName("test-share");
         idoc2.setUri("file:///testdir/filename_b.pdf");
-        idoc2.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastIndexedTime(new Date().getTime());
         idoc2.setLock(0);
-        idoc2.setLockTime(null);
+        idoc2.setLockTime(0L);
         idocList.add(idoc2);
 
         final IndexedDocument idoc3 = new IndexedDocument();
         idoc3.setContentType("application/pdf");
         idoc3.setFileName("filename_c.pdf");
         idoc3.setId(fileId3);
-        idoc3.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastModifiedTime(new Date().getTime());
         idoc3.setLocalPath("/testdir/filename_c.pdf");
         idoc3.setPath("/testdir/filename_c.pdf");
         idoc3.setShareName("test-share");
         idoc3.setUri("file:///testdir/filename_c.pdf");
-        idoc3.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastIndexedTime(new Date().getTime());
         idoc3.setLock(0);
-        idoc3.setLockTime(null);
+        idoc3.setLockTime(0L);
         idocList.add(idoc3);
 
         dao.truncateTable();
         dao.insertList(idocList);
 
         assertEquals(3, dao.rowNum());
-        assertEquals(idoc1, dao.findById(fileId1));
-        assertEquals(idoc2, dao.findById(fileId2));
-        assertEquals(idoc3, dao.findById(fileId3));
+        assertEquals(idoc1, dao.findById(MD5.toHexString(fileId1)));
+        assertEquals(idoc2, dao.findById(MD5.toHexString(fileId2)));
+        assertEquals(idoc3, dao.findById(MD5.toHexString(fileId3)));
     }
 
     /**
@@ -197,25 +197,25 @@ public class IndexedDocumentDaoImplTest {
     @Test
     public final void testFindById() throws NoSuchAlgorithmException {
 
-        final String fileId = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId = MD5.md5Digest("/testdir/filename_a.pdf");
 
         final IndexedDocument idoc = new IndexedDocument();
         idoc.setContentType("application/pdf");
         idoc.setFileName("filename_a.pdf");
         idoc.setId(fileId);
-        idoc.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc.setLastModifiedTime(new Date().getTime());
         idoc.setLocalPath("/testdir/filename_a.pdf");
         idoc.setPath("/testdir/filename_a.pdf");
         idoc.setShareName("test-share");
         idoc.setUri("file:///testdir/filename_a.pdf");
-        idoc.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc.setLastIndexedTime(new Date().getTime());
         idoc.setLock(0);
-        idoc.setLockTime(null);
+        idoc.setLockTime(0L);
 
         dao.truncateTable();
         dao.insertOne(idoc);
 
-        assertEquals(idoc, dao.findById(fileId));
+        assertEquals(idoc, dao.findById(MD5.toHexString(fileId)));
         assertEquals(1, dao.rowNum());
     }
 
@@ -278,14 +278,16 @@ public class IndexedDocumentDaoImplTest {
     /**
      * Test method for
      * {@link com.glueball.snoop.dao.impl.IndexedDocumentDaoImpl#rowNum()}.
+     * 
+     * @throws NoSuchAlgorithmException
      */
     @Test
-    public final void testRowNum() {
+    public final void testRowNum() throws NoSuchAlgorithmException {
 
         final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
         for (int i = 0; i < 100; i++) {
             final IndexedDocument idoc = new IndexedDocument();
-            idoc.setId("" + i);
+            idoc.setId(MD5.md5Digest("" + i));
             idocList.add(idoc);
         }
 
@@ -305,30 +307,30 @@ public class IndexedDocumentDaoImplTest {
     @Test
     public final void testDeleteById() throws NoSuchAlgorithmException {
 
-        final String fileId = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId = MD5.md5Digest("/testdir/filename_a.pdf");
 
         final IndexedDocument idoc = new IndexedDocument();
         idoc.setContentType("application/pdf");
         idoc.setFileName("filename_a.pdf");
         idoc.setId(fileId);
-        idoc.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc.setLastModifiedTime(new Date().getTime());
         idoc.setLocalPath("/testdir/filename_a.pdf");
         idoc.setPath("/testdir/filename_a.pdf");
         idoc.setShareName("test-share");
         idoc.setUri("file:///testdir/filename_a.pdf");
-        idoc.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc.setLastIndexedTime(new Date().getTime());
         idoc.setLock(0);
-        idoc.setLockTime(null);
+        idoc.setLockTime(0L);
 
         dao.truncateTable();
         dao.insertOne(idoc);
 
-        assertEquals(idoc, dao.findById(fileId));
+        assertEquals(idoc, dao.findById(MD5.toHexString(fileId)));
         assertEquals(1, dao.rowNum());
 
-        dao.deleteById(fileId);
+        dao.deleteById(MD5.toHexString(fileId));
 
-        assertEquals(null, dao.findById(fileId));
+        assertEquals(null, dao.findById(MD5.toHexString(fileId)));
         assertEquals(0, dao.rowNum());
     }
 
@@ -336,16 +338,18 @@ public class IndexedDocumentDaoImplTest {
      * Test method for
      * {@link com.glueball.snoop.dao.impl.IndexedDocumentDaoImpl#truncateTable()}
      * .
+     * 
+     * @throws NoSuchAlgorithmException
      */
     @Test
-    public final void testTruncateTable() {
+    public final void testTruncateTable() throws NoSuchAlgorithmException {
 
         dao.truncateTable();
 
         final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
         for (int i = 0; i < 100; i++) {
             final IndexedDocument idoc = new IndexedDocument();
-            idoc.setId("" + i);
+            idoc.setId(MD5.md5Digest("" + i));
             idocList.add(idoc);
         }
 
@@ -366,9 +370,9 @@ public class IndexedDocumentDaoImplTest {
     @Test
     public final void testSelectAll() throws NoSuchAlgorithmException {
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
-        final String fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
 
         final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
 
@@ -376,42 +380,42 @@ public class IndexedDocumentDaoImplTest {
         idoc1.setContentType("application/pdf");
         idoc1.setFileName("filename_a.pdf");
         idoc1.setId(fileId1);
-        idoc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastModifiedTime(new Date().getTime());
         idoc1.setLocalPath("/testdir/filename_a.pdf");
         idoc1.setPath("/testdir/filename_a.pdf");
         idoc1.setShareName("test-share");
         idoc1.setUri("file:///testdir/filename_a.pdf");
-        idoc1.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastIndexedTime(new Date().getTime());
         idoc1.setLock(0);
-        idoc1.setLockTime(null);
+        idoc1.setLockTime(0L);
         idocList.add(idoc1);
 
         final IndexedDocument idoc2 = new IndexedDocument();
         idoc2.setContentType("application/pdf");
         idoc2.setFileName("filename_b.pdf");
         idoc2.setId(fileId2);
-        idoc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastModifiedTime(new Date().getTime());
         idoc2.setLocalPath("/testdir/filename_b.pdf");
         idoc2.setPath("/testdir/filename_b.pdf");
         idoc2.setShareName("test-share");
         idoc2.setUri("file:///testdir/filename_b.pdf");
-        idoc2.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastIndexedTime(new Date().getTime());
         idoc2.setLock(0);
-        idoc2.setLockTime(null);
+        idoc2.setLockTime(0L);
         idocList.add(idoc2);
 
         final IndexedDocument idoc3 = new IndexedDocument();
         idoc3.setContentType("application/pdf");
         idoc3.setFileName("filename_c.pdf");
         idoc3.setId(fileId3);
-        idoc3.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastModifiedTime(new Date().getTime());
         idoc3.setLocalPath("/testdir/filename_c.pdf");
         idoc3.setPath("/testdir/filename_c.pdf");
         idoc3.setShareName("test-share");
         idoc3.setUri("file:///testdir/filename_c.pdf");
-        idoc3.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastIndexedTime(new Date().getTime());
         idoc3.setLock(0);
-        idoc3.setLockTime(null);
+        idoc3.setLockTime(0L);
         idocList.add(idoc3);
 
         dao.truncateTable();
@@ -436,9 +440,9 @@ public class IndexedDocumentDaoImplTest {
     @Test
     public final void testDeleteByIds() throws NoSuchAlgorithmException {
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
-        final String fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
 
         final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
 
@@ -446,42 +450,42 @@ public class IndexedDocumentDaoImplTest {
         idoc1.setContentType("application/pdf");
         idoc1.setFileName("filename_a.pdf");
         idoc1.setId(fileId1);
-        idoc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastModifiedTime(new Date().getTime());
         idoc1.setLocalPath("/testdir/filename_a.pdf");
         idoc1.setPath("/testdir/filename_a.pdf");
         idoc1.setShareName("test-share");
         idoc1.setUri("file:///testdir/filename_a.pdf");
-        idoc1.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastIndexedTime(new Date().getTime());
         idoc1.setLock(0);
-        idoc1.setLockTime(null);
+        idoc1.setLockTime(0L);
         idocList.add(idoc1);
 
         final IndexedDocument idoc2 = new IndexedDocument();
         idoc2.setContentType("application/pdf");
         idoc2.setFileName("filename_b.pdf");
         idoc2.setId(fileId2);
-        idoc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastModifiedTime(new Date().getTime());
         idoc2.setLocalPath("/testdir/filename_b.pdf");
         idoc2.setPath("/testdir/filename_b.pdf");
         idoc2.setShareName("test-share");
         idoc2.setUri("file:///testdir/filename_b.pdf");
-        idoc2.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastIndexedTime(new Date().getTime());
         idoc2.setLock(0);
-        idoc2.setLockTime(null);
+        idoc2.setLockTime(0L);
         idocList.add(idoc2);
 
         final IndexedDocument idoc3 = new IndexedDocument();
         idoc3.setContentType("application/pdf");
         idoc3.setFileName("filename_c.pdf");
         idoc3.setId(fileId3);
-        idoc3.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastModifiedTime(new Date().getTime());
         idoc3.setLocalPath("/testdir/filename_c.pdf");
         idoc3.setPath("/testdir/filename_c.pdf");
         idoc3.setShareName("test-share");
         idoc3.setUri("file:///testdir/filename_c.pdf");
-        idoc3.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastIndexedTime(new Date().getTime());
         idoc3.setLock(0);
-        idoc3.setLockTime(null);
+        idoc3.setLockTime(0L);
         idocList.add(idoc3);
 
         dao.truncateTable();
@@ -490,15 +494,15 @@ public class IndexedDocumentDaoImplTest {
         assertEquals(3, dao.rowNum());
 
         final List<String> deleteIdList = new ArrayList<String>();
-        deleteIdList.add(fileId1);
-        deleteIdList.add(fileId2);
+        deleteIdList.add(MD5.toHexString(fileId1));
+        deleteIdList.add(MD5.toHexString(fileId2));
 
         dao.deleteByIds(deleteIdList);
 
         assertEquals(1, dao.rowNum());
-        assertEquals(null, dao.findById(fileId1));
-        assertEquals(null, dao.findById(fileId2));
-        assertEquals(idoc3, dao.findById(fileId3));
+        assertEquals(null, dao.findById(MD5.toHexString(fileId1)));
+        assertEquals(null, dao.findById(MD5.toHexString(fileId2)));
+        assertEquals(idoc3, dao.findById(MD5.toHexString(fileId3)));
     }
 
     /**
@@ -512,9 +516,9 @@ public class IndexedDocumentDaoImplTest {
     @Test
     public final void testLockDocuments() throws NoSuchAlgorithmException {
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
-        final String fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
 
         final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
 
@@ -522,42 +526,42 @@ public class IndexedDocumentDaoImplTest {
         idoc1.setContentType("application/pdf");
         idoc1.setFileName("filename_a.pdf");
         idoc1.setId(fileId1);
-        idoc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastModifiedTime(new Date().getTime());
         idoc1.setLocalPath("/testdir/filename_a.pdf");
         idoc1.setPath("/testdir/filename_a.pdf");
         idoc1.setShareName("test-share");
         idoc1.setUri("file:///testdir/filename_a.pdf");
-        idoc1.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastIndexedTime(new Date().getTime());
         idoc1.setLock(0);
-        idoc1.setLockTime(null);
+        idoc1.setLockTime(0L);
         idocList.add(idoc1);
 
         final IndexedDocument idoc2 = new IndexedDocument();
         idoc2.setContentType("application/pdf");
         idoc2.setFileName("filename_b.pdf");
         idoc2.setId(fileId2);
-        idoc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastModifiedTime(new Date().getTime());
         idoc2.setLocalPath("/testdir/filename_b.pdf");
         idoc2.setPath("/testdir/filename_b.pdf");
         idoc2.setShareName("test-share");
         idoc2.setUri("file:///testdir/filename_b.pdf");
-        idoc2.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastIndexedTime(new Date().getTime());
         idoc2.setLock(0);
-        idoc2.setLockTime(null);
+        idoc2.setLockTime(0L);
         idocList.add(idoc2);
 
         final IndexedDocument idoc3 = new IndexedDocument();
         idoc3.setContentType("application/pdf");
         idoc3.setFileName("filename_c.pdf");
         idoc3.setId(fileId3);
-        idoc3.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastModifiedTime(new Date().getTime());
         idoc3.setLocalPath("/testdir/filename_c.pdf");
         idoc3.setPath("/testdir/filename_c.pdf");
         idoc3.setShareName("test-share");
         idoc3.setUri("file:///testdir/filename_c.pdf");
-        idoc3.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastIndexedTime(new Date().getTime());
         idoc3.setLock(0);
-        idoc3.setLockTime(null);
+        idoc3.setLockTime(0L);
         idocList.add(idoc3);
 
         dao.truncateTable();
@@ -567,13 +571,16 @@ public class IndexedDocumentDaoImplTest {
 
         final long lock = dao.lockDocuments(3);
 
-        assertEquals(lock, dao.findById(fileId1).getLock());
-        assertEquals(lock, dao.findById(fileId2).getLock());
-        assertEquals(lock, dao.findById(fileId3).getLock());
+        assertEquals(lock, dao.findById(MD5.toHexString(fileId1)).getLock());
+        assertEquals(lock, dao.findById(MD5.toHexString(fileId2)).getLock());
+        assertEquals(lock, dao.findById(MD5.toHexString(fileId3)).getLock());
 
-        assertTrue(dao.findById(fileId1).getLockTime() != null);
-        assertTrue(dao.findById(fileId1).getLockTime() != null);
-        assertTrue(dao.findById(fileId1).getLockTime() != null);
+        assertTrue(dao.findById(
+                MD5.toHexString(fileId1)).getLockTime() != 0L);
+        assertTrue(dao.findById(
+                MD5.toHexString(fileId2)).getLockTime() != 0L);
+        assertTrue(dao.findById(
+                MD5.toHexString(fileId3)).getLockTime() != 0L);
     }
 
     /**
@@ -587,9 +594,9 @@ public class IndexedDocumentDaoImplTest {
     @Test
     public final void testGetByLock() throws NoSuchAlgorithmException {
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
-        final String fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
 
         final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
 
@@ -597,42 +604,42 @@ public class IndexedDocumentDaoImplTest {
         idoc1.setContentType("application/pdf");
         idoc1.setFileName("filename_a.pdf");
         idoc1.setId(fileId1);
-        idoc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastModifiedTime(new Date().getTime());
         idoc1.setLocalPath("/testdir/filename_a.pdf");
         idoc1.setPath("/testdir/filename_a.pdf");
         idoc1.setShareName("test-share");
         idoc1.setUri("file:///testdir/filename_a.pdf");
-        idoc1.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastIndexedTime(new Date().getTime());
         idoc1.setLock(0);
-        idoc1.setLockTime(null);
+        idoc1.setLockTime(0L);
         idocList.add(idoc1);
 
         final IndexedDocument idoc2 = new IndexedDocument();
         idoc2.setContentType("application/pdf");
         idoc2.setFileName("filename_b.pdf");
         idoc2.setId(fileId2);
-        idoc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastModifiedTime(new Date().getTime());
         idoc2.setLocalPath("/testdir/filename_b.pdf");
         idoc2.setPath("/testdir/filename_b.pdf");
         idoc2.setShareName("test-share");
         idoc2.setUri("file:///testdir/filename_b.pdf");
-        idoc2.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastIndexedTime(new Date().getTime());
         idoc2.setLock(0);
-        idoc2.setLockTime(null);
+        idoc2.setLockTime(0L);
         idocList.add(idoc2);
 
         final IndexedDocument idoc3 = new IndexedDocument();
         idoc3.setContentType("application/pdf");
         idoc3.setFileName("filename_c.pdf");
         idoc3.setId(fileId3);
-        idoc3.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastModifiedTime(new Date().getTime());
         idoc3.setLocalPath("/testdir/filename_c.pdf");
         idoc3.setPath("/testdir/filename_c.pdf");
         idoc3.setShareName("test-share");
         idoc3.setUri("file:///testdir/filename_c.pdf");
-        idoc3.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastIndexedTime(new Date().getTime());
         idoc3.setLock(0);
-        idoc3.setLockTime(null);
+        idoc3.setLockTime(0L);
         idocList.add(idoc3);
 
         dao.truncateTable();
@@ -653,9 +660,9 @@ public class IndexedDocumentDaoImplTest {
         assertEquals(lock, lockedList.get(1).getLock());
         assertEquals(lock, lockedList.get(2).getLock());
 
-        assertTrue(lockedList.get(0).getLockTime() != null);
-        assertTrue(lockedList.get(1).getLockTime() != null);
-        assertTrue(lockedList.get(2).getLockTime() != null);
+        assertTrue(lockedList.get(0).getLockTime() != 0L);
+        assertTrue(lockedList.get(1).getLockTime() != 0L);
+        assertTrue(lockedList.get(2).getLockTime() != 0L);
     }
 
     /**
@@ -669,9 +676,9 @@ public class IndexedDocumentDaoImplTest {
     @Test
     public final void testUpdateState() throws NoSuchAlgorithmException {
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
-        final String fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
 
         final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
 
@@ -679,14 +686,14 @@ public class IndexedDocumentDaoImplTest {
         idoc1.setContentType("application/pdf");
         idoc1.setFileName("filename_a.pdf");
         idoc1.setId(fileId1);
-        idoc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastModifiedTime(new Date().getTime());
         idoc1.setLocalPath("/testdir/filename_a.pdf");
         idoc1.setPath("/testdir/filename_a.pdf");
         idoc1.setShareName("test-share");
         idoc1.setUri("file:///testdir/filename_a.pdf");
-        idoc1.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastIndexedTime(new Date().getTime());
         idoc1.setLock(0);
-        idoc1.setLockTime(null);
+        idoc1.setLockTime(0L);
         idoc1.setIndexState(IndexedDocument.INDEX_STATE_NEW);
         idocList.add(idoc1);
 
@@ -694,14 +701,14 @@ public class IndexedDocumentDaoImplTest {
         idoc2.setContentType("application/pdf");
         idoc2.setFileName("filename_b.pdf");
         idoc2.setId(fileId2);
-        idoc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastModifiedTime(new Date().getTime());
         idoc2.setLocalPath("/testdir/filename_b.pdf");
         idoc2.setPath("/testdir/filename_b.pdf");
         idoc2.setShareName("test-share");
         idoc2.setUri("file:///testdir/filename_b.pdf");
-        idoc2.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastIndexedTime(new Date().getTime());
         idoc2.setLock(0);
-        idoc2.setLockTime(null);
+        idoc2.setLockTime(0L);
         idoc2.setIndexState(IndexedDocument.INDEX_STATE_NEW);
         idocList.add(idoc2);
 
@@ -709,14 +716,14 @@ public class IndexedDocumentDaoImplTest {
         idoc3.setContentType("application/pdf");
         idoc3.setFileName("filename_c.pdf");
         idoc3.setId(fileId3);
-        idoc3.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastModifiedTime(new Date().getTime());
         idoc3.setLocalPath("/testdir/filename_c.pdf");
         idoc3.setPath("/testdir/filename_c.pdf");
         idoc3.setShareName("test-share");
         idoc3.setUri("file:///testdir/filename_c.pdf");
-        idoc3.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastIndexedTime(new Date().getTime());
         idoc3.setLock(0);
-        idoc3.setLockTime(null);
+        idoc3.setLockTime(0L);
         idoc3.setIndexState(IndexedDocument.INDEX_STATE_NEW);
         idocList.add(idoc3);
 
@@ -725,11 +732,14 @@ public class IndexedDocumentDaoImplTest {
 
         assertEquals(3, dao.rowNum());
 
-        assertEquals(IndexedDocument.INDEX_STATE_NEW, dao.findById(fileId1)
+        assertEquals(IndexedDocument.INDEX_STATE_NEW, dao.findById(
+                MD5.toHexString(fileId1))
                 .getIndexState());
-        assertEquals(IndexedDocument.INDEX_STATE_NEW, dao.findById(fileId2)
+        assertEquals(IndexedDocument.INDEX_STATE_NEW, dao.findById(
+                MD5.toHexString(fileId2))
                 .getIndexState());
-        assertEquals(IndexedDocument.INDEX_STATE_NEW, dao.findById(fileId3)
+        assertEquals(IndexedDocument.INDEX_STATE_NEW, dao.findById(
+                MD5.toHexString(fileId3))
                 .getIndexState());
 
         idoc1.setIndexState(IndexedDocument.INDEX_STATE_INDEXED);
@@ -737,11 +747,14 @@ public class IndexedDocumentDaoImplTest {
         idoc3.setIndexState(IndexedDocument.INDEX_STATE_INDEXED);
         dao.updateState(idocList);
 
-        assertEquals(IndexedDocument.INDEX_STATE_INDEXED, dao.findById(fileId1)
+        assertEquals(IndexedDocument.INDEX_STATE_INDEXED, dao.findById(
+                MD5.toHexString(fileId1))
                 .getIndexState());
-        assertEquals(IndexedDocument.INDEX_STATE_INDEXED, dao.findById(fileId2)
+        assertEquals(IndexedDocument.INDEX_STATE_INDEXED, dao.findById(
+                MD5.toHexString(fileId2))
                 .getIndexState());
-        assertEquals(IndexedDocument.INDEX_STATE_INDEXED, dao.findById(fileId3)
+        assertEquals(IndexedDocument.INDEX_STATE_INDEXED, dao.findById(
+                MD5.toHexString(fileId3))
                 .getIndexState());
     }
 
@@ -756,9 +769,9 @@ public class IndexedDocumentDaoImplTest {
     @Test
     public final void testUnLockUpdateState() throws NoSuchAlgorithmException {
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
-        final String fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
 
         final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
 
@@ -766,14 +779,14 @@ public class IndexedDocumentDaoImplTest {
         idoc1.setContentType("application/pdf");
         idoc1.setFileName("filename_a.pdf");
         idoc1.setId(fileId1);
-        idoc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastModifiedTime(new Date().getTime());
         idoc1.setLocalPath("/testdir/filename_a.pdf");
         idoc1.setPath("/testdir/filename_a.pdf");
         idoc1.setShareName("test-share");
         idoc1.setUri("file:///testdir/filename_a.pdf");
-        idoc1.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastIndexedTime(new Date().getTime());
         idoc1.setLock(0);
-        idoc1.setLockTime(null);
+        idoc1.setLockTime(0L);
         idoc1.setIndexState(IndexedDocument.INDEX_STATE_NEW);
         idocList.add(idoc1);
 
@@ -781,14 +794,14 @@ public class IndexedDocumentDaoImplTest {
         idoc2.setContentType("application/pdf");
         idoc2.setFileName("filename_b.pdf");
         idoc2.setId(fileId2);
-        idoc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastModifiedTime(new Date().getTime());
         idoc2.setLocalPath("/testdir/filename_b.pdf");
         idoc2.setPath("/testdir/filename_b.pdf");
         idoc2.setShareName("test-share");
         idoc2.setUri("file:///testdir/filename_b.pdf");
-        idoc2.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastIndexedTime(new Date().getTime());
         idoc2.setLock(0);
-        idoc2.setLockTime(null);
+        idoc2.setLockTime(0L);
         idoc2.setIndexState(IndexedDocument.INDEX_STATE_NEW);
         idocList.add(idoc2);
 
@@ -796,14 +809,14 @@ public class IndexedDocumentDaoImplTest {
         idoc3.setContentType("application/pdf");
         idoc3.setFileName("filename_c.pdf");
         idoc3.setId(fileId3);
-        idoc3.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastModifiedTime(new Date().getTime());
         idoc3.setLocalPath("/testdir/filename_c.pdf");
         idoc3.setPath("/testdir/filename_c.pdf");
         idoc3.setShareName("test-share");
         idoc3.setUri("file:///testdir/filename_c.pdf");
-        idoc3.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastIndexedTime(new Date().getTime());
         idoc3.setLock(0);
-        idoc3.setLockTime(null);
+        idoc3.setLockTime(0L);
         idoc3.setIndexState(IndexedDocument.INDEX_STATE_NEW);
         idocList.add(idoc3);
 
@@ -812,11 +825,14 @@ public class IndexedDocumentDaoImplTest {
 
         assertEquals(3, dao.rowNum());
 
-        assertEquals(IndexedDocument.INDEX_STATE_NEW, dao.findById(fileId1)
+        assertEquals(IndexedDocument.INDEX_STATE_NEW, dao.findById(
+                MD5.toHexString(fileId1))
                 .getIndexState());
-        assertEquals(IndexedDocument.INDEX_STATE_NEW, dao.findById(fileId2)
+        assertEquals(IndexedDocument.INDEX_STATE_NEW, dao.findById(
+                MD5.toHexString(fileId2))
                 .getIndexState());
-        assertEquals(IndexedDocument.INDEX_STATE_NEW, dao.findById(fileId3)
+        assertEquals(IndexedDocument.INDEX_STATE_NEW, dao.findById(
+                MD5.toHexString(fileId3))
                 .getIndexState());
 
         final long lock = dao.lockDocuments(3);
@@ -832,9 +848,9 @@ public class IndexedDocumentDaoImplTest {
         assertEquals(lock, lockedList.get(1).getLock());
         assertEquals(lock, lockedList.get(2).getLock());
 
-        assertTrue(lockedList.get(0).getLockTime() != null);
-        assertTrue(lockedList.get(1).getLockTime() != null);
-        assertTrue(lockedList.get(2).getLockTime() != null);
+        assertTrue(lockedList.get(0).getLockTime() != 0L);
+        assertTrue(lockedList.get(1).getLockTime() != 0L);
+        assertTrue(lockedList.get(2).getLockTime() != 0L);
 
         idoc1.setIndexState(IndexedDocument.INDEX_STATE_INDEXED);
         idoc2.setIndexState(IndexedDocument.INDEX_STATE_INDEXED);
@@ -842,11 +858,14 @@ public class IndexedDocumentDaoImplTest {
 
         dao.unLockUpdateState(idocList);
 
-        assertEquals(IndexedDocument.INDEX_STATE_INDEXED, dao.findById(fileId1)
+        assertEquals(IndexedDocument.INDEX_STATE_INDEXED, dao.findById(
+                MD5.toHexString(fileId1))
                 .getIndexState());
-        assertEquals(IndexedDocument.INDEX_STATE_INDEXED, dao.findById(fileId2)
+        assertEquals(IndexedDocument.INDEX_STATE_INDEXED, dao.findById(
+                MD5.toHexString(fileId2))
                 .getIndexState());
-        assertEquals(IndexedDocument.INDEX_STATE_INDEXED, dao.findById(fileId3)
+        assertEquals(IndexedDocument.INDEX_STATE_INDEXED, dao.findById(
+                MD5.toHexString(fileId3))
                 .getIndexState());
 
         lockedList = dao.selectAll();
@@ -856,9 +875,8 @@ public class IndexedDocumentDaoImplTest {
         assertEquals(0, lockedList.get(1).getLock());
         assertEquals(0, lockedList.get(2).getLock());
 
-        assertTrue(lockedList.get(0).getLockTime() == null);
-        assertTrue(lockedList.get(1).getLockTime() == null);
-        assertTrue(lockedList.get(2).getLockTime() == null);
+        assertTrue(lockedList.get(0).getLockTime() == 0L);
+        assertTrue(lockedList.get(1).getLockTime() == 0L);
+        assertTrue(lockedList.get(2).getLockTime() == 0L);
     }
-
 }

@@ -4,13 +4,9 @@
 package com.glueball.snoop.performance.util;
 
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.util.MD5;
@@ -23,12 +19,6 @@ import com.glueball.snoop.util.MD5;
 public final class DocumentPathUtil {
 
     /**
-     * Logger instance.
-     */
-    private static final Logger LOG = LogManager
-            .getLogger(DocumentPathUtil.class);
-
-    /**
      * Length of the random strings generated.
      */
     private static final int RANDOM_STRING_LENGTH = 8;
@@ -36,7 +26,7 @@ public final class DocumentPathUtil {
     /**
      * Time stamp.
      */
-    private static final Timestamp NOW = new Timestamp(new Date().getTime());
+    private static final long NOW = new Date().getTime();
 
     /**
      * Generate a ( large ) list of DocumentPath objects.
@@ -47,7 +37,7 @@ public final class DocumentPathUtil {
      * @throws NoSuchAlgorithmException
      *             if md5 algorithm is not supported.
      */
-    public static final List<DocumentPath> genDocuemntPaths(final int size)
+    public static final List<DocumentPath> genDocumentPaths(final int size)
             throws NoSuchAlgorithmException {
 
         final List<DocumentPath> list = new ArrayList<DocumentPath>(size);
@@ -73,7 +63,7 @@ public final class DocumentPathUtil {
                     .append("/").append(path4).append("/").append(filename)
                     .toString();
 
-            final String fileId = MD5.md5Digest(path);
+            final byte[] fileId = MD5.md5Digest(path);
 
             final DocumentPath doc = new DocumentPath();
             doc.setContentType("application/pdf");

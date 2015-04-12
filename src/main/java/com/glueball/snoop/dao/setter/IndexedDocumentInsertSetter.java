@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 
 import com.glueball.snoop.entity.IndexedDocument;
+import com.glueball.snoop.util.MD5;
 
 /**
  * PreparedStatementSetter implementation to insert a single IndexedDocument to
@@ -48,17 +49,17 @@ public final class IndexedDocumentInsertSetter implements
     public void setValues(final PreparedStatement pstmt) throws SQLException {
 
         int index = 1;
-        pstmt.setString(index++, doc.getId());
+        pstmt.setString(index++, MD5.toHexString(doc.getId()));
         pstmt.setString(index++, doc.getShareName());
         pstmt.setString(index++, doc.getFileName());
         pstmt.setString(index++, doc.getUri());
         pstmt.setString(index++, doc.getPath());
         pstmt.setString(index++, doc.getLocalPath());
-        pstmt.setTimestamp(index++, doc.getLastModifiedTime());
-        pstmt.setTimestamp(index++, doc.getLastIndexedTime());
+        pstmt.setLong(index++, doc.getLastModifiedTime());
+        pstmt.setLong(index++, doc.getLastIndexedTime());
         pstmt.setString(index++, doc.getContentType());
         pstmt.setString(index++, doc.getIndexState());
         pstmt.setLong(index++, doc.getLock());
-        pstmt.setTimestamp(index++, doc.getLockTime());
+        pstmt.setLong(index++, doc.getLockTime());
     }
 }

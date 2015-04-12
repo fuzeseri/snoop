@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 
 import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.util.MD5;
 
 /**
  * PreparedStatementSetter implementation ot insert a single DocumentPath to the
@@ -48,13 +49,13 @@ public final class DocumentPathInsertSetter
     public void setValues(final PreparedStatement pstmt) throws SQLException {
 
         int index = 1;
-        pstmt.setString(index++, doc.getId());
+        pstmt.setString(index++, MD5.toHexString(doc.getId()));
         pstmt.setString(index++, doc.getShareName());
         pstmt.setString(index++, doc.getFileName());
         pstmt.setString(index++, doc.getUri());
         pstmt.setString(index++, doc.getPath());
         pstmt.setString(index++, doc.getLocalPath());
-        pstmt.setTimestamp(index++, doc.getLastModifiedTime());
+        pstmt.setLong(index++, doc.getLastModifiedTime());
         pstmt.setString(index++, doc.getContentType());
     }
 }

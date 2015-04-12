@@ -6,7 +6,6 @@ package com.glueball.snoop.entity;
  * regarding copyright ownership. You may obtain a copy of the License at
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -255,7 +254,7 @@ public final class IndexedDocument extends SnoopDocument {
     /**
      * The exact time when the docuemnt was locked.
      */
-    private Timestamp lockTime = null;
+    private long lockTime = 0L;
 
     /*
      * (non-Javadoc)
@@ -311,7 +310,7 @@ public final class IndexedDocument extends SnoopDocument {
     /**
      * @return the lockTime
      */
-    public Timestamp getLockTime() {
+    public long getLockTime() {
 
         return lockTime;
     }
@@ -320,7 +319,7 @@ public final class IndexedDocument extends SnoopDocument {
      * @param pLockTime
      *            the lockTime to set
      */
-    public void setLockTime(final Timestamp pLockTime) {
+    public void setLockTime(final long pLockTime) {
 
         this.lockTime = pLockTime;
     }
@@ -336,9 +335,6 @@ public final class IndexedDocument extends SnoopDocument {
         int result = super.hashCode();
         result = prime * result
                 + ((indexState == null) ? 0 : indexState.hashCode());
-        result = prime * result + (int) (lock ^ (lock >>> 32));
-        result = prime * result
-                + ((lockTime == null) ? 0 : lockTime.hashCode());
         return result;
     }
 
@@ -373,20 +369,6 @@ public final class IndexedDocument extends SnoopDocument {
             }
         } else if (!indexState.equals(other.indexState)) {
 
-            return false;
-        }
-
-        if (lock != other.lock) {
-
-            return false;
-        }
-
-        if (lockTime == null) {
-            if (other.lockTime != null) {
-
-                return false;
-            }
-        } else if (!lockTime.equals(other.lockTime)) {
             return false;
         }
 

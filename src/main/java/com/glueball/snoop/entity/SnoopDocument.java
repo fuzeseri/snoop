@@ -6,64 +6,82 @@ package com.glueball.snoop.entity;
  * regarding copyright ownership. You may obtain a copy of the License at
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
-import java.sql.Timestamp;
+import java.io.Serializable;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Abstract entity class to represent the snoop document.
  *
  * @author karesz
  */
-public abstract class SnoopDocument {
+@XmlTransient
+public abstract class SnoopDocument implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Primary key to identify the document.
      */
-    private String id;
+    @XmlElement
+    private byte[] id;
 
     /**
      * The name of the network share where file replaced.
      */
+    @XmlElement
     private String shareName;
 
     /**
      * The name of the file.
      */
+    @XmlElement
     private String fileName;
 
     /**
      * The path of the file as an uri.
      */
+    @XmlElement
     private String uri;
 
     /**
      * The path of the file.
      */
+    @XmlElement
     private String path;
 
     /**
      * The local path of the file.
      */
+    @XmlElement
     private String localPath;
 
     /**
      * The timestamp when the file was modified last time.
      */
-    private Timestamp lastModifiedTime;
+    @XmlElement
+    private long lastModifiedTime;
 
     /**
      * The timestamp when the file was indexed last time.
      */
-    private Timestamp lastIndexedTime;
+    @XmlElement
+    private long lastIndexedTime;
 
     /**
      * The mime type of the file content.
      */
+    @XmlElement
     private String contentType;
 
     /**
      * @return the id
      */
-    public final String getId() {
+    public final byte[] getId() {
 
         return id;
     }
@@ -72,7 +90,7 @@ public abstract class SnoopDocument {
      * @param pId
      *            the id to set
      */
-    public final void setId(final String pId) {
+    public final void setId(final byte[] pId) {
 
         this.id = pId;
     }
@@ -165,7 +183,7 @@ public abstract class SnoopDocument {
     /**
      * @return the lastModifiedTime
      */
-    public final Timestamp getLastModifiedTime() {
+    public final long getLastModifiedTime() {
 
         return lastModifiedTime;
     }
@@ -174,7 +192,7 @@ public abstract class SnoopDocument {
      * @param pLastModifiedTime
      *            the lastModifiedTime to set
      */
-    public final void setLastModifiedTime(final Timestamp pLastModifiedTime) {
+    public final void setLastModifiedTime(final long pLastModifiedTime) {
 
         this.lastModifiedTime = pLastModifiedTime;
     }
@@ -182,7 +200,7 @@ public abstract class SnoopDocument {
     /**
      * @return the lastIndexedTime
      */
-    public final Timestamp getLastIndexedTime() {
+    public final long getLastIndexedTime() {
 
         return lastIndexedTime;
     }
@@ -191,7 +209,7 @@ public abstract class SnoopDocument {
      * @param pLastIndexedTime
      *            the lastIndexedTime to set
      */
-    public final void setLastIndexedTime(final Timestamp pLastIndexedTime) {
+    public final void setLastIndexedTime(final long pLastIndexedTime) {
 
         this.lastIndexedTime = pLastIndexedTime;
     }
@@ -211,140 +229,5 @@ public abstract class SnoopDocument {
     public final void setContentType(final String pContentType) {
 
         this.contentType = pContentType;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-                + ((contentType == null) ? 0 : contentType.hashCode());
-        result = prime * result
-                + ((fileName == null) ? 0 : fileName.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result
-                + ((lastIndexedTime == null) ? 0 : lastIndexedTime.hashCode());
-        result = prime
-                * result
-                + ((lastModifiedTime == null) ? 0 :
-                        lastModifiedTime.hashCode());
-        result = prime * result
-                + ((localPath == null) ? 0 : localPath.hashCode());
-        result = prime * result + ((path == null) ? 0 : path.hashCode());
-        result = prime * result
-                + ((shareName == null) ? 0 : shareName.hashCode());
-        result = prime * result + ((uri == null) ? 0 : uri.hashCode());
-        return result;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(final Object obj) {
-
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null) {
-            return false;
-        }
-
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-
-        final SnoopDocument other = (SnoopDocument) obj;
-
-        if (id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!id.equals(other.id)) {
-
-            return false;
-        }
-
-        if (fileName == null) {
-            if (other.fileName != null) {
-
-                return false;
-            }
-        } else if (!fileName.equals(other.fileName)) {
-
-            return false;
-        }
-
-        if (localPath == null) {
-            if (other.localPath != null) {
-                return false;
-            }
-        } else if (!localPath.equals(other.localPath)) {
-
-            return false;
-        }
-
-        if (path == null) {
-            if (other.path != null) {
-                return false;
-            }
-        } else if (!path.equals(other.path)) {
-
-            return false;
-        }
-
-        if (contentType == null) {
-            if (other.contentType != null) {
-                return false;
-            }
-        } else if (!contentType.equals(other.contentType)) {
-
-            return false;
-        }
-
-        if (lastIndexedTime == null) {
-            if (other.lastIndexedTime != null) {
-                return false;
-            }
-        } else if (!lastIndexedTime.equals(other.lastIndexedTime)) {
-
-            return false;
-        }
-
-        if (lastModifiedTime == null) {
-            if (other.lastModifiedTime != null) {
-                return false;
-            }
-        } else if (!lastModifiedTime.equals(other.lastModifiedTime)) {
-
-            return false;
-        }
-
-        if (shareName == null) {
-            if (other.shareName != null) {
-                return false;
-            }
-        } else if (!shareName.equals(other.shareName)) {
-
-            return false;
-        }
-
-        if (uri == null) {
-            if (other.uri != null) {
-                return false;
-            }
-        } else if (!uri.equals(other.uri)) {
-
-            return false;
-        }
-
-        return true;
     }
 }

@@ -13,6 +13,7 @@ import java.util.List;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
 import com.glueball.snoop.entity.IndexedDocument;
+import com.glueball.snoop.util.MD5;
 
 /**
  * BatchPreparedStatementSetter implementation to update index status of a set
@@ -51,10 +52,10 @@ public final class IndexedDocumentBatchUpdateSetter implements
             throws SQLException {
 
         int index = 1;
-        pstmt.setTimestamp(index++, docs.get(i).getLastModifiedTime());
-        pstmt.setTimestamp(index++, docs.get(i).getLastIndexedTime());
+        pstmt.setLong(index++, docs.get(i).getLastModifiedTime());
+        pstmt.setLong(index++, docs.get(i).getLastIndexedTime());
         pstmt.setString(index++, docs.get(i).getIndexState());
-        pstmt.setString(index++, docs.get(i).getId());
+        pstmt.setString(index++, MD5.toHexString(docs.get(i).getId()));
     }
 
     /*

@@ -38,13 +38,35 @@ public final class MD5 {
      * @throws NoSuchAlgorithmException
      *             if the md5 algorithm is not supported.
      */
-    public static final String md5Digest(final String original)
+    public static final String md5DigestHexStr(final String original)
             throws NoSuchAlgorithmException {
 
         final MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(original.getBytes(Charset.defaultCharset()));
 
-        final byte[] mdbytes = md.digest();
+        return toHexString(md.digest());
+
+    }
+
+    /**
+     * Created an md5 digest.
+     *
+     * @param original
+     *            the original string.
+     * @return the md5 digest created.
+     * @throws NoSuchAlgorithmException
+     *             if the md5 algorithm is not supported.
+     */
+    public static final byte[] md5Digest(final String original)
+            throws NoSuchAlgorithmException {
+
+        final MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(original.getBytes(Charset.defaultCharset()));
+
+        return md.digest();
+    }
+
+    public static final String toHexString(final byte[] mdbytes) {
 
         final StringBuffer hexString = new StringBuffer();
         for (int i = 0; i < mdbytes.length; i++) {
@@ -57,4 +79,16 @@ public final class MD5 {
         }
         return hexString.toString();
     }
+
+    public static final byte[] hexStringToByteArray(final String str) {
+
+        int len = str.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(str.charAt(i), 16) << 4)
+                    + Character.digit(str.charAt(i + 1), 16));
+        }
+        return data;
+    }
+
 }

@@ -6,7 +6,6 @@ package com.glueball.snoop.test.entity;
 import static org.junit.Assert.assertEquals;
 
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -34,9 +33,9 @@ public class DocumentPathTest {
     public final void testToIndexedDocumentList()
             throws NoSuchAlgorithmException {
 
-        final Timestamp now = new java.sql.Timestamp(new Date().getTime());
+        final long now = new Date().getTime();
 
-        final String fileId = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId = MD5.md5Digest("/testdir/filename_a.pdf");
 
         final DocumentPath doc = new DocumentPath();
         doc.setContentType("application/pdf");
@@ -59,7 +58,7 @@ public class DocumentPathTest {
         idoc.setUri("file:///testdir/filename_a.pdf");
         idoc.setIndexState(IndexedDocument.INDEX_STATE_NEW);
         idoc.setLock(0);
-        idoc.setLockTime(null);
+        idoc.setLockTime(0L);
 
         final List<DocumentPath> docList = Arrays
                 .asList(new DocumentPath[] { doc });

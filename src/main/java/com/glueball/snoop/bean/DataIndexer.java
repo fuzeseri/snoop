@@ -29,6 +29,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import com.glueball.snoop.entity.IndexedDocument;
 import com.glueball.snoop.entity.Meta;
 import com.glueball.snoop.parser.ParserMap;
+import com.glueball.snoop.util.MD5;
 
 /**
  * This periodically checks the ( scheduled by the spring framework ) status of
@@ -124,15 +125,16 @@ public final class DataIndexer {
      * @param toDelete
      *            list of document Ids to delete from the lucene index.
      */
-    private void removeDocsFromIndex(final List<String> toDelete) {
+    private void removeDocsFromIndex(final List<byte[]> toDelete) {
 
         try {
 
-            for (final String docId : toDelete) {
+            for (final byte[] docId : toDelete) {
 
                 try {
 
-                    indexWriter.deleteDocuments(new Term("id", docId));
+                    indexWriter.deleteDocuments(new Term("id",
+                            MD5.toHexString(docId)));
                 } catch (final IOException e) {
 
                     LOG.error("ERROR while deleting document from index the");
@@ -179,8 +181,7 @@ public final class DataIndexer {
 
                 boolean indexed = indexFileContent(idoc);
 
-                idoc.setLastIndexedTime(new java.sql.Timestamp(new Date()
-                        .getTime()));
+                idoc.setLastIndexedTime(new Date().getTime());
                 idoc.setIndexState(
                         indexed ? IndexedDocument.INDEX_STATE_INDEXED
                                 : IndexedDocument.INDEX_STATE_ERROR);
@@ -203,7 +204,7 @@ public final class DataIndexer {
      * database. Group them by the status and calls the delete or index methods
      * on the lists.
      */
-    @Scheduled(fixedDelay = 600000)
+    @Scheduled(fixedDelay = 300000)
     public void index() {
 
         final List<IndexedDocument> haveToIndexList = indexedDocumentBean
@@ -212,7 +213,7 @@ public final class DataIndexer {
         final List<IndexedDocument> toIndexList =
                 new ArrayList<IndexedDocument>(maxDoc);
 
-        final List<String> toRemoveList = new ArrayList<String>();
+        final List<byte[]> toRemoveList = new ArrayList<byte[]>();
 
         for (final IndexedDocument idoc : haveToIndexList) {
 
@@ -272,7 +273,8 @@ public final class DataIndexer {
             final Meta meta, final Reader contentReader) {
 
         final Document doc = new Document();
-        doc.add(new StringField("id", idoc.getId(), Field.Store.YES));
+        doc.add(new StringField("id", MD5.toHexString(idoc.getId()),
+                Field.Store.YES));
         doc.add(new StringField(
                 "fileName", idoc.getFileName(), Field.Store.YES));
         doc.add(new TextField("file", idoc.getFileName(), Field.Store.YES));

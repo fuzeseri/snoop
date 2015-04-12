@@ -114,9 +114,9 @@ public class IndexedDocumentBeanImplTest {
     @Test
     public final void testUnLockUpdateState() throws NoSuchAlgorithmException {
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
-        final String fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
 
         final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
 
@@ -124,14 +124,14 @@ public class IndexedDocumentBeanImplTest {
         idoc1.setContentType("application/pdf");
         idoc1.setFileName("filename_a.pdf");
         idoc1.setId(fileId1);
-        idoc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastModifiedTime(new Date().getTime());
         idoc1.setLocalPath("/testdir/filename_a.pdf");
         idoc1.setPath("/testdir/filename_a.pdf");
         idoc1.setShareName("test-share");
         idoc1.setUri("file:///testdir/filename_a.pdf");
-        idoc1.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastIndexedTime(new Date().getTime());
         idoc1.setLock(0);
-        idoc1.setLockTime(null);
+        idoc1.setLockTime(0L);
         idoc1.setIndexState(IndexedDocument.INDEX_STATE_NEW);
         idocList.add(idoc1);
 
@@ -139,14 +139,14 @@ public class IndexedDocumentBeanImplTest {
         idoc2.setContentType("application/pdf");
         idoc2.setFileName("filename_b.pdf");
         idoc2.setId(fileId2);
-        idoc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastModifiedTime(new Date().getTime());
         idoc2.setLocalPath("/testdir/filename_b.pdf");
         idoc2.setPath("/testdir/filename_b.pdf");
         idoc2.setShareName("test-share");
         idoc2.setUri("file:///testdir/filename_b.pdf");
-        idoc2.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastIndexedTime(new Date().getTime());
         idoc2.setLock(0);
-        idoc2.setLockTime(null);
+        idoc2.setLockTime(0L);
         idoc2.setIndexState(IndexedDocument.INDEX_STATE_NEW);
         idocList.add(idoc2);
 
@@ -154,14 +154,14 @@ public class IndexedDocumentBeanImplTest {
         idoc3.setContentType("application/pdf");
         idoc3.setFileName("filename_c.pdf");
         idoc3.setId(fileId3);
-        idoc3.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastModifiedTime(new Date().getTime());
         idoc3.setLocalPath("/testdir/filename_c.pdf");
         idoc3.setPath("/testdir/filename_c.pdf");
         idoc3.setShareName("test-share");
         idoc3.setUri("file:///testdir/filename_c.pdf");
-        idoc3.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastIndexedTime(new Date().getTime());
         idoc3.setLock(0);
-        idoc3.setLockTime(null);
+        idoc3.setLockTime(0L);
         idoc3.setIndexState(IndexedDocument.INDEX_STATE_NEW);
         idocList.add(idoc3);
 
@@ -185,9 +185,9 @@ public class IndexedDocumentBeanImplTest {
         assertEquals(lock, selectIndexedDocumentById(fileId2).getLock());
         assertEquals(lock, selectIndexedDocumentById(fileId3).getLock());
 
-        assertTrue(selectIndexedDocumentById(fileId1).getLockTime() != null);
-        assertTrue(selectIndexedDocumentById(fileId2).getLockTime() != null);
-        assertTrue(selectIndexedDocumentById(fileId3).getLockTime() != null);
+        assertTrue(selectIndexedDocumentById(fileId1).getLockTime() != 0L);
+        assertTrue(selectIndexedDocumentById(fileId2).getLockTime() != 0L);
+        assertTrue(selectIndexedDocumentById(fileId3).getLockTime() != 0L);
 
         idoc1.setIndexState(IndexedDocument.INDEX_STATE_INDEXED);
         idoc2.setIndexState(IndexedDocument.INDEX_STATE_INDEXED);
@@ -209,9 +209,9 @@ public class IndexedDocumentBeanImplTest {
         assertEquals(0, selectIndexedDocumentById(fileId2).getLock());
         assertEquals(0, selectIndexedDocumentById(fileId3).getLock());
 
-        assertTrue(selectIndexedDocumentById(fileId1).getLockTime() == null);
-        assertTrue(selectIndexedDocumentById(fileId2).getLockTime() == null);
-        assertTrue(selectIndexedDocumentById(fileId3).getLockTime() == null);
+        assertTrue(selectIndexedDocumentById(fileId1).getLockTime() == 0L);
+        assertTrue(selectIndexedDocumentById(fileId2).getLockTime() == 0L);
+        assertTrue(selectIndexedDocumentById(fileId3).getLockTime() == 0L);
     }
 
     /**
@@ -225,9 +225,9 @@ public class IndexedDocumentBeanImplTest {
     @Test
     public final void testHaveToIndex() throws NoSuchAlgorithmException {
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
-        final String fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
 
         final List<IndexedDocument> idocList = new ArrayList<IndexedDocument>();
 
@@ -235,14 +235,14 @@ public class IndexedDocumentBeanImplTest {
         idoc1.setContentType("application/pdf");
         idoc1.setFileName("filename_a.pdf");
         idoc1.setId(fileId1);
-        idoc1.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastModifiedTime(new Date().getTime());
         idoc1.setLocalPath("/testdir/filename_a.pdf");
         idoc1.setPath("/testdir/filename_a.pdf");
         idoc1.setShareName("test-share");
         idoc1.setUri("file:///testdir/filename_a.pdf");
-        idoc1.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc1.setLastIndexedTime(new Date().getTime());
         idoc1.setLock(0);
-        idoc1.setLockTime(null);
+        idoc1.setLockTime(0L);
         idoc1.setIndexState(IndexedDocument.INDEX_STATE_NEW);
         idocList.add(idoc1);
 
@@ -250,14 +250,14 @@ public class IndexedDocumentBeanImplTest {
         idoc2.setContentType("application/pdf");
         idoc2.setFileName("filename_b.pdf");
         idoc2.setId(fileId2);
-        idoc2.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastModifiedTime(new Date().getTime());
         idoc2.setLocalPath("/testdir/filename_b.pdf");
         idoc2.setPath("/testdir/filename_b.pdf");
         idoc2.setShareName("test-share");
         idoc2.setUri("file:///testdir/filename_b.pdf");
-        idoc2.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc2.setLastIndexedTime(new Date().getTime());
         idoc2.setLock(0);
-        idoc2.setLockTime(null);
+        idoc2.setLockTime(0L);
         idoc2.setIndexState(IndexedDocument.INDEX_STATE_MODIFIED);
         idocList.add(idoc2);
 
@@ -265,14 +265,14 @@ public class IndexedDocumentBeanImplTest {
         idoc3.setContentType("application/pdf");
         idoc3.setFileName("filename_c.pdf");
         idoc3.setId(fileId3);
-        idoc3.setLastModifiedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastModifiedTime(new Date().getTime());
         idoc3.setLocalPath("/testdir/filename_c.pdf");
         idoc3.setPath("/testdir/filename_c.pdf");
         idoc3.setShareName("test-share");
         idoc3.setUri("file:///testdir/filename_c.pdf");
-        idoc3.setLastIndexedTime(new java.sql.Timestamp(new Date().getTime()));
+        idoc3.setLastIndexedTime(new Date().getTime());
         idoc3.setLock(0);
-        idoc3.setLockTime(null);
+        idoc3.setLockTime(0L);
         idoc3.setIndexState(IndexedDocument.INDEX_STATE_DELETED);
         idocList.add(idoc3);
 
@@ -297,9 +297,9 @@ public class IndexedDocumentBeanImplTest {
         assertTrue(indexList.get(1).getLock() != 0);
         assertTrue(indexList.get(2).getLock() != 0);
 
-        assertTrue(indexList.get(0).getLockTime() != null);
-        assertTrue(indexList.get(1).getLockTime() != null);
-        assertTrue(indexList.get(2).getLockTime() != null);
+        assertTrue(indexList.get(0).getLockTime() != 0L);
+        assertTrue(indexList.get(1).getLockTime() != 0L);
+        assertTrue(indexList.get(2).getLockTime() != 0L);
 
         assertEquals(idoc1.getId(), indexList.get(0).getId());
         assertEquals(idoc2.getId(), indexList.get(1).getId());
@@ -313,7 +313,7 @@ public class IndexedDocumentBeanImplTest {
      *            the document id.
      * @return the IndexedDocument.
      */
-    private final IndexedDocument selectIndexedDocumentById(final String id) {
+    private final IndexedDocument selectIndexedDocumentById(final byte[] id) {
 
         final IndexedDocument retVal = new IndexedDocument();
 
@@ -324,7 +324,7 @@ public class IndexedDocumentBeanImplTest {
                     public void setValues(final PreparedStatement ps)
                             throws SQLException {
 
-                        ps.setString(1, id);
+                        ps.setString(1, MD5.toHexString(id));
                     }
 
                 },
@@ -350,7 +350,8 @@ public class IndexedDocumentBeanImplTest {
                             throws SQLException {
 
                         ps.setLong(1, lock);
-                        ps.setString(2, docList.get(i).getId());
+                        ps.setString(2,
+                                MD5.toHexString(docList.get(i).getId()));
                     }
 
                     @Override

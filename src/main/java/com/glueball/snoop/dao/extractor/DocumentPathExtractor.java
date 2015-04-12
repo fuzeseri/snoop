@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.util.MD5;
 
 /**
  * ResultseExtractor implementation to extract data to a DocumentPath object
@@ -49,13 +50,13 @@ public final class DocumentPathExtractor
 
         if (rs.next()) {
 
-            doc.setId(rs.getString("id"));
+            doc.setId(MD5.hexStringToByteArray(rs.getString("id")));
             doc.setShareName(rs.getString("share_name"));
             doc.setFileName(rs.getString("file_name"));
             doc.setUri(rs.getString("uri"));
             doc.setPath(rs.getString("path"));
             doc.setLocalPath(rs.getString("local_path"));
-            doc.setLastModifiedTime(rs.getTimestamp("last_modified_time"));
+            doc.setLastModifiedTime(rs.getLong("last_modified_time"));
             doc.setContentType(rs.getString("content_type"));
         }
 

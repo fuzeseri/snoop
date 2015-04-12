@@ -11,7 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -113,18 +112,17 @@ public class DocumentPathBeanImplTest {
     @Test
     public final void testUpdateDocuments() throws NoSuchAlgorithmException {
 
-        final Timestamp now = new java.sql.Timestamp(new Date().getTime());
-        final Timestamp later = new java.sql.Timestamp(
-                new Date().getTime() + 10000);
+        final long now = new Date().getTime();
+        final long later = new Date().getTime() + 10000;
 
         template.execute(IndexedDocument.TRUNCATE_TABLE_QUERY);
         template.execute(DocumentPath.EMPTY_TABLE_QUERY);
 
         final List<DocumentPath> list = new ArrayList<DocumentPath>();
 
-        final String fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
-        final String fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
-        final String fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
+        final byte[] fileId1 = MD5.md5Digest("/testdir/filename_a.pdf");
+        final byte[] fileId2 = MD5.md5Digest("/testdir/filename_b.pdf");
+        final byte[] fileId3 = MD5.md5Digest("/testdir/filename_c.pdf");
 
         final DocumentPath doc1 = new DocumentPath();
         doc1.setContentType("application/pdf");
@@ -242,7 +240,7 @@ public class DocumentPathBeanImplTest {
      *            the document id.
      * @return the IndexedDocument selected.
      */
-    private final IndexedDocument selectIndexedDocumentById(final String id) {
+    private final IndexedDocument selectIndexedDocumentById(final byte[] id) {
 
         final IndexedDocument retVal = new IndexedDocument();
 
@@ -253,7 +251,7 @@ public class DocumentPathBeanImplTest {
                     public void setValues(final PreparedStatement ps)
                             throws SQLException {
 
-                        ps.setString(1, id);
+                        ps.setString(1, MD5.toHexString(id));
                     }
 
                 },

@@ -5,6 +5,7 @@ package com.glueball.snoop.test.dao.extractor;
 
 import static org.junit.Assert.assertEquals;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -17,6 +18,7 @@ import org.mockito.Mockito;
 
 import com.glueball.snoop.dao.extractor.ListDocumentPathExtractor;
 import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.util.MD5;
 
 /**
  * @author karesz
@@ -30,16 +32,18 @@ public class ListDocumentPathExtractorTest {
      * 
      * @throws SQLException
      *             on any sQL error.
+     * @throws NoSuchAlgorithmException
      */
     @Test
-    public final void testExtractData() throws SQLException {
+    public final void testExtractData() throws SQLException,
+            NoSuchAlgorithmException {
 
-        final Timestamp now = new Timestamp(new Date().getTime());
+        final long now = new Date().getTime();
 
         final DocumentPath refDoc = new DocumentPath();
         refDoc.setContentType("application/pdf");
         refDoc.setFileName("filename_a.pdf");
-        refDoc.setId("id");
+        refDoc.setId(MD5.md5Digest("id"));
         refDoc.setLastModifiedTime(now);
         refDoc.setLocalPath("/testdir/filename_a.pdf");
         refDoc.setPath("/testdir/filename_a.pdf");
@@ -64,7 +68,7 @@ public class ListDocumentPathExtractorTest {
                 .thenReturn("/testdir/filename_a.pdf");
         Mockito.when(rs.getString("local_path")).thenReturn(
                 "/testdir/filename_a.pdf");
-        Mockito.when(rs.getTimestamp("last_modified_time")).thenReturn(now);
+        Mockito.when(rs.getLong("last_modified_time")).thenReturn(now);
         Mockito.when(rs.getString("content_type"))
                 .thenReturn("application/pdf");
 

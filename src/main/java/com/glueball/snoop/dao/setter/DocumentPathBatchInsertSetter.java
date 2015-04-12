@@ -13,6 +13,7 @@ import java.util.List;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
 import com.glueball.snoop.entity.DocumentPath;
+import com.glueball.snoop.util.MD5;
 
 /**
  * BatchPreparedStatementSetter implementation used in batch insert statements
@@ -50,13 +51,13 @@ public final class DocumentPathBatchInsertSetter implements
             throws SQLException {
 
         int index = 1;
-        pstmt.setString(index++, docs.get(i).getId());
+        pstmt.setString(index++, MD5.toHexString(docs.get(i).getId()));
         pstmt.setString(index++, docs.get(i).getShareName());
         pstmt.setString(index++, docs.get(i).getFileName());
         pstmt.setString(index++, docs.get(i).getUri());
         pstmt.setString(index++, docs.get(i).getPath());
         pstmt.setString(index++, docs.get(i).getLocalPath());
-        pstmt.setTimestamp(index++, docs.get(i).getLastModifiedTime());
+        pstmt.setLong(index++, docs.get(i).getLastModifiedTime());
         pstmt.setString(index++, docs.get(i).getContentType());
     }
 

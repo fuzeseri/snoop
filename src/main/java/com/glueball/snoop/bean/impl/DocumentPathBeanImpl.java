@@ -69,14 +69,14 @@ public class DocumentPathBeanImpl implements DocumentPathBean {
 
         dao.truncateTable();
 
-        if (docs.size() > 100) {
+        if (docs.size() > 100000) {
 
             int counter = 0;
             final List<DocumentPath> chunk = new ArrayList<DocumentPath>(100);
             for (final DocumentPath doc : docs) {
 
                 chunk.add(doc);
-                if (counter++ == 100) {
+                if (counter++ == 99999) {
 
                     dao.insertList(chunk);
                     counter = 0;
@@ -92,6 +92,7 @@ public class DocumentPathBeanImpl implements DocumentPathBean {
         dao.updateNewDocuments(shareName);
         dao.updateModifiedDocuments(shareName);
         dao.updateDeletedDocuments(shareName);
-        LOG.debug("Documents successfully updated on share : " + shareName);
+        LOG.info(docs.size() + " 0 Documents successfully updated on share : "
+                + shareName);
     }
 }

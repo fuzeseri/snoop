@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.cxf.common.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,7 +117,7 @@ public class DocumentPathDaoImpl implements
                     }
                 }, new DocumentPathExtractor(doc));
 
-        return StringUtils.isEmpty(doc.getId()) ? null : doc;
+        return doc.getId() == null ? null : doc;
     }
 
     /*

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.cxf.common.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,7 +123,7 @@ public class IndexedDocumentDaoImpl implements
                         ps.setString(1, id);
                     }
                 }, new IndexedDocumentExtractor(doc));
-        return StringUtils.isEmpty(doc.getId()) ? null : doc;
+        return doc.getId() == null ? null : doc;
     }
 
     /*
@@ -172,6 +171,7 @@ public class IndexedDocumentDaoImpl implements
         LOG.debug("Running query: " + IndexedDocument.CREATE_INDEX_QUERY);
 
         for (final String q : IndexedDocument.CREATE_INDEX_QUERY) {
+
             this.jdbcTemplate.execute(q);
         }
     }

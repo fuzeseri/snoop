@@ -13,7 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -28,7 +30,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.NetworkShare;
 import com.glueball.snoop.entity.NetworkShares;
-import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.visitor.DbLoaderVisitor;
 
 /**
@@ -64,24 +65,6 @@ public final class DataLoader {
     }
 
     /**
-     * This map contains all of the file parser objects as value. Key is the
-     * mime type.
-     */
-    @Autowired
-    private ParserMap parserMap;
-
-    /**
-     * Setter methods of the ParserMap field.
-     *
-     * @param pParserMap
-     *            the ParserMap object.
-     */
-    public void setParserMap(final ParserMap pParserMap) {
-
-        this.parserMap = pParserMap;
-    }
-
-    /**
      * Path of the xml file containing the set of network shares to scan and
      * index its' content's.
      */
@@ -114,8 +97,7 @@ public final class DataLoader {
      * directories. Checks all the files if it is parsable by the snoop and
      * updates the statuses of the documents in the relational database.
      */
-    @Scheduled(
-            fixedDelay = 1800000)
+    @Scheduled(fixedDelay = 180000)
     public void load() {
 
         for (final NetworkShare share : getShares()) {
@@ -124,9 +106,10 @@ public final class DataLoader {
             LOG.info("Remote path: " + share.getRemotePath());
             LOG.info("Local  path: " + share.getLocalPath());
 
-            final List<DocumentPath> docs = new ArrayList<DocumentPath>();
-            final FileVisitor<Path> visitor = new DbLoaderVisitor(docs,
-                    parserMap, share);
+            final Map<String, DocumentPath> docs =
+                    new HashMap<String, DocumentPath>();
+
+            final FileVisitor<Path> visitor = new DbLoaderVisitor(docs, share);
 
             try {
 
@@ -135,7 +118,8 @@ public final class DataLoader {
                         .getRemotePath();
 
                 Files.walkFileTree(Paths.get(path), visitor);
-                this.docPathBean.updateDocuments(share.getName(), docs);
+
+                // this.docPathBean.updateDocuments(share.getName(), docs);
             } catch (final IOException e) {
 
                 LOG.error("IO ERROR when discovering files");

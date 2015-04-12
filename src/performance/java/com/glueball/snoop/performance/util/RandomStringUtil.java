@@ -5,9 +5,6 @@ package com.glueball.snoop.performance.util;
 
 import java.util.Random;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * Utility class to generate random strings.
  * 
@@ -15,12 +12,7 @@ import org.apache.logging.log4j.Logger;
  */
 public final class RandomStringUtil {
 
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOG = LogManager
-            .getLogger(DocumentPathUtil.class);
-
+    private static final Random rnd = new Random();
     /**
      * Array of characters to use for random string.
      */
@@ -40,7 +32,6 @@ public final class RandomStringUtil {
      */
     public static String generateString(final int length) {
 
-        final Random rnd = new Random(length);
         final char[] text = new char[length];
 
         for (int i = 0; i < length; i++) {

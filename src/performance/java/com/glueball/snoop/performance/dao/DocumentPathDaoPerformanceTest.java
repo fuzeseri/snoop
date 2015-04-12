@@ -6,7 +6,7 @@ package com.glueball.snoop.performance.dao;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -26,97 +26,76 @@ public class DocumentPathDaoPerformanceTest {
     /**
      * Data access object for DocumentPaths.
      */
-    private DocumentPathDao dao;
+    private static DocumentPathDao dao;
 
     /**
      * Spring application context.
      */
-    private ApplicationContext ctx;
+    private static ApplicationContext ctx;
+
+    /**
+     * 
+     */
+    private static List<DocumentPath> docs10000;
+
+    /**
+     * 
+     */
+    private static List<DocumentPath> docs100000;
+
+    /**
+     * 
+     */
+    private static List<DocumentPath> docs70000;
 
     /**
      * @throws java.lang.Exception
      */
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
 
-        this.ctx = new ClassPathXmlApplicationContext(
+        ctx = new ClassPathXmlApplicationContext(
                 "classpath:spring/application-test.xml");
 
-        this.dao = ctx.getBean(DocumentPathDaoImpl.class);
+        dao = ctx.getBean(DocumentPathDaoImpl.class);
+
+        docs10000 = DocumentPathUtil
+                .genDocumentPaths(10000);
+
+        docs100000 = DocumentPathUtil
+                .genDocumentPaths(100000);
+
+        docs70000 = DocumentPathUtil
+                .genDocumentPaths(70000);
 
         dao.createTable();
         dao.truncateTable();
     }
 
+    /**
+     * @throws NoSuchAlgorithmException
+     */
     @Test
-    public void insert100X600RowsTest() throws NoSuchAlgorithmException {
+    public void insert1X10000RowsTest() throws NoSuchAlgorithmException {
 
-        final List<DocumentPath> docs = DocumentPathUtil
-                .genDocuemntPaths(600);
-
-        dao.truncateTable();
-        for (int i = 0; i < 100; i++) {
-            dao.insertList(docs);
-        }
+        dao.insertList(docs10000);
     }
 
+    /**
+     * @throws NoSuchAlgorithmException
+     */
     @Test
-    public void insert100X500RowsTest() throws NoSuchAlgorithmException {
+    public void insert1X100000RowsTest() throws NoSuchAlgorithmException {
 
-        final List<DocumentPath> docs = DocumentPathUtil
-                .genDocuemntPaths(500);
-
-        dao.truncateTable();
-        for (int i = 0; i < 100; i++) {
-            dao.insertList(docs);
-        }
+        dao.insertList(docs100000);
     }
 
+    /**
+     * @throws NoSuchAlgorithmException
+     */
     @Test
-    public void insert100X400RowsTest() throws NoSuchAlgorithmException {
+    public void insert1X70000RowsTest() throws NoSuchAlgorithmException {
 
-        final List<DocumentPath> docs = DocumentPathUtil
-                .genDocuemntPaths(400);
-
-        dao.truncateTable();
-        for (int i = 0; i < 100; i++) {
-            dao.insertList(docs);
-        }
-    }
-
-    @Test
-    public void insert100X300RowsTest() throws NoSuchAlgorithmException {
-
-        final List<DocumentPath> docs = DocumentPathUtil
-                .genDocuemntPaths(300);
-
-        dao.truncateTable();
-        for (int i = 0; i < 100; i++) {
-            dao.insertList(docs);
-        }
-    }
-
-    @Test
-    public void insert100X200RowsTest() throws NoSuchAlgorithmException {
-
-        final List<DocumentPath> docs = DocumentPathUtil
-                .genDocuemntPaths(200);
-
-        dao.truncateTable();
-        for (int i = 0; i < 100; i++) {
-            dao.insertList(docs);
-        }
-    }
-
-    @Test
-    public void insert100X100RowsTest() throws NoSuchAlgorithmException {
-
-        dao.truncateTable();
-        final List<DocumentPath> docs = DocumentPathUtil
-                .genDocuemntPaths(100);
-
-        for (int i = 0; i < 100; i++) {
-            dao.insertList(docs);
-        }
+        dao.insertList(docs70000);
     }
 }

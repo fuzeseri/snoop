@@ -5,6 +5,7 @@ package com.glueball.snoop.test.dao.extractor;
 
 import static org.junit.Assert.assertEquals;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -17,6 +18,7 @@ import org.mockito.Mockito;
 
 import com.glueball.snoop.dao.extractor.ListIndexedDocumentExtractor;
 import com.glueball.snoop.entity.IndexedDocument;
+import com.glueball.snoop.util.MD5;
 
 /**
  * @author karesz
@@ -30,16 +32,18 @@ public class ListIndexedDocumentExtractorTest {
      * 
      * @throws SQLException
      *             on any SQL error.
+     * @throws NoSuchAlgorithmException
      */
     @Test
-    public final void testExtractData() throws SQLException {
+    public final void testExtractData() throws SQLException,
+            NoSuchAlgorithmException {
 
-        final Timestamp now = new Timestamp(new Date().getTime());
+        final long now = new Date().getTime();
 
         final IndexedDocument refIdoc = new IndexedDocument();
         refIdoc.setContentType("application/pdf");
         refIdoc.setFileName("filename_a.pdf");
-        refIdoc.setId("id");
+        refIdoc.setId(MD5.md5Digest("id"));
         refIdoc.setLastModifiedTime(now);
         refIdoc.setLocalPath("/testdir/filename_a.pdf");
         refIdoc.setPath("/testdir/filename_a.pdf");
@@ -47,7 +51,7 @@ public class ListIndexedDocumentExtractorTest {
         refIdoc.setUri("file:///testdir/filename_a.pdf");
         refIdoc.setLastIndexedTime(now);
         refIdoc.setLock(0);
-        refIdoc.setLockTime(null);
+        refIdoc.setLockTime(0L);
         refIdoc.setIndexState(IndexedDocument.INDEX_STATE_NEW);
 
         final ResultSet rs = Mockito.mock(ResultSet.class);
@@ -63,8 +67,8 @@ public class ListIndexedDocumentExtractorTest {
                 .thenReturn("/testdir/filename_a.pdf");
         Mockito.when(rs.getString("local_path")).thenReturn(
                 "/testdir/filename_a.pdf");
-        Mockito.when(rs.getTimestamp("last_modified_time")).thenReturn(now);
-        Mockito.when(rs.getTimestamp("last_indexed_time")).thenReturn(now);
+        Mockito.when(rs.getLong("last_modified_time")).thenReturn(now);
+        Mockito.when(rs.getLong("last_indexed_time")).thenReturn(now);
         Mockito.when(rs.getString("content_type"))
                 .thenReturn("application/pdf");
         Mockito.when(rs.getString("index_state")).thenReturn(
