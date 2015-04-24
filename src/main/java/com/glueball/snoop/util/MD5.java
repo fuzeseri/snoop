@@ -66,6 +66,14 @@ public final class MD5 {
         return md.digest();
     }
 
+    /**
+     * Converts a byte array to 2 digits per byte hexadecimal String with
+     * leading zeros.
+     *
+     * @param mdbytes
+     *            the byte array to convert.
+     * @return the hex String.
+     */
     public static final String toHexString(final byte[] mdbytes) {
 
         final StringBuffer hexString = new StringBuffer();
@@ -73,6 +81,7 @@ public final class MD5 {
 
             final String hex = Integer.toHexString(HEXFF & mdbytes[i]);
             if (hex.length() == 1) {
+
                 hexString.append('0');
             }
             hexString.append(hex);
@@ -80,11 +89,21 @@ public final class MD5 {
         return hexString.toString();
     }
 
+    /**
+     * Converts two digits per byte with leading zeros hexadecimal
+     * representation of a byte array to a byte array.
+     *
+     * @param str
+     *            the hex String.
+     * @return the byte array.
+     */
     public static final byte[] hexStringToByteArray(final String str) {
 
         int len = str.length();
         byte[] data = new byte[len / 2];
+
         for (int i = 0; i < len; i += 2) {
+
             data[i / 2] = (byte) ((Character.digit(str.charAt(i), 16) << 4)
                     + Character.digit(str.charAt(i + 1), 16));
         }

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.glueball.snoop.mmap;
 
 import java.io.File;

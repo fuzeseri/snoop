@@ -1,8 +1,11 @@
-/**
- * 
- */
 package com.glueball.snoop.util;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import java.util.Random;
 
 /**

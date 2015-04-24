@@ -22,19 +22,54 @@ import com.glueball.snoop.util.ByteUtil;
 public final class FileData implements Mappable {
 
     /**
-     * The lenght of the ids.
+     * The length of the ids.
      */
     private static final int ID_LENGHT = 16;
 
+    /**
+     * The starting position of this object in the memory mapped file.
+     */
     private long position = 0L;
+
+    /**
+     * Flag to mark the object as deleted.
+     */
     private byte deleted = (byte) 0;
+
+    /**
+     * The id of the represented file.
+     */
     private byte[] id = new byte[ID_LENGHT];
+
+    /**
+     * The last modification time of the file.
+     */
     private long lmtime = 0L;
+
+    /**
+     * The time when the file was indexed last time.
+     */
     private long litime = 0L;
+
+    /**
+     * The index status of the file.
+     */
     private short status = (short) 0;
+
+    /**
+     * Lock id.
+     */
     private long lock = 0L;
+
+    /**
+     * The time when the file was locked.
+     */
     private long locktime = 0L;
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.mmap.Mappable#fromByteArray(byte[])
+     */
     @Override
     public final FileData fromByteArray(final byte[] data) {
 
@@ -72,9 +107,9 @@ public final class FileData implements Mappable {
         return fData;
     }
 
-    /**
-     * @return
-     * @throws IOException
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.mmap.Mappable#toByteArray()
      */
     @Override
     public final byte[] toByteArray() throws IOException {
@@ -94,8 +129,9 @@ public final class FileData implements Mappable {
         }
     }
 
-    /**
-     * @return the position
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.mmap.Mappable#getPosition()
      */
     @Override
     public final long getPosition() {
@@ -232,9 +268,67 @@ public final class FileData implements Mappable {
         this.locktime = locktime;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.mmap.Mappable#size()
+     */
     @Override
     public final int size() {
 
         return 5 * Long.BYTES + ID_LENGHT + Byte.BYTES + Short.BYTES;
     }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + deleted;
+        result = prime * result + Arrays.hashCode(id);
+        result = prime * result + (int) (litime ^ (litime >>> 32));
+        result = prime * result + (int) (lmtime ^ (lmtime >>> 32));
+        result = prime * result + (int) (lock ^ (lock >>> 32));
+        result = prime * result + (int) (locktime ^ (locktime >>> 32));
+        result = prime * result + (int) (position ^ (position >>> 32));
+        result = prime * result + status;
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        FileData other = (FileData) obj;
+        if (deleted != other.deleted)
+            return false;
+        if (!Arrays.equals(id, other.id))
+            return false;
+        if (litime != other.litime)
+            return false;
+        if (lmtime != other.lmtime)
+            return false;
+        if (lock != other.lock)
+            return false;
+        if (locktime != other.locktime)
+            return false;
+        if (position != other.position)
+            return false;
+        if (status != other.status)
+            return false;
+        return true;
+    }
+
 }

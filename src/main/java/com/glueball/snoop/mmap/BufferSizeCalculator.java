@@ -16,12 +16,12 @@ public class BufferSizeCalculator {
     /**
      * Number of the chunks which size is max buffer size;
      */
-    private final int maxChunks;
+    private final long maxChunks;
 
     /**
      * The size of the last chunk.
      */
-    private final int lastChunk;
+    private final long lastChunk;
 
     /**
      * Field to store number of the requests.
@@ -34,7 +34,7 @@ public class BufferSizeCalculator {
      * @param pListSize
      * @param pMaxBufSize
      */
-    public BufferSizeCalculator(final int pListSize, final int pMaxBufSize) {
+    public BufferSizeCalculator(final long pListSize, final int pMaxBufSize) {
 
         this.maxBufSize = pMaxBufSize;
 
@@ -62,9 +62,9 @@ public class BufferSizeCalculator {
     }
 
     /**
-     * @return
+     * @return size of the next byte buffer.
      */
-    public int nextBufSize() {
+    public long nextBufSize() {
 
         if (getCount > maxChunks) {
 

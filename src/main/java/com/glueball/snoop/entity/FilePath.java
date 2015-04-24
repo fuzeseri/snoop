@@ -1,8 +1,11 @@
-/**
- * 
- */
 package com.glueball.snoop.entity;
 
+/*
+ * Licensed to Glueball Ltd. under one or more contributor license agreements.
+ * See the README file distributed with this work for additional information
+ * regarding copyright ownership. You may obtain a copy of the License at
+ * http://www.glueball.hu/licenses/snoop/sourcecode
+ */
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -11,22 +14,50 @@ import com.glueball.snoop.mmap.Mappable;
 import com.glueball.snoop.util.ByteUtil;
 
 /**
+ * Mappable object to store the path of a file.
+ * 
  * @author karesz
  */
 public final class FilePath implements Mappable {
 
+    /**
+     * The length of the id.
+     */
     private static final int ID_LENGHT = 16;
-    private static final int PATH_LENGHT = 80;
-
-    private long position = 0L;
-    private byte deleted = (byte) 0;
-    private byte[] id = new byte[ID_LENGHT];
-    private int order = 0;
-    private byte[] path = new byte[PATH_LENGHT];
 
     /**
-     * @param data
-     * @return
+     * The maximum length of path in bytes.
+     */
+    private static final int PATH_LENGHT = 80;
+
+    /**
+     * The start position of the object in the memory mapped file.
+     */
+    private long position = 0L;
+
+    /**
+     * Flag to mark this object as deleted.
+     */
+    private byte deleted = (byte) 0;
+
+    /**
+     * The file id.
+     */
+    private byte[] id = new byte[ID_LENGHT];
+
+    /**
+     * The order of this slice of the path.
+     */
+    private int order = 0;
+
+    /**
+     * Byte array to store the path.
+     */
+    private byte[] path = new byte[PATH_LENGHT];
+
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.mmap.Mappable#fromByteArray(byte[])
      */
     @Override
     public FilePath fromByteArray(final byte[] data) {
@@ -53,9 +84,9 @@ public final class FilePath implements Mappable {
         return fp;
     }
 
-    /**
-     * @return
-     * @throws IOException
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.mmap.Mappable#toByteArray()
      */
     @Override
     public final byte[] toByteArray() throws IOException {
@@ -159,6 +190,10 @@ public final class FilePath implements Mappable {
         this.path = path;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.glueball.snoop.mmap.Mappable#size()
+     */
     @Override
     public final int size() {
 
