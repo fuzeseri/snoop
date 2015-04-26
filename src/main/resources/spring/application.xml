@@ -25,14 +25,21 @@
         <import resource="classpath:spring/lucene-index.xml" />
 		<import resource="classpath:spring/cxf-servlet.xml" />
 
-		<task:annotation-driven />
+<!-- 		<task:annotation-driven /> -->
 
-		<bean id="dataLoader" class="com.glueball.snoop.bean.DataLoader" scope="singleton">
-			<constructor-arg value="${snoop.sharesxml.path}" />
-		</bean>
+<!-- 		<bean id="dataLoader" class="com.glueball.snoop.bean.DataLoader" scope="singleton"> -->
+<!-- 			<constructor-arg value="${snoop.sharesxml.path}" /> -->
+<!-- 		</bean> -->
 
-		<bean id="dataIndexer" class="com.glueball.snoop.bean.DataIndexer" scope="singleton">
-			<property name="maxDoc" value="${snoop.dataindexer.maxdoc:100}" />
-		</bean>
+<!-- 		<bean id="dataIndexer" class="com.glueball.snoop.bean.DataIndexer" scope="singleton"> -->
+<!-- 			<property name="maxDoc" value="${snoop.dataindexer.maxdoc:100}" /> -->
+<!-- 		</bean> -->
+		
+		<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
+	        <property name="triggers">  
+	            <list>  
+	            </list>  
+	        </property>
+        </bean>
 
 </beans>

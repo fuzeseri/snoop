@@ -24,7 +24,6 @@ import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import com.glueball.snoop.entity.IndexedDocument;
 import com.glueball.snoop.entity.Meta;
@@ -204,7 +203,6 @@ public final class DataIndexer {
      * database. Group them by the status and calls the delete or index methods
      * on the lists.
      */
-    @Scheduled(fixedDelay = 300000)
     public void index() {
 
         final List<IndexedDocument> haveToIndexList = indexedDocumentBean

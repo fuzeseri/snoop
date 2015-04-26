@@ -5,17 +5,20 @@
         <localPath>/home/karesz</localPath>
         <remotePath>/home/karesz</remotePath>
         <aktiv>true</aktiv>
+        <scanDelayMins>10</scanDelayMins>
     </share>
     <!-- share>
         <name>laptop-mysql</name>
         <localPath>/home/karesz/dokumentumok/MySQL</localPath>
         <remotePath>//laptop/dokumentumok/MySQL</remotePath>
         <aktiv>true</aktiv>
+        <scanDelay>300</scanDelay>
     </share>
     <share>
         <name>laptop-ebooks</name>
         <localPath>/home/karesz/dokumentumok/ebooks</localPath>
         <remotePath>//laptop/dokumentumok/ebooks</remotePath>
         <aktiv>true</aktiv>
+        <scanDelay>300</scanDelay>
     </share -->
 </shares>
