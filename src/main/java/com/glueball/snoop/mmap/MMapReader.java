@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author karesz
  */
-public class MMapReader {
+public class MMapReader<T extends Mappable> {
 
     /**
      * The file where the objects are stored.
@@ -34,10 +34,10 @@ public class MMapReader {
     /**
      * Mappable object to fill it with the data read.
      */
-    private final Mappable mapObj;
+    private final T mapObj;
 
     public MMapReader(final File pFile, final int pMaxBufSize,
-            final Class<? extends Mappable> pClazz) throws Exception {
+            final Class<T> pClazz) throws Exception {
 
         this.file = pFile;
         this.maxBufSize = pMaxBufSize;
@@ -51,9 +51,10 @@ public class MMapReader {
      * @throws IOException
      *             on any IO error.
      */
-    public List<Mappable> read() throws IOException {
+    @SuppressWarnings("unchecked")
+    public List<T> read() throws IOException {
 
-        List<Mappable> list = new ArrayList<Mappable>(0);
+        List<T> list = new ArrayList<T>(0);
         int objectSize = 0;
         if (mapObj != null) {
 
@@ -76,7 +77,7 @@ public class MMapReader {
 
                 return list;
             }
-            list = new ArrayList<Mappable>(listSize);
+            list = new ArrayList<T>(listSize);
 
             final BufferSizeCalculator bufSize = new BufferSizeCalculator(
                     (fc.size() / objectSize), maxBufSize);
@@ -98,7 +99,7 @@ public class MMapReader {
                 }
 
                 mem.get(arr);
-                list.add(mapObj.fromByteArray(arr));
+                list.add((T) mapObj.fromByteArray(arr));
 
                 position = position + objectSize;
             }

@@ -30,7 +30,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.NetworkShare;
 import com.glueball.snoop.entity.NetworkShares;
-import com.glueball.snoop.visitor.DbLoaderVisitor;
+import com.glueball.snoop.file.visitor.DbLoaderVisitor;
 
 /**
  * Periodically checks the directories on the disk or network file shares and

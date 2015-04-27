@@ -1,4 +1,4 @@
-package com.glueball.snoop.visitor;
+package com.glueball.snoop.file.visitor;
 
 /*
  * Licensed to Glueball Ltd. under one or more contributor license agreements.

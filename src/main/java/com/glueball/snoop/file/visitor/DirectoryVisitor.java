@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.glueball.snoop.visitor;
+package com.glueball.snoop.file.visitor;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;

@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author karesz
  */
-public class MMapWriter {
+public class MMapWriter<T extends Mappable> {
 
     /**
      * File to write out the data.
@@ -51,7 +51,7 @@ public class MMapWriter {
      * @throws IOException
      *             on any IO errors.
      */
-    public void write(final List<? extends Mappable> list) throws IOException {
+    public void write(final List<T> list) throws IOException {
 
         if (list.size() == 0) {
 
@@ -102,7 +102,7 @@ public class MMapWriter {
      * @throws IOException
      *             on any IO errors.
      */
-    public void update(final List<Mappable> list) throws IOException {
+    public void update(final List<T> list) throws IOException {
 
         if (list.size() > 0) {
 

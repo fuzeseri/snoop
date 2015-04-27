@@ -9,6 +9,8 @@ package com.glueball.snoop.entity;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.glueball.snoop.mmap.Mappable;
 import com.glueball.snoop.util.ByteUtil;
@@ -201,4 +203,33 @@ public final class FilePath implements Mappable {
                 + Integer.BYTES;
     }
 
+    /**
+     * Factory method. Returns a set of FilePath objects path sliced by 80 byte
+     * chunks.
+     *
+     * @param fileId
+     *            the id of the file.
+     * @param path
+     *            The path String.
+     * @return set of FilePath objects.
+     */
+    public static Set<FilePath> getPaths(final byte[] fileId,
+            final String path) {
+
+        final Set<FilePath> fPaths = new HashSet<FilePath>();
+
+        int i = 0;
+        for (final byte[] slice : ByteUtil.stringToByteArrays(path,
+                80)) {
+
+            final FilePath fp = new FilePath();
+            fp.setDeleted((byte) 0);
+            fp.setId(fileId);
+            fp.setOrder(i++);
+            fp.setPath(slice);
+
+            fPaths.add(fp);
+        }
+        return fPaths;
+    }
 }

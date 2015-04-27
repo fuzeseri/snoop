@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 
 import org.junit.Test;
 
-import com.glueball.snoop.visitor.DirectoryVisitor;
+import com.glueball.snoop.file.visitor.DirectoryVisitor;
 
 /**
  * @author karesz
