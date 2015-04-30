@@ -18,6 +18,7 @@ import org.junit.Test;
 
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.FileData;
+import com.glueball.snoop.entity.FileId;
 import com.glueball.snoop.mmap.MMapReader;
 import com.glueball.snoop.mmap.MMapWriter;
 import com.glueball.snoop.mmap.Mappable;
@@ -55,7 +56,7 @@ public class MMapReaderWriterTest {
 
             final FileData fd = new FileData();
             fd.setDeleted((byte) 1);
-            fd.setId(dp.getId());
+            fd.setId(new FileId(dp.getId()));
             fd.setLitime(Long.MAX_VALUE);
             fd.setLmtime(dp.getLastModifiedTime());
             fd.setStatus((short) 5);
@@ -78,11 +79,13 @@ public class MMapReaderWriterTest {
         f.delete();
         f.createNewFile();
 
-        final MMapWriter writer = new MMapWriter(f, BUFFER_SIZE);
+        final MMapWriter<FileData> writer = new MMapWriter<FileData>(f,
+                BUFFER_SIZE);
         writer.write(writeList);
 
-        final MMapReader reader = new MMapReader(f, BUFFER_SIZE, FileData.class);
-        final List<Mappable> readlist = reader.read();
+        final MMapReader<FileData> reader = new MMapReader<FileData>(f,
+                BUFFER_SIZE, FileData.class);
+        final List<FileData> readlist = reader.read();
 
         assertEquals(500000, readlist.size());
     }
@@ -99,11 +102,12 @@ public class MMapReaderWriterTest {
         f.delete();
         f.createNewFile();
 
-        final MMapWriter writer = new MMapWriter(f, BUFFER_SIZE);
+        final MMapWriter<FileData> writer = new MMapWriter<FileData>(f,
+                BUFFER_SIZE);
         writer.write(writeList);
 
-        final MMapReader reader =
-                new MMapReader(f, BUFFER_SIZE, FileData.class);
+        final MMapReader<FileData> reader =
+                new MMapReader<FileData>(f, BUFFER_SIZE, FileData.class);
 
         final List<FileData> list = new ArrayList<FileData>();
 
