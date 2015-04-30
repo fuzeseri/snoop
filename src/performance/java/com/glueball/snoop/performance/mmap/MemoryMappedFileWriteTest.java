@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import com.glueball.snoop.entity.DocumentPath;
 import com.glueball.snoop.entity.FileData;
+import com.glueball.snoop.entity.FileId;
 import com.glueball.snoop.entity.FilePath;
 import com.glueball.snoop.util.ByteUtil;
 import com.glueball.snoop.util.DocumentPathUtil;
@@ -45,7 +46,7 @@ public class MemoryMappedFileWriteTest {
 
             final FileData fd = new FileData();
             fd.setDeleted((byte) 1);
-            fd.setId(dp.getId());
+            fd.setId(new FileId(dp.getId()));
             fd.setLitime(Long.MAX_VALUE);
             fd.setLmtime(dp.getLastModifiedTime());
             fd.setStatus((short) 5);
@@ -60,7 +61,7 @@ public class MemoryMappedFileWriteTest {
 
                 final FilePath fp = new FilePath();
                 fp.setDeleted((byte) 1);
-                fp.setId(dp.getId());
+                fp.setId(new FileId(dp.getId()));
                 fp.setOrder(i++);
                 fp.setPath(slice);
 

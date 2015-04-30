@@ -118,7 +118,7 @@ public class MemoryMappedFileReadTest {
 
             System.out.println(data.getPosition());
             System.out.println(data.getDeleted());
-            System.out.println(MD5.toHexString(data.getId()));
+            System.out.println(MD5.toHexString(data.getId().getBytes()));
             System.out.println(data.getLmtime());
             System.out.println(data.getLitime());
             System.out.println(data.getStatus());
@@ -137,7 +137,7 @@ public class MemoryMappedFileReadTest {
 
             System.out.println(path.getPosition());
             System.out.println(path.getDeleted());
-            System.out.println(MD5.toHexString(path.getId()));
+            System.out.println(MD5.toHexString(path.getId().getBytes()));
             System.out.println(path.getOrder());
             System.out.println(new String(path.getPath()));
 
