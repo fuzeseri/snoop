@@ -41,6 +41,7 @@ public class SnoopJob extends QuartzJobBean {
     protected void executeInternal(final JobExecutionContext context)
             throws JobExecutionException {
 
+        System.out.println("HELOOOOOOOOOOOOOOOOOO");
         task.run();
     }
 

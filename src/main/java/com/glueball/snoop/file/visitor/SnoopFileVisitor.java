@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.glueball.snoop.entity.FileData;
+import com.glueball.snoop.entity.FileId;
 import com.glueball.snoop.entity.FilePath;
 import com.glueball.snoop.entity.IndexStatus;
 import com.glueball.snoop.entity.NetworkShare;
@@ -46,12 +47,12 @@ public class SnoopFileVisitor implements FileVisitor<Path> {
     /**
      * List to add the file local paths to it.
      */
-    private final Map<byte[], Set<FilePath>> localPaths;
+    private final Map<FileId, Set<FilePath>> localPaths;
 
     /**
      * List to add the file remote paths to it.
      */
-    private final Map<byte[], Set<FilePath>> remotePaths;
+    private final Map<FileId, Set<FilePath>> remotePaths;
 
     /**
      * Constructor.
@@ -65,8 +66,8 @@ public class SnoopFileVisitor implements FileVisitor<Path> {
      */
     public SnoopFileVisitor(final NetworkShare pShare,
             final List<FileData> pFiles,
-            final Map<byte[], Set<FilePath>> pLocalPaths,
-            final Map<byte[], Set<FilePath>> pRemotePaths) {
+            final Map<FileId, Set<FilePath>> pLocalPaths,
+            final Map<FileId, Set<FilePath>> pRemotePaths) {
 
         this.share = pShare;
         this.files = pFiles;
@@ -105,7 +106,9 @@ public class SnoopFileVisitor implements FileVisitor<Path> {
             final FileData data = new FileData();
 
             try {
-                final byte[] fileId = MD5.md5Digest(file.toUri().toString());
+                final FileId fileId = new FileId(MD5.md5Digest(file.toUri()
+                        .toString()));
+
                 data.setId(fileId);
 
                 data.setDeleted((byte) 0);

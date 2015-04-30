@@ -39,7 +39,7 @@ public final class FileData implements Mappable {
     /**
      * The id of the represented file.
      */
-    private byte[] id = new byte[ID_LENGHT];
+    private FileId id;
 
     /**
      * The last modification time of the file.
@@ -82,7 +82,7 @@ public final class FileData implements Mappable {
 
         fData.setDeleted(data[i++]);
 
-        fData.setId(Arrays.copyOfRange(data, i, i + ID_LENGHT));
+        fData.setId(new FileId(Arrays.copyOfRange(data, i, i + ID_LENGHT)));
         i = i + ID_LENGHT;
 
         fData.setLmtime(ByteUtil.bytesToLong(Arrays.copyOfRange(data, i, i
@@ -118,7 +118,7 @@ public final class FileData implements Mappable {
 
             bos.write(ByteUtil.longToBytes(position));
             bos.write(deleted);
-            bos.write(id);
+            bos.write(id.getBytes());
             bos.write(ByteUtil.longToBytes(lmtime));
             bos.write(ByteUtil.longToBytes(litime));
             bos.write(ByteUtil.shortToBytes(status));
@@ -144,7 +144,7 @@ public final class FileData implements Mappable {
      *            the position to set
      */
     @Override
-    public final void setPosition(long position) {
+    public final void setPosition(final long position) {
 
         this.position = position;
     }
@@ -161,7 +161,7 @@ public final class FileData implements Mappable {
      * @param deleted
      *            the deleted to set
      */
-    public final void setDeleted(byte deleted) {
+    public final void setDeleted(final byte deleted) {
 
         this.deleted = deleted;
     }
@@ -169,7 +169,7 @@ public final class FileData implements Mappable {
     /**
      * @return the id
      */
-    public final byte[] getId() {
+    public final FileId getId() {
 
         return id;
     }
@@ -178,7 +178,7 @@ public final class FileData implements Mappable {
      * @param id
      *            the id to set
      */
-    public final void setId(byte[] id) {
+    public final void setId(final FileId id) {
 
         this.id = id;
     }
@@ -195,7 +195,7 @@ public final class FileData implements Mappable {
      * @param lmtime
      *            the lmtime to set
      */
-    public final void setLmtime(long lmtime) {
+    public final void setLmtime(final long lmtime) {
 
         this.lmtime = lmtime;
     }
@@ -212,7 +212,7 @@ public final class FileData implements Mappable {
      * @param litime
      *            the litime to set
      */
-    public final void setLitime(long litime) {
+    public final void setLitime(final long litime) {
 
         this.litime = litime;
     }
@@ -229,7 +229,7 @@ public final class FileData implements Mappable {
      * @param status
      *            the status to set
      */
-    public final void setStatus(short status) {
+    public final void setStatus(final short status) {
 
         this.status = status;
     }
@@ -246,7 +246,7 @@ public final class FileData implements Mappable {
      * @param lock
      *            the lock to set
      */
-    public final void setLock(long lock) {
+    public final void setLock(final long lock) {
 
         this.lock = lock;
     }
@@ -263,7 +263,7 @@ public final class FileData implements Mappable {
      * @param locktime
      *            the locktime to set
      */
-    public final void setLocktime(long locktime) {
+    public final void setLocktime(final long locktime) {
 
         this.locktime = locktime;
     }
@@ -288,7 +288,7 @@ public final class FileData implements Mappable {
         final int prime = 31;
         int result = 1;
         result = prime * result + deleted;
-        result = prime * result + Arrays.hashCode(id);
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + (int) (litime ^ (litime >>> 32));
         result = prime * result + (int) (lmtime ^ (lmtime >>> 32));
         result = prime * result + (int) (lock ^ (lock >>> 32));
@@ -314,7 +314,10 @@ public final class FileData implements Mappable {
         FileData other = (FileData) obj;
         if (deleted != other.deleted)
             return false;
-        if (!Arrays.equals(id, other.id))
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
             return false;
         if (litime != other.litime)
             return false;
@@ -330,5 +333,4 @@ public final class FileData implements Mappable {
             return false;
         return true;
     }
-
 }

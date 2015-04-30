@@ -45,7 +45,7 @@ public final class FilePath implements Mappable {
     /**
      * The file id.
      */
-    private byte[] id = new byte[ID_LENGHT];
+    private FileId id;
 
     /**
      * The order of this slice of the path.
@@ -73,7 +73,7 @@ public final class FilePath implements Mappable {
 
         fp.setDeleted(data[i++]);
 
-        fp.setId(Arrays.copyOfRange(data, i, i + ID_LENGHT));
+        fp.setId(new FileId(Arrays.copyOfRange(data, i, i + ID_LENGHT)));
         i = i + ID_LENGHT;
 
         fp.setOrder(ByteUtil
@@ -97,7 +97,7 @@ public final class FilePath implements Mappable {
 
             bos.write(ByteUtil.longToBytes(position));
             bos.write(deleted);
-            bos.write(id);
+            bos.write(id.getBytes());
             bos.write(ByteUtil.intToBytes(order));
             bos.write(path);
 
@@ -119,7 +119,7 @@ public final class FilePath implements Mappable {
      *            the position to set
      */
     @Override
-    public final void setPosition(long position) {
+    public final void setPosition(final long position) {
 
         this.position = position;
     }
@@ -136,7 +136,7 @@ public final class FilePath implements Mappable {
      * @param deleted
      *            the deleted to set
      */
-    public final void setDeleted(byte deleted) {
+    public final void setDeleted(final byte deleted) {
 
         this.deleted = deleted;
     }
@@ -144,7 +144,7 @@ public final class FilePath implements Mappable {
     /**
      * @return the id
      */
-    public final byte[] getId() {
+    public final FileId getId() {
 
         return id;
     }
@@ -153,7 +153,7 @@ public final class FilePath implements Mappable {
      * @param id
      *            the id to set
      */
-    public final void setId(byte[] id) {
+    public final void setId(final FileId id) {
 
         this.id = id;
     }
@@ -170,7 +170,7 @@ public final class FilePath implements Mappable {
      * @param order
      *            the order to set
      */
-    public final void setOrder(int order) {
+    public final void setOrder(final int order) {
 
         this.order = order;
     }
@@ -187,7 +187,7 @@ public final class FilePath implements Mappable {
      * @param path
      *            the path to set
      */
-    public final void setPath(byte[] path) {
+    public final void setPath(final byte[] path) {
 
         this.path = path;
     }
@@ -213,7 +213,7 @@ public final class FilePath implements Mappable {
      *            The path String.
      * @return set of FilePath objects.
      */
-    public static Set<FilePath> getPaths(final byte[] fileId,
+    public static Set<FilePath> getPaths(final FileId fileId,
             final String path) {
 
         final Set<FilePath> fPaths = new HashSet<FilePath>();

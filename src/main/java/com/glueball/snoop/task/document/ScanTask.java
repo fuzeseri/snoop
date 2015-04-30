@@ -7,8 +7,10 @@ package com.glueball.snoop.task.document;
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.glueball.snoop.entity.FileData;
+import com.glueball.snoop.entity.FileId;
 import com.glueball.snoop.entity.FilePath;
 import com.glueball.snoop.entity.IndexStatus;
 import com.glueball.snoop.entity.NetworkShare;
@@ -45,7 +48,7 @@ public final class ScanTask implements SnoopTask {
     /**
      * File read/write buffer size.
      */
-    private final int BUFFER_SIZE = 2000;
+    private final int BUFFER_SIZE = 500;
 
     /**
      * Field to store the name of the task.
@@ -65,7 +68,7 @@ public final class ScanTask implements SnoopTask {
     /**
      * Root path of the file data map files.
      */
-    private String fileDataDirectory;
+    private String fileDataDirectory = "install";
 
     /**
      * Constructor.
@@ -98,24 +101,37 @@ public final class ScanTask implements SnoopTask {
 
         try {
 
-            final String mapFileName = MD5.md5DigestHexStr(share
-                    .getRemotePath());
+            String mapFileName = share.getName();
+            try {
+                mapFileName = MD5.md5DigestHexStr(share
+                        .getRemotePath());
 
-            final File mapFile = new File(fileDataDirectory
-                    + File.pathSeparator + mapFileName + ".map");
+            } catch (final NoSuchAlgorithmException e) {
+
+                LOG.warn("Error creating Scan Task: MD5 digest "
+                        + "algorithm is not supported.");
+                LOG.debug(e.getMessage(), e);
+            }
+
+            final File dataFile = new File(fileDataDirectory
+                    + File.separator + mapFileName + "_d.map");
+            if (!dataFile.exists()) {
+
+                dataFile.createNewFile();
+            }
 
             final MMapReader<FileData> reader =
                     new MMapReader<FileData>(
-                            mapFile, BUFFER_SIZE, FileData.class);
+                            dataFile, BUFFER_SIZE, FileData.class);
 
             final List<FileData> indexStatus = reader.read();
             final List<FileData> files = new ArrayList<FileData>();
 
-            final Map<byte[], Set<FilePath>> localPaths =
-                    new HashMap<byte[], Set<FilePath>>();
+            final Map<FileId, Set<FilePath>> localPaths =
+                    new HashMap<FileId, Set<FilePath>>();
 
-            final Map<byte[], Set<FilePath>> remotePaths =
-                    new HashMap<byte[], Set<FilePath>>();
+            final Map<FileId, Set<FilePath>> remotePaths =
+                    new HashMap<FileId, Set<FilePath>>();
 
             final String path = !StringUtils.isEmpty(
                     share.getLocalPath()) ? share.getLocalPath() : share
@@ -133,21 +149,82 @@ public final class ScanTask implements SnoopTask {
             processDocumentStatus(files, indexStatus, addList, updateList,
                     deleteList);
 
-            final MMapWriter<FileData> writer = new MMapWriter<FileData>(
-                    mapFile, BUFFER_SIZE);
+            updateFileData(dataFile, addList, updateList, deleteList);
 
-            writer.write(addList);
-            writer.update(updateList);
-            writer.update(deleteList);
+            final File localPathFile = new File(fileDataDirectory
+                    + File.separator + mapFileName + "_lp.map");
+            if (!localPathFile.exists()) {
+
+                localPathFile.createNewFile();
+            }
+
+            final File remotePathFile = new File(fileDataDirectory
+                    + File.separator + mapFileName + "_rp.map");
+            if (!localPathFile.exists()) {
+
+                localPathFile.createNewFile();
+            }
+
+            updateFilePath(localPathFile, addList, localPaths);
+            updateFilePath(remotePathFile, addList, remotePaths);
 
         } catch (final Exception e) {
 
             LOG.info("Error scanning network share: " + share.getName());
+            e.printStackTrace();
             LOG.debug(e.getMessage(), e);
         }
 
-        LOG.info("Loading netwok share: " + share.getName()
+        LOG.info("Netwok share: " + share.getName()
                 + " successfully udpated.");
+    }
+
+    /**
+     * Helper method to write out the file data to the map file.
+     *
+     * @param addList
+     *            list of new file data to write.
+     * @param updateList
+     *            list of modifies files data to write.
+     * @param deleteList
+     *            list of file data of deleted files.
+     * @throws IOException
+     *             on any IO error.
+     */
+    private void updateFileData(final File f, final List<FileData> addList,
+            final List<FileData> updateList,
+            final List<FileData> deleteList) throws IOException {
+
+        final MMapWriter<FileData> writer = new MMapWriter<FileData>(
+                f, BUFFER_SIZE);
+
+        System.out.println(addList.size());
+        writer.write(addList);
+        System.out.println(updateList.size());
+        writer.update(updateList);
+        System.out.println(deleteList.size());
+        writer.update(deleteList);
+
+        LOG.info("File data has successfully update on share: "
+                + share.getName());
+    }
+
+    private void updateFilePath(final File f, final List<FileData> datas,
+            final Map<FileId, Set<FilePath>> paths) throws IOException {
+
+        final List<FilePath> toWrite = new ArrayList<FilePath>();
+        for (final FileData data : datas) {
+
+            for (final FilePath path : paths.get(data.getId())) {
+
+                toWrite.add(path);
+            }
+        }
+
+        final MMapWriter<FilePath> writer = new MMapWriter<FilePath>(
+                f, BUFFER_SIZE);
+
+        writer.write(toWrite);
     }
 
     /*
@@ -214,17 +291,35 @@ public final class ScanTask implements SnoopTask {
         this.share = share;
     }
 
+    /**
+     * Helper method to compare to lists of FileData and produce the object to
+     * add, modify or delete from the database.
+     *
+     * @param pLeft
+     *            the objects on the left side.
+     * @param pRight
+     *            the objects on the right side.
+     * @param pToAdd
+     *            objects are available on the left side but not on the right
+     *            side.
+     * @param pToUpdate
+     *            objects are available on both sides but the last modified time
+     *            is newer on the left side.
+     * @param pToDelete
+     *            object are available on the right side but not on the left
+     *            side.
+     */
     private void processDocumentStatus(final List<FileData> pLeft,
             final List<FileData> pRight, final List<FileData> pToAdd,
             final List<FileData> pToUpdate, final List<FileData> pToDelete) {
 
-        final Map<byte[], Long> left = toIdLastmTimeMap(pLeft);
-        final Map<byte[], Long> right = toIdLastmTimeMap(pRight);
+        final Map<FileId, Long> left = toIdLastmTimeMap(pLeft);
+        final Map<FileId, Long> right = toIdLastmTimeMap(pRight);
 
-        final Map<byte[], FileData> leftMap = toIdFileDataMap(pLeft);
-        final Map<byte[], FileData> rightMap = toIdFileDataMap(pRight);
+        final Map<FileId, FileData> leftMap = toIdFileDataMap(pLeft);
+        final Map<FileId, FileData> rightMap = toIdFileDataMap(pRight);
 
-        for (final byte[] key : left.keySet()) {
+        for (final FileId key : left.keySet()) {
 
             if (right.containsKey(key)) {
 
@@ -241,7 +336,7 @@ public final class ScanTask implements SnoopTask {
             }
         }
 
-        for (final byte[] key : right.keySet()) {
+        for (final FileId key : right.keySet()) {
 
             if (!left.containsKey(key)) {
 
@@ -253,9 +348,17 @@ public final class ScanTask implements SnoopTask {
         }
     }
 
-    private Map<byte[], Long> toIdLastmTimeMap(final List<FileData> files) {
+    /**
+     * Helper method to create a fileId, last update time map from the FileData
+     * list.
+     *
+     * @param files
+     *            the input list.
+     * @return the map.
+     */
+    private Map<FileId, Long> toIdLastmTimeMap(final List<FileData> files) {
 
-        final Map<byte[], Long> map = new HashMap<byte[], Long>();
+        final Map<FileId, Long> map = new HashMap<FileId, Long>();
 
         for (final FileData file : files) {
 
@@ -264,10 +367,17 @@ public final class ScanTask implements SnoopTask {
         return map;
     }
 
-    private final Map<byte[], FileData> toIdFileDataMap(
+    /**
+     * Helper method to create a fileId, FileData map from a list of FileData.
+     *
+     * @param files
+     *            the list of FileData.
+     * @return the map.
+     */
+    private final Map<FileId, FileData> toIdFileDataMap(
             final List<FileData> files) {
 
-        final Map<byte[], FileData> map = new HashMap<byte[], FileData>();
+        final Map<FileId, FileData> map = new HashMap<FileId, FileData>();
 
         for (final FileData file : files) {
 

@@ -6,7 +6,6 @@ package com.glueball.snoop.quartz.bean;
  * regarding copyright ownership. You may obtain a copy of the License at
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
-import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
@@ -15,14 +14,13 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
 
-import com.glueball.snoop.quartz.job.SnoopJob;
 import com.glueball.snoop.quartz.job.SnoopTask;
 import com.glueball.snoop.quartz.task.TaskFactory;
 
@@ -52,6 +50,9 @@ public final class SnoopScheduler {
         this.scheduler = scheduler;
     }
 
+    /**
+     * List of task factories.
+     */
     private List<TaskFactory> taskFactories;
 
     /**
@@ -70,31 +71,44 @@ public final class SnoopScheduler {
 
             for (final SnoopTask task : factory.createTasks()) {
 
-                final JobDetail job = newJob(SnoopJob.class)
-                        .withIdentity(task.getName(), factory.getName())
-                        .build();
-
-                job.getJobDataMap().put(task.getName(), task);
-
                 try {
 
-                    scheduler.addJob(job, true);
+                    final MethodInvokingJobDetailFactoryBean jobDetail =
+                            new MethodInvokingJobDetailFactoryBean();
+                    jobDetail.setTargetObject(task);
+                    jobDetail.setTargetMethod("run");
+                    jobDetail.setName(task.getName());
+                    jobDetail.setConcurrent(false);
+                    jobDetail.afterPropertiesSet();
 
                     final Trigger trigger = newTrigger()
+                            // .forJob(job)
                             .withIdentity(task.getName(), factory.getName())
-                            .startAt(new Date())
+                            .startAt(new Date(new Date().getTime() + 10000))
                             .withSchedule(
                                     simpleSchedule()
-                                            .withIntervalInSeconds(
-                                                    task.getIntervalSeconds())
+                                            .withIntervalInSeconds(300)
+                                            // task.getIntervalSeconds())
                                             .repeatForever())
+                            .startNow()
                             .build();
 
-                    scheduler.scheduleJob(trigger);
+                    scheduler.scheduleJob(jobDetail.getObject(), trigger);
 
                 } catch (final SchedulerException e) {
 
-                    LOG.info("ERROR scheduling task " + task.getName());
+                    LOG.info("ERROR scheduling task " + factory.getName()
+                            + " - " + task.getName());
+                    LOG.debug(e.getMessage(), e);
+                } catch (final ClassNotFoundException e) {
+
+                    LOG.info("ERROR scheduling task " + factory.getName()
+                            + " - " + task.getName());
+                    LOG.debug(e.getMessage(), e);
+                } catch (final NoSuchMethodException e) {
+
+                    LOG.info("ERROR scheduling task " + factory.getName()
+                            + " - " + task.getName());
                     LOG.debug(e.getMessage(), e);
                 }
             }

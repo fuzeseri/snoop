@@ -20,7 +20,7 @@
 			</property>
 		</bean>
 
-		<import resource="classpath:spring/data-access.xml" />
+		<!-- import resource="classpath:spring/data-access.xml" / -->
 		<import resource="classpath:spring/lucene-parser.xml" />
         <import resource="classpath:spring/lucene-index.xml" />
 		<import resource="classpath:spring/cxf-servlet.xml" />
@@ -36,10 +36,21 @@
 <!-- 		</bean> -->
 		
 		<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
-	        <property name="triggers">  
-	            <list>  
-	            </list>  
+	        <property name="triggers">
+	            <list>
+	            </list>
 	        </property>
         </bean>
 
+        <bean id="snoopScheduler" class="com.glueball.snoop.quartz.bean.SnoopScheduler" init-method="init">
+            <property name="taskFactories">
+                <list>
+                    <ref bean="scanTaskFactory" />
+                </list>
+            </property>
+        </bean>
+
+        <bean id="scanTaskFactory" class="com.glueball.snoop.quartz.task.ScanTaskFactory">
+            <property name="sharesXml" value="${snoop.sharesxml.path}"/>
+        </bean>
 </beans>

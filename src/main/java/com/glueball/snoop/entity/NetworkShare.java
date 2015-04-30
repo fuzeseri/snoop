@@ -54,6 +54,12 @@ public final class NetworkShare implements Serializable {
     private boolean active = true;
 
     /**
+     * Scan delay.
+     */
+    @XmlElement(namespace = "http://snoop.glueball.com/share")
+    private String scanDelay;
+
+    /**
      * @return the name
      */
     public String getName() {
@@ -120,4 +126,22 @@ public final class NetworkShare implements Serializable {
 
         this.active = pActive;
     }
+
+    /**
+     * @return the scanDelay
+     */
+    public final String getScanDelay() {
+
+        return scanDelay;
+    }
+
+    /**
+     * @param scanDelay
+     *            the scanDelay to set
+     */
+    public final void setScanDelay(String scanDelay) {
+
+        this.scanDelay = scanDelay;
+    }
+
 }

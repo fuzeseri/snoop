@@ -104,7 +104,7 @@ public class MMapWriter<T extends Mappable> {
      */
     public void update(final List<T> list) throws IOException {
 
-        if (list.size() > 0) {
+        if (list.size() == 0) {
 
             return;
         }

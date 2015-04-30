@@ -2,11 +2,26 @@
 <shares xmlns="http://snoop.glueball.com/share">
     <share>
         <name>karesz-home</name>
-        <localPath>/home/karesz</localPath>
-        <remotePath>/home/karesz</remotePath>
+        <localPath>/home/karesz/dokumentumok</localPath>
+        <remotePath>/home/karesz/dokumentumok</remotePath>
         <aktiv>true</aktiv>
-        <scanDelayMins>10</scanDelayMins>
+        <scanDelay>10m</scanDelay>
     </share>
+    <share>
+        <name>karesz-usr-share</name>
+        <localPath>/usr/share</localPath>
+        <remotePath>/usr/share</remotePath>
+        <aktiv>true</aktiv>
+        <scanDelay>10m</scanDelay>
+    </share>
+    <share>
+        <name>karesz-mnt-reaper</name>
+        <localPath>/mnt/reaper</localPath>
+        <remotePath>/mnt/reaper</remotePath>
+        <aktiv>true</aktiv>
+        <scanDelay>10m</scanDelay>
+    </share>
+    
     <!-- share>
         <name>laptop-mysql</name>
         <localPath>/home/karesz/dokumentumok/MySQL</localPath>
