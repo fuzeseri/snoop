@@ -9,8 +9,6 @@ package com.glueball.snoop.entity;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.glueball.snoop.mmap.Mappable;
 import com.glueball.snoop.util.ByteUtil;
@@ -213,10 +211,16 @@ public final class FilePath implements Mappable {
      *            The path String.
      * @return set of FilePath objects.
      */
-    public static Set<FilePath> getPaths(final FileId fileId,
+    public static FilePath[] getPaths(final FileId fileId,
             final String path) {
 
-        final Set<FilePath> fPaths = new HashSet<FilePath>();
+        int size = path.getBytes().length < 80 ? 1
+                : (path.getBytes().length / 80
+                + ((path.getBytes().length % 80 > 0) ? 1 : 0));
+
+        // System.out.println("WWWWWWWWWWWWWWWWWWWWWWW " + size);
+
+        final FilePath[] fPaths = new FilePath[size];
 
         int i = 0;
         for (final byte[] slice : ByteUtil.stringToByteArrays(path,
@@ -225,10 +229,10 @@ public final class FilePath implements Mappable {
             final FilePath fp = new FilePath();
             fp.setDeleted((byte) 0);
             fp.setId(fileId);
-            fp.setOrder(i++);
+            fp.setOrder(i);
             fp.setPath(slice);
 
-            fPaths.add(fp);
+            fPaths[i++] = fp;
         }
         return fPaths;
     }

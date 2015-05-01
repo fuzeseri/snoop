@@ -117,7 +117,7 @@ public final class ByteUtil {
     public static byte[][] stringToByteArrays(final String str,
             final int sliceSize) {
 
-        final byte[] strToByte = str.getBytes(Charset.defaultCharset());
+        final byte[] strToByte = str.getBytes(Charset.forName("UTF-8"));
         int sliceCount = (strToByte.length / sliceSize)
                 + (strToByte.length % sliceSize == 0 ? 0 : 1);
 

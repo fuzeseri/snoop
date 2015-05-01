@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -45,14 +44,19 @@ public class SnoopFileVisitor implements FileVisitor<Path> {
     private final List<FileData> files;
 
     /**
+     * List to add the file names to it.
+     */
+    private final Map<FileId, FilePath[]> fileNames;
+
+    /**
      * List to add the file local paths to it.
      */
-    private final Map<FileId, Set<FilePath>> localPaths;
+    private final Map<FileId, FilePath[]> localPaths;
 
     /**
      * List to add the file remote paths to it.
      */
-    private final Map<FileId, Set<FilePath>> remotePaths;
+    private final Map<FileId, FilePath[]> remotePaths;
 
     /**
      * Constructor.
@@ -66,11 +70,13 @@ public class SnoopFileVisitor implements FileVisitor<Path> {
      */
     public SnoopFileVisitor(final NetworkShare pShare,
             final List<FileData> pFiles,
-            final Map<FileId, Set<FilePath>> pLocalPaths,
-            final Map<FileId, Set<FilePath>> pRemotePaths) {
+            final Map<FileId, FilePath[]> pFileNames,
+            final Map<FileId, FilePath[]> pLocalPaths,
+            final Map<FileId, FilePath[]> pRemotePaths) {
 
         this.share = pShare;
         this.files = pFiles;
+        this.fileNames = pFileNames;
         this.localPaths = pLocalPaths;
         this.remotePaths = pRemotePaths;
     }
@@ -115,6 +121,8 @@ public class SnoopFileVisitor implements FileVisitor<Path> {
                 data.setLmtime(attrs.lastModifiedTime().toMillis());
                 data.setStatus(IndexStatus.NEW.getStatus());
 
+                final String fileName = file.getFileName().toString();
+
                 final String localPath = file.toAbsolutePath().toString();
 
                 final String remotePath = !StringUtils.isEmpty(share
@@ -124,6 +132,7 @@ public class SnoopFileVisitor implements FileVisitor<Path> {
                         : file.toAbsolutePath().toString();
 
                 files.add(data);
+                fileNames.put(fileId, FilePath.getPaths(fileId, fileName));
                 localPaths.put(fileId, FilePath.getPaths(fileId, localPath));
                 remotePaths.put(fileId, FilePath.getPaths(fileId, remotePath));
 

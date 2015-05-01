@@ -78,6 +78,7 @@ public final class SnoopScheduler {
                     jobDetail.setTargetObject(task);
                     jobDetail.setTargetMethod("run");
                     jobDetail.setName(task.getName());
+                    jobDetail.setGroup(factory.getName());
                     jobDetail.setConcurrent(false);
                     jobDetail.afterPropertiesSet();
 
@@ -87,7 +88,7 @@ public final class SnoopScheduler {
                             .startAt(new Date(new Date().getTime() + 10000))
                             .withSchedule(
                                     simpleSchedule()
-                                            .withIntervalInSeconds(300)
+                                            .withIntervalInSeconds(30)
                                             // task.getIntervalSeconds())
                                             .repeatForever())
                             .startNow()
@@ -100,16 +101,19 @@ public final class SnoopScheduler {
                     LOG.info("ERROR scheduling task " + factory.getName()
                             + " - " + task.getName());
                     LOG.debug(e.getMessage(), e);
+                    e.printStackTrace();
                 } catch (final ClassNotFoundException e) {
 
                     LOG.info("ERROR scheduling task " + factory.getName()
                             + " - " + task.getName());
                     LOG.debug(e.getMessage(), e);
+                    e.printStackTrace();
                 } catch (final NoSuchMethodException e) {
 
                     LOG.info("ERROR scheduling task " + factory.getName()
                             + " - " + task.getName());
                     LOG.debug(e.getMessage(), e);
+                    e.printStackTrace();
                 }
             }
         }

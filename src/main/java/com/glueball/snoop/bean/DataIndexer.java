@@ -14,6 +14,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,10 +26,13 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.glueball.snoop.entity.IndexedDocument;
+import com.glueball.snoop.entity.FileData;
+import com.glueball.snoop.entity.FileId;
+import com.glueball.snoop.entity.IndexStatus;
 import com.glueball.snoop.entity.Meta;
 import com.glueball.snoop.parser.ParserMap;
 import com.glueball.snoop.util.MD5;
+import com.glueball.snoop.util.SnoopMimeUtil;
 
 /**
  * This periodically checks the ( scheduled by the spring framework ) status of
@@ -45,11 +49,6 @@ public final class DataIndexer {
     private static final Logger LOG = LogManager.getLogger(DataIndexer.class);
 
     /**
-     * Constant default value of the maximum allowed documents per round.
-     */
-    private static final int DEFAULT_MAXDOC_NUM = 100;
-
-    /**
      * The Apache lucene index writer object.
      */
     @Autowired
@@ -64,24 +63,6 @@ public final class DataIndexer {
     public void setIndexWriter(final IndexWriter pIndexWriter) {
 
         this.indexWriter = pIndexWriter;
-    }
-
-    /**
-     * Indexed document database service.
-     */
-    @Autowired
-    private IndexedDocumentBean indexedDocumentBean;
-
-    /**
-     * Setter of the indexedDocumentBean service field.
-     *
-     * @param pIndexedDocumentBean
-     *            the IndexedDocumentBean instance.
-     */
-    public void setIndexedDocumentBean(
-            final IndexedDocumentBean pIndexedDocumentBean) {
-
-        this.indexedDocumentBean = pIndexedDocumentBean;
     }
 
     /**
@@ -103,37 +84,19 @@ public final class DataIndexer {
     }
 
     /**
-     * Maximum number of document to index in one round.
-     */
-    private int maxDoc = DEFAULT_MAXDOC_NUM;
-
-    /**
-     * Setter method of the maxDoc field.
-     *
-     * @param pMaxDoc
-     *            maximum number of documents to index in a round.
-     */
-    public void setMaxDoc(final int pMaxDoc) {
-
-        this.maxDoc = pMaxDoc;
-    }
-
-    /**
      * Removes documents from the lucene index marked as DELETED.
      *
      * @param toDelete
      *            list of document Ids to delete from the lucene index.
      */
-    private void removeDocsFromIndex(final List<byte[]> toDelete) {
+    private void removeDocsFromIndex(final List<FileData> toDelete) {
 
         try {
-
-            for (final byte[] docId : toDelete) {
-
+            for (final FileData data : toDelete) {
                 try {
 
                     indexWriter.deleteDocuments(new Term("id",
-                            MD5.toHexString(docId)));
+                            MD5.toHexString(data.getId().getBytes())));
                 } catch (final IOException e) {
 
                     LOG.error("ERROR while deleting document from index the");
@@ -141,7 +104,6 @@ public final class DataIndexer {
                 }
             }
         } finally {
-
             try {
 
                 indexWriter.commit();
@@ -152,39 +114,47 @@ public final class DataIndexer {
             }
             LOG.debug("index contains deleted files: "
                     + indexWriter.hasDeletions());
+
             LOG.debug("index contains documents: " + indexWriter.maxDoc());
         }
     }
 
-    /**
-     * Loads a list of IndexedDocuments to the lucene index.
-     *
-     * @param haveToIndexList
-     *            the list of IndexedDocument to load.
-     */
-    private void indexList(final List<IndexedDocument> indexList) {
+    private void indexList(final List<FileData> toIndex,
+            final Map<FileId, String> fileNames,
+            final Map<FileId, String> localPaths,
+            final Map<FileId, String> remotePaths) {
 
         try {
 
-            for (final IndexedDocument idoc : indexList) {
+            for (final FileData data : toIndex) {
 
-                if (!this.parserMap.hasParser(idoc.getContentType())) {
+                final String localPath = localPaths.get(data.getId());
+                final String remotePath = remotePaths.get(data.getId());
+                final String fileName = fileNames.get(data.getId());
+
+                final String contentType = getContentType(localPath);
+
+                if (!this.parserMap.hasParser(contentType)) {
 
                     LOG.debug("Can't find parser for content. File name: "
-                            + idoc.getFileName() + " content-type: "
-                            + idoc.getContentType());
+                            + localPath + " content-type: "
+                            + contentType);
+
+                    data.setStatus(IndexStatus.ERROR.getStatus());
+
                     continue;
                 }
 
-                LOG.debug("Indexing file: " + idoc.toString());
+                LOG.debug("Indexing file: " + localPath);
 
-                boolean indexed = indexFileContent(idoc);
+                boolean indexed = indexFileContent(data, fileName, localPath,
+                        remotePath, contentType);
 
-                idoc.setLastIndexedTime(new Date().getTime());
-                idoc.setIndexState(
-                        indexed ? IndexedDocument.INDEX_STATE_INDEXED
-                                : IndexedDocument.INDEX_STATE_ERROR);
+                data.setLitime(new Date().getTime());
+                data.setStatus(indexed ? IndexStatus.INDEXED.getStatus()
+                        : IndexStatus.ERROR.getStatus());
             }
+
         } finally {
 
             try {
@@ -198,62 +168,34 @@ public final class DataIndexer {
         }
     }
 
-    /**
-     * Scheduled task method. It loads the IndexedDocuments from the relational
-     * database. Group them by the status and calls the delete or index methods
-     * on the lists.
-     */
-    public void index() {
+    public void index(final List<FileData> datas,
+            final Map<FileId, String> fileNames,
+            final Map<FileId, String> localPaths,
+            final Map<FileId, String> remotePaths) {
 
-        final List<IndexedDocument> haveToIndexList = indexedDocumentBean
-                .haveToIndex(maxDoc);
+        final List<FileData> toIndexList =
+                new ArrayList<FileData>(datas.size());
 
-        final List<IndexedDocument> toIndexList =
-                new ArrayList<IndexedDocument>(maxDoc);
+        final List<FileData> toRemoveList = new ArrayList<FileData>();
 
-        final List<byte[]> toRemoveList = new ArrayList<byte[]>();
+        for (final FileData data : datas) {
 
-        for (final IndexedDocument idoc : haveToIndexList) {
+            if (IndexStatus.INDEXED.getStatus() != data.getStatus()
+                    && IndexStatus.DELETED.getStatus() != data.getStatus()) {
 
-            if (!IndexedDocument.INDEX_STATE_INDEXED.equals(idoc
-                    .getIndexState())
-                    && !IndexedDocument.INDEX_STATE_DELETED.equals(idoc
-                            .getIndexState())) {
-
-                toIndexList.add(idoc);
+                toIndexList.add(data);
             }
 
-            if (IndexedDocument.INDEX_STATE_DELETED
-                    .equals(idoc.getIndexState())
-                    || IndexedDocument.INDEX_STATE_MODIFIED.equals(idoc
-                            .getIndexState())
-                    || IndexedDocument.INDEX_STATE_REINDEX.equals(idoc
-                            .getIndexState())) {
+            if (IndexStatus.DELETED.getStatus() == data.getStatus()
+                    || IndexStatus.MODIFIED.getStatus() == data.getStatus()
+                    || IndexStatus.REINDEX.getStatus() == data.getStatus()) {
 
-                toRemoveList.add(idoc.getId());
+                toRemoveList.add(data);
             }
         }
 
-        try {
-
-            LOG.debug("Removing deleted documents from the index.");
-            removeDocsFromIndex(toRemoveList);
-            LOG.debug("Deleted documents removed from the index.");
-
-            LOG.debug("Indexing new and modified documents. "
-                    + "Documents to index: "
-                    + toIndexList.size());
-
-            indexList(toIndexList);
-            LOG.debug("New and modified documents indexing finished");
-        } finally {
-
-            LOG.debug("Unlocking documents...");
-            this.indexedDocumentBean.unLockUpdateState(haveToIndexList);
-            LOG.debug(haveToIndexList.size()
-                    + " documents successfully unlocked.");
-        }
-
+        removeDocsFromIndex(toRemoveList);
+        indexList(toIndexList, fileNames, localPaths, remotePaths);
     }
 
     /**
@@ -267,18 +209,23 @@ public final class DataIndexer {
      *            reader instance for the content of the file.
      * @return apache lucene document.
      */
-    private Document getLuceneDocument(final IndexedDocument idoc,
-            final Meta meta, final Reader contentReader) {
+    private Document getLuceneDocument(
+            final FileData data,
+            final String fileName,
+            final String localPath,
+            final String remotePath,
+            final String contentType,
+            final Meta meta,
+            final Reader contentReader) {
 
         final Document doc = new Document();
-        doc.add(new StringField("id", MD5.toHexString(idoc.getId()),
+        doc.add(new StringField("id", MD5.toHexString(data.getId().getBytes()),
                 Field.Store.YES));
         doc.add(new StringField(
-                "fileName", idoc.getFileName(), Field.Store.YES));
-        doc.add(new TextField("file", idoc.getFileName(), Field.Store.YES));
-        doc.add(new StringField("path", idoc.getPath(), Field.Store.YES));
-        doc.add(new StringField("uri", idoc.getUri(), Field.Store.YES));
-        doc.add(new StringField("contentType", idoc.getContentType(),
+                "fileName", fileName, Field.Store.YES));
+        doc.add(new TextField("file", fileName, Field.Store.YES));
+        doc.add(new StringField("path", remotePath, Field.Store.YES));
+        doc.add(new StringField("contentType", contentType,
                 Field.Store.YES));
 
         if (meta.hasAuthor()) {
@@ -298,36 +245,56 @@ public final class DataIndexer {
     }
 
     /**
-     * Loads the lucene document to the luecen index.
+     * Loads the lucene document to the lucene index.
      *
      * @param idoc
      *            IndexedDocument from the relational database.
      * @return true if the document has successfully loaded to the index.
      */
-    private boolean indexFileContent(final IndexedDocument idoc) {
+    private boolean indexFileContent(
+            final FileData data,
+            final String fileName,
+            final String localPath,
+            final String remotePath,
+            final String contentType) {
+
+        LOG.info("Indexing file: " + fileName);
 
         try (final Writer contentWriter = new StringWriter()) {
 
-            final Meta meta = this.parserMap.getParser(idoc.getContentType())
-                    .parseContent(idoc.getLocalPath(), contentWriter);
+            final Meta meta = this.parserMap.getParser(contentType)
+                    .parseContent(localPath, contentWriter);
 
-            try (final Reader contentReader = new StringReader(contentWriter
-                    .toString())) {
+            try (final Reader contentReader =
+                    new StringReader(contentWriter.toString())) {
 
-                indexWriter.addDocument(getLuceneDocument(idoc, meta,
+                indexWriter.addDocument(getLuceneDocument(data, fileName,
+                        localPath, remotePath, contentType, meta,
                         contentReader));
             }
 
-            LOG.debug("File added to index: " + idoc.toString());
+            LOG.info("File added to index: " + fileName);
 
             return true;
 
         } catch (final Throwable e) {
 
-            LOG.error("Can't find parser for file: " + idoc.getPath());
+            LOG.error("Can't find parser for file: " + localPath);
             LOG.debug(e.getMessage());
 
             return false;
         }
+    }
+
+    /**
+     * Get content type of the file.
+     *
+     * @param localPath
+     *            the local paths of the file.
+     * @return the mime type.
+     */
+    private String getContentType(final String localPath) {
+
+        return SnoopMimeUtil.detectMimeType(localPath);
     }
 }

@@ -21,7 +21,8 @@
 
 		<bean id="lockFactory" class="org.apache.lucene.store.SimpleFSLockFactory" />
 
-		<bean id="fsDirectory" class="org.apache.lucene.store.NIOFSDirectory">
+<!-- 		<bean id="fsDirectory" class="org.apache.lucene.store.NIOFSDirectory"> -->
+        <bean id="fsDirectory" class="org.apache.lucene.store.MMapDirectory">
 			<constructor-arg index="0" ref="indexPath"/>
 			<!-- constructor-arg index="1" ref="lockFactory"/ -->
 		</bean>
@@ -50,4 +51,5 @@
 			<property name="allowLeadingWildcard" value="true" />
 		</bean>
 
+        <bean id="dataIndexer" class="com.glueball.snoop.bean.DataIndexer" />
 </beans>

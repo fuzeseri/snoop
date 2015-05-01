@@ -11,7 +11,7 @@ package com.glueball.snoop.mmap;
  * 
  * @author karesz
  */
-public interface MappableVisitor {
+public interface MappableVisitor<T extends Mappable> {
 
     /**
      * Called on every object readed from the memory mapped file.
@@ -19,7 +19,7 @@ public interface MappableVisitor {
      * @param Mappable
      *            object readed from the file.
      */
-    void onObject(final Mappable object);
+    void onObject(final T object);
 
     /**
      * Called before starting read the file.

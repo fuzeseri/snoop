@@ -46,11 +46,17 @@
             <property name="taskFactories">
                 <list>
                     <ref bean="scanTaskFactory" />
+                    <ref bean="indexTaskFactory" />
                 </list>
             </property>
         </bean>
 
         <bean id="scanTaskFactory" class="com.glueball.snoop.quartz.task.ScanTaskFactory">
             <property name="sharesXml" value="${snoop.sharesxml.path}"/>
+        </bean>
+
+        <bean id="indexTaskFactory" class="com.glueball.snoop.quartz.task.IndexTaskFactory">
+            <property name="sharesXml" value="${snoop.sharesxml.path}"/>
+            <property name="maxFiles" value="${snoop.dataindexer.maxdoc}"/>
         </bean>
 </beans>

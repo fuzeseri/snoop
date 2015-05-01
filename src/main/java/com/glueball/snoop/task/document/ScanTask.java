@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -127,11 +126,14 @@ public final class ScanTask implements SnoopTask {
             final List<FileData> indexStatus = reader.read();
             final List<FileData> files = new ArrayList<FileData>();
 
-            final Map<FileId, Set<FilePath>> localPaths =
-                    new HashMap<FileId, Set<FilePath>>();
+            final Map<FileId, FilePath[]> fileNames =
+                    new HashMap<FileId, FilePath[]>();
 
-            final Map<FileId, Set<FilePath>> remotePaths =
-                    new HashMap<FileId, Set<FilePath>>();
+            final Map<FileId, FilePath[]> localPaths =
+                    new HashMap<FileId, FilePath[]>();
+
+            final Map<FileId, FilePath[]> remotePaths =
+                    new HashMap<FileId, FilePath[]>();
 
             final String path = !StringUtils.isEmpty(
                     share.getLocalPath()) ? share.getLocalPath() : share
@@ -140,6 +142,7 @@ public final class ScanTask implements SnoopTask {
             Files.walkFileTree(Paths.get(path),
                     new SnoopFileVisitor(share,
                             files,
+                            fileNames,
                             localPaths,
                             remotePaths));
 
@@ -150,6 +153,13 @@ public final class ScanTask implements SnoopTask {
                     deleteList);
 
             updateFileData(dataFile, addList, updateList, deleteList);
+
+            final File fileNameFile = new File(fileDataDirectory
+                    + File.separator + mapFileName + "_fn.map");
+            if (!fileNameFile.exists()) {
+
+                fileNameFile.createNewFile();
+            }
 
             final File localPathFile = new File(fileDataDirectory
                     + File.separator + mapFileName + "_lp.map");
@@ -165,6 +175,7 @@ public final class ScanTask implements SnoopTask {
                 localPathFile.createNewFile();
             }
 
+            updateFilePath(fileNameFile, addList, fileNames);
             updateFilePath(localPathFile, addList, localPaths);
             updateFilePath(remotePathFile, addList, remotePaths);
 
@@ -210,7 +221,7 @@ public final class ScanTask implements SnoopTask {
     }
 
     private void updateFilePath(final File f, final List<FileData> datas,
-            final Map<FileId, Set<FilePath>> paths) throws IOException {
+            final Map<FileId, FilePath[]> paths) throws IOException {
 
         final List<FilePath> toWrite = new ArrayList<FilePath>();
         for (final FileData data : datas) {
