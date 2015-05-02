@@ -14,12 +14,21 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Reads Mappable objects from a memory mapped file.
  *
  * @author karesz
  */
 public class MMapReader<T extends Mappable> {
+
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOG = LogManager
+            .getLogger(MMapReader.class);
 
     /**
      * The file where the objects are stored.
@@ -54,58 +63,72 @@ public class MMapReader<T extends Mappable> {
     @SuppressWarnings("unchecked")
     public List<T> read() throws IOException {
 
-        List<T> list = new ArrayList<T>(0);
-        int objectSize = 0;
-        if (mapObj != null) {
+        final File lock = new File(file.getAbsolutePath() + ".lock");
+        try {
 
-            objectSize = mapObj.size();
-        }
+            while (lock.exists()) {
+            }
+            lock.createNewFile();
+            LOG.info("File locked: " + file.getAbsolutePath() + " ,lock file: "
+                    + lock.getAbsolutePath());
 
-        try (final RandomAccessFile raf = new RandomAccessFile(file, "r");
-                final FileChannel fc = raf.getChannel()) {
+            List<T> list = new ArrayList<T>(0);
+            int objectSize = 0;
+            if (mapObj != null) {
 
-            if (fc.size() % objectSize > 0) {
-
-                throw new IllegalArgumentException(
-                        "File doesn't contain the given type of objects "
-                                + mapObj.getClass().getName());
+                objectSize = mapObj.size();
             }
 
-            int listSize = (int) (fc.size() / objectSize);
+            try (final RandomAccessFile raf = new RandomAccessFile(file, "r");
+                    final FileChannel fc = raf.getChannel()) {
 
-            if (listSize == 0) {
+                if (fc.size() % objectSize > 0) {
 
-                return list;
-            }
-            list = new ArrayList<T>(listSize);
-
-            final BufferSizeCalculator bufSize = new BufferSizeCalculator(
-                    (fc.size() / objectSize), maxBufSize);
-
-            long start = 0;
-            MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY,
-                    start,
-                    objectSize * bufSize.nextBufSize());
-
-            final byte[] arr = new byte[objectSize];
-            long position = 0;
-            while (position < fc.size()) {
-
-                if (!mem.hasRemaining()) {
-
-                    start += mem.position();
-                    mem = fc.map(FileChannel.MapMode.READ_ONLY, position,
-                            objectSize * bufSize.nextBufSize());
+                    throw new IllegalArgumentException(
+                            "File doesn't contain the given type of objects "
+                                    + mapObj.getClass().getName());
                 }
 
-                mem.get(arr);
-                list.add((T) mapObj.fromByteArray(arr));
+                int listSize = (int) (fc.size() / objectSize);
 
-                position = position + objectSize;
+                if (listSize == 0) {
+
+                    return list;
+                }
+                list = new ArrayList<T>(listSize);
+
+                final BufferSizeCalculator bufSize = new BufferSizeCalculator(
+                        (fc.size() / objectSize), maxBufSize);
+
+                long start = 0;
+                MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY,
+                        start,
+                        objectSize * bufSize.nextBufSize());
+
+                final byte[] arr = new byte[objectSize];
+                long position = 0;
+                while (position < fc.size()) {
+
+                    if (!mem.hasRemaining()) {
+
+                        start += mem.position();
+                        mem = fc.map(FileChannel.MapMode.READ_ONLY, position,
+                                objectSize * bufSize.nextBufSize());
+                    }
+
+                    mem.get(arr);
+                    list.add((T) mapObj.fromByteArray(arr));
+
+                    position = position + objectSize;
+                }
             }
-        }
 
-        return list;
+            return list;
+        } finally {
+
+            lock.delete();
+            LOG.info("File unlocked: " + file.getAbsolutePath());
+        }
     }
 
     /**
@@ -119,51 +142,65 @@ public class MMapReader<T extends Mappable> {
     public void read(final MappableVisitor<T> visitor)
             throws IOException {
 
-        visitor.onStart();
+        final File lock = new File(file.getAbsolutePath() + ".lock");
+        try {
 
-        int objectSize = 0;
-        if (mapObj != null) {
+            while (lock.exists()) {
+            }
+            lock.createNewFile();
+            LOG.info("File locked: " + file.getAbsolutePath() + " ,lock file: "
+                    + lock.getAbsolutePath());
 
-            objectSize = mapObj.size();
-        }
+            visitor.onStart();
 
-        try (final RandomAccessFile raf = new RandomAccessFile(file, "r");
-                final FileChannel fc = raf.getChannel()) {
+            int objectSize = 0;
+            if (mapObj != null) {
 
-            if (fc.size() % objectSize > 0) {
-
-                throw new IllegalArgumentException(
-                        "File doesn't contain the given type of objects "
-                                + mapObj.getClass().getName());
+                objectSize = mapObj.size();
             }
 
-            final BufferSizeCalculator bufSize = new BufferSizeCalculator(
-                    fc.size() / objectSize, maxBufSize);
+            try (final RandomAccessFile raf = new RandomAccessFile(file, "r");
+                    final FileChannel fc = raf.getChannel()) {
 
-            long start = 0;
-            MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY,
-                    start,
-                    objectSize * bufSize.nextBufSize());
+                if (fc.size() % objectSize > 0) {
 
-            final byte[] arr = new byte[objectSize];
-            long position = 0;
-            while (position < fc.size()) {
-
-                if (!mem.hasRemaining()) {
-
-                    start += mem.position();
-                    mem = fc.map(FileChannel.MapMode.READ_ONLY, position,
-                            objectSize * bufSize.nextBufSize());
+                    throw new IllegalArgumentException(
+                            "File doesn't contain the given type of objects "
+                                    + mapObj.getClass().getName());
                 }
 
-                mem.get(arr);
-                visitor.onObject((T) mapObj.fromByteArray(arr));
+                final BufferSizeCalculator bufSize = new BufferSizeCalculator(
+                        fc.size() / objectSize, maxBufSize);
 
-                position = position + objectSize;
+                long start = 0;
+                MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY,
+                        start,
+                        objectSize * bufSize.nextBufSize());
+
+                final byte[] arr = new byte[objectSize];
+                long position = 0;
+                while (position < fc.size()) {
+
+                    if (!mem.hasRemaining()) {
+
+                        start += mem.position();
+                        mem = fc.map(FileChannel.MapMode.READ_ONLY, position,
+                                objectSize * bufSize.nextBufSize());
+                    }
+
+                    mem.get(arr);
+                    visitor.onObject((T) mapObj.fromByteArray(arr));
+
+                    position = position + objectSize;
+                }
             }
-        }
 
-        visitor.onFinish();
+            visitor.onFinish();
+        } finally {
+
+            lock.delete();
+            LOG.info("File unlocked: " + file.getAbsolutePath());
+        }
     }
 
     /**
@@ -174,60 +211,74 @@ public class MMapReader<T extends Mappable> {
      *             on any IO error.
      */
     @SuppressWarnings("unchecked")
-    public void read(final MappableVisitor<T> visitor, final int maxSize)
+    public void read(final MappableVisitor<T> visitor, final Counter counter,
+            final int maxSize)
             throws IOException {
 
-        visitor.onStart();
+        final File lock = new File(file.getAbsolutePath() + ".lock");
+        try {
 
-        int objectSize = 0;
-        if (mapObj != null) {
+            while (lock.exists()) {
+            }
+            lock.createNewFile();
+            LOG.info("File locked: " + file.getAbsolutePath() + " ,lock file: "
+                    + lock.getAbsolutePath());
 
-            objectSize = mapObj.size();
-        }
+            visitor.onStart();
 
-        try (final RandomAccessFile raf = new RandomAccessFile(file, "r");
-                final FileChannel fc = raf.getChannel()) {
+            int objectSize = 0;
+            if (mapObj != null) {
 
-            if (fc.size() % objectSize > 0) {
-
-                throw new IllegalArgumentException(
-                        "File doesn't contain the given type of objects "
-                                + mapObj.getClass().getName());
+                objectSize = mapObj.size();
             }
 
-            long objectsInFile = fc.size() / objectSize;
+            try (final RandomAccessFile raf = new RandomAccessFile(file, "r");
+                    final FileChannel fc = raf.getChannel()) {
 
-            final BufferSizeCalculator bufSize = new BufferSizeCalculator(
-                    maxSize <= objectsInFile ? maxSize : objectsInFile,
-                    maxBufSize);
+                if (fc.size() % objectSize > 0) {
 
-            long start = 0;
-            MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY,
-                    start,
-                    objectSize * bufSize.nextBufSize());
-
-            final byte[] arr = new byte[objectSize];
-            long position = 0;
-
-            int objCounter = 0;
-            while (position < fc.size() && objCounter < maxSize) {
-
-                if (!mem.hasRemaining()) {
-
-                    start += mem.position();
-                    mem = fc.map(FileChannel.MapMode.READ_ONLY, position,
-                            objectSize * bufSize.nextBufSize());
+                    throw new IllegalArgumentException(
+                            "File doesn't contain the given type of objects "
+                                    + mapObj.getClass().getName());
                 }
 
-                mem.get(arr);
-                visitor.onObject((T) mapObj.fromByteArray(arr));
+                // long objectsInFile = fc.size() / objectSize;
 
-                position = position + objectSize;
+                final BufferSizeCalculator bufSize = new BufferSizeCalculator(
+                        fc.size() / objectSize, maxBufSize);
 
-                objCounter++;
+                long start = 0;
+                MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY,
+                        start,
+                        objectSize * bufSize.nextBufSize());
+
+                final byte[] arr = new byte[objectSize];
+                long position = 0;
+
+                while (position < fc.size() && counter.getCount() < maxSize) {
+
+                    if (!mem.hasRemaining()) {
+
+                        start += mem.position();
+                        mem = fc.map(FileChannel.MapMode.READ_ONLY, position,
+                                objectSize * bufSize.nextBufSize());
+                    }
+
+                    mem.get(arr);
+                    visitor.onObject((T) mapObj.fromByteArray(arr));
+
+                    position = position + objectSize;
+                    System.out.println("COUNTER: " + counter.getCount());
+                }
             }
-        }
 
-        visitor.onFinish();
+            visitor.onFinish();
+
+        } finally {
+
+            lock.delete();
+            LOG.info("File unlocked: " + file.getAbsolutePath());
+
+        }
     }
 }

@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -225,6 +226,9 @@ public final class DataIndexer {
                 "fileName", fileName, Field.Store.YES));
         doc.add(new TextField("file", fileName, Field.Store.YES));
         doc.add(new StringField("path", remotePath, Field.Store.YES));
+        doc.add(new StringField("uri",
+                Paths.get(remotePath).toUri().toString(),
+                Field.Store.YES));
         doc.add(new StringField("contentType", contentType,
                 Field.Store.YES));
 

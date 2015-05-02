@@ -7,6 +7,7 @@ package com.glueball.snoop.service;
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
@@ -207,6 +208,7 @@ public class SearchService {
      * @param indexSearcher
      *            the lucene IndexSearcher object.
      * @return the SearchResults object.
+     * @throws URISyntaxException
      */
     private final SearchResults extractResults(final ScoreDoc[] hits,
             final IndexSearcher indexSearcher) {
@@ -225,7 +227,7 @@ public class SearchService {
                 res.setAuthor(doc.get("author"));
                 res.setDescription(doc.get("description"));
                 res.setFileName(doc.get("fileName"));
-                res.setUri(doc.get("uri"));
+                res.setUri(doc.get("path"));
                 res.setContentType(doc.get("contentType"));
                 results.add(res);
             } catch (final IOException e) {

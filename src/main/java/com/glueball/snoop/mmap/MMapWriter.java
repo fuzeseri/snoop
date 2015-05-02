@@ -13,10 +13,19 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * @author karesz
  */
 public class MMapWriter<T extends Mappable> {
+
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOG = LogManager
+            .getLogger(MMapWriter.class);
 
     /**
      * File to write out the data.
@@ -53,44 +62,58 @@ public class MMapWriter<T extends Mappable> {
      */
     public void write(final List<T> list) throws IOException {
 
-        if (list.size() == 0) {
+        final File lock = new File(file.getAbsolutePath() + ".lock");
+        try {
 
-            return;
-        }
-
-        final BufferSizeCalculator bufSize = new BufferSizeCalculator(list
-                .size(), maxBufSize);
-
-        int objectSize = 0;
-        if (list.get(0) != null) {
-
-            objectSize = list.get(0).size();
-        }
-
-        try (final RandomAccessFile raf = new RandomAccessFile(file, "rw");
-                final FileChannel fc = raf.getChannel()) {
-
-            long start = fc.size();
-
-            MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_WRITE,
-                    start,
-                    objectSize * bufSize.nextBufSize());
-
-            long position = start;
-            for (final Mappable mappable : list) {
-
-                if (!mem.hasRemaining()) {
-
-                    start += mem.position();
-                    mem = fc.map(FileChannel.MapMode.READ_WRITE, start,
-                            objectSize * bufSize.nextBufSize());
-                }
-
-                mappable.setPosition(position);
-                mem.put(mappable.toByteArray());
-
-                position = position + objectSize;
+            while (lock.exists()) {
             }
+            lock.createNewFile();
+            LOG.info("File locked: " + file.getAbsolutePath() + " ,lock file: "
+                    + lock.getAbsolutePath());
+
+            if (list.size() == 0) {
+
+                return;
+            }
+
+            final BufferSizeCalculator bufSize = new BufferSizeCalculator(list
+                    .size(), maxBufSize);
+
+            int objectSize = 0;
+            if (list.get(0) != null) {
+
+                objectSize = list.get(0).size();
+            }
+
+            try (final RandomAccessFile raf = new RandomAccessFile(file, "rw");
+                    final FileChannel fc = raf.getChannel()) {
+
+                long start = fc.size();
+
+                MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_WRITE,
+                        start,
+                        objectSize * bufSize.nextBufSize());
+
+                long position = start;
+                for (final Mappable mappable : list) {
+
+                    if (!mem.hasRemaining()) {
+
+                        start += mem.position();
+                        mem = fc.map(FileChannel.MapMode.READ_WRITE, start,
+                                objectSize * bufSize.nextBufSize());
+                    }
+
+                    mappable.setPosition(position);
+                    mem.put(mappable.toByteArray());
+
+                    position = position + objectSize;
+                }
+            }
+        } finally {
+
+            lock.delete();
+            LOG.info("File unlocked: " + file.getAbsolutePath());
         }
     }
 
@@ -104,29 +127,43 @@ public class MMapWriter<T extends Mappable> {
      */
     public void update(final List<T> list) throws IOException {
 
-        if (list.size() == 0) {
+        final File lock = new File(file.getAbsolutePath() + ".lock");
+        try {
 
-            return;
-        }
-
-        int objectSize = 0;
-        if (list.get(0) != null) {
-
-            objectSize = list.get(0).size();
-        }
-
-        try (final RandomAccessFile raf = new RandomAccessFile(file, "rw");
-                final FileChannel fc = raf.getChannel()) {
-
-            for (final Mappable mappable : list) {
-
-                final MappedByteBuffer mem =
-                        fc.map(FileChannel.MapMode.READ_WRITE,
-                                mappable.getPosition(),
-                                objectSize);
-
-                mem.put(mappable.toByteArray());
+            while (lock.exists()) {
             }
+            lock.createNewFile();
+            LOG.info("File locked: " + file.getAbsolutePath() + " ,lock file: "
+                    + lock.getAbsolutePath());
+
+            if (list.size() == 0) {
+
+                return;
+            }
+
+            int objectSize = 0;
+            if (list.get(0) != null) {
+
+                objectSize = list.get(0).size();
+            }
+
+            try (final RandomAccessFile raf = new RandomAccessFile(file, "rw");
+                    final FileChannel fc = raf.getChannel()) {
+
+                for (final Mappable mappable : list) {
+
+                    final MappedByteBuffer mem =
+                            fc.map(FileChannel.MapMode.READ_WRITE,
+                                    mappable.getPosition(),
+                                    objectSize);
+
+                    mem.put(mappable.toByteArray());
+                }
+            }
+        } finally {
+
+            lock.delete();
+            LOG.info("File unlocked: " + file.getAbsolutePath());
         }
     }
 }

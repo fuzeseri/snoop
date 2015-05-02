@@ -40,7 +40,7 @@ public final class SearchResult implements Serializable {
     private String author;
 
     /**
-     * The description of the docuemnt.
+     * The description of the document.
      */
     private String description;
 

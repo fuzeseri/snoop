@@ -23,6 +23,7 @@ import com.glueball.snoop.entity.FileId;
 import com.glueball.snoop.entity.FilePath;
 import com.glueball.snoop.entity.IndexStatus;
 import com.glueball.snoop.entity.NetworkShare;
+import com.glueball.snoop.mmap.Counter;
 import com.glueball.snoop.mmap.MMapReader;
 import com.glueball.snoop.mmap.MMapWriter;
 import com.glueball.snoop.mmap.MappableVisitor;
@@ -192,6 +193,8 @@ public class IndexTask implements SnoopTask {
         final MMapReader<FileData> reader =
                 new MMapReader<FileData>(dataFile, BUFFER_SIZE, FileData.class);
 
+        final Counter counter = new Counter();
+
         reader.read(new MappableVisitor<FileData>() {
 
             @Override
@@ -207,9 +210,15 @@ public class IndexTask implements SnoopTask {
                                 || data.getStatus() == IndexStatus.DELETED
                                 .getStatus())
                 ) {
+                    System.out.println("PRE INDEX STATUS: " + data.getStatus());
+
                     data.setLock(lock);
                     data.setLocktime(now);
                     datas.add(data);
+                    counter.increment();
+                } else {
+
+                    System.out.println("DATA SATUS: " + data.getStatus());
                 }
             }
 
@@ -223,12 +232,12 @@ public class IndexTask implements SnoopTask {
 
             }
 
-        }, maxFiles);
+        }, counter, maxFiles);
 
         final MMapWriter<FileData> writer = new MMapWriter<FileData>(
                 dataFile, BUFFER_SIZE);
 
-        writer.write(datas);
+        writer.update(datas);
 
         return datas;
     }
@@ -298,6 +307,8 @@ public class IndexTask implements SnoopTask {
 
         for (final FileData dat : data) {
 
+            System.out.println("LOCK : " + dat.getLock());
+            System.out.println("POST INDEX STATUS: " + dat.getStatus());
             dat.setLock(0L);
             dat.setLocktime(0L);
             dat.setLitime(now);
