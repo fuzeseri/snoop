@@ -27,6 +27,21 @@ public class GeneralMetaDataExtractor implements MetaDataExtractor {
     @Override
     public final Meta extractMetaData(final Metadata metadata) {
 
+        final Meta meta = new Meta();
+        extractMetaData(metadata, meta);
+
+        return meta;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.glueball.snoop.metadata.extractor.MetaDataExtractor#extractMetaData
+     * (org.apache.tika.metadata.Metadata, com.glueball.snoop.entity.Meta)
+     */
+    @Override
+    public void extractMetaData(Metadata metadata, Meta meta) {
+
         String title = "";
         String author = "";
         String description = "";
@@ -55,6 +70,9 @@ public class GeneralMetaDataExtractor implements MetaDataExtractor {
                 description = metadata.get(name);
             }
         }
-        return new Meta(author, title, description);
+
+        meta.setAuthor(author);
+        meta.setDescription(description);
+        meta.setTitle(title);
     }
 }

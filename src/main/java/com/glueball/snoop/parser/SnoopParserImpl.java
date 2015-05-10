@@ -7,13 +7,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Writer;
+import java.io.Reader;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
-import org.apache.tika.sax.BodyContentHandler;
+import org.apache.tika.parser.ParsingReader;
 import org.springframework.beans.factory.annotation.Required;
 import org.xml.sax.SAXException;
 
@@ -62,12 +62,12 @@ public class SnoopParserImpl implements SnoopParser {
      * java.io.Writer)
      */
     @Override
-    public final Meta parseContent(final String pUri, final Writer output)
+    public final Reader parseContent(final String pUri, final Meta meta)
             throws IOException, SAXException, TikaException {
 
         try (final InputStream is = new FileInputStream(new File(pUri))) {
 
-            return parse(is, output);
+            return parse(is, meta);
         }
     }
 
@@ -77,12 +77,12 @@ public class SnoopParserImpl implements SnoopParser {
      * java.io.Writer)
      */
     @Override
-    public final Meta parseContent(final File path, final Writer output)
+    public final Reader parseContent(final File path, final Meta meta)
             throws IOException, SAXException, TikaException {
 
         try (final InputStream is = new FileInputStream(path)) {
 
-            return parse(is, output);
+            return parse(is, meta);
         }
     }
 
@@ -93,10 +93,10 @@ public class SnoopParserImpl implements SnoopParser {
      * java.io.Writer)
      */
     @Override
-    public final Meta parseContent(final InputStream is, final Writer output)
+    public final Reader parseContent(final InputStream is, final Meta meta)
             throws IOException, SAXException, TikaException {
 
-        return parse(is, output);
+        return parse(is, meta);
     }
 
     /**
@@ -115,18 +115,16 @@ public class SnoopParserImpl implements SnoopParser {
      *             on unsuccessful content parse operation (e.g. unsopported
      *             font type)
      */
-    private final Meta parse(final InputStream input, final Writer output)
+    private final Reader parse(final InputStream input, final Meta meta)
             throws IOException, SAXException, TikaException {
 
         try {
 
-            final BodyContentHandler content = new BodyContentHandler(output);
             final Metadata metadata = new Metadata();
             final ParseContext context = new ParseContext();
+            this.metaDataExtractor.extractMetaData(metadata, meta);
 
-            tikaParser.parse(input, content, metadata, context);
-
-            return this.metaDataExtractor.extractMetaData(metadata);
+            return new ParsingReader(tikaParser, input, metadata, context);
 
         } catch (final RuntimeException e) {
 

@@ -22,4 +22,6 @@ public interface MetaDataExtractor {
      * @return snoop meta data object
      */
     Meta extractMetaData(final Metadata metadata);
+
+    void extractMetaData(final Metadata metadata, final Meta meta);
 }

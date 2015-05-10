@@ -349,7 +349,7 @@ public final class ScanTask implements SnoopTask {
 
         for (final FileId key : right.keySet()) {
 
-            if (!left.containsKey(key)) {
+            if (rightMap.get(key).getDeleted() == 0 && !left.containsKey(key)) {
 
                 final FileData data = rightMap.get(key);
                 data.setStatus(IndexStatus.DELETED.getStatus());

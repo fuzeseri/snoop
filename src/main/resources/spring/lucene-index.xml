@@ -8,28 +8,28 @@
             				http://www.springframework.org/schema/util
     						http://www.springframework.org/schema/util/spring-util-4.0.xsd">
 
-		<util:constant id="luceneVersion" static-field="org.apache.lucene.util.Version.LATEST"/>
+		<util:constant id="luceneVersion" static-field="org.apache.lucene.util.Version.LUCENE_CURRENT"/>
 
 		<!-- bean id="analyzer" class="org.apache.lucene.analysis.core.SimpleAnalyzer" / -->
 		<bean id="analyzer" class="org.apache.lucene.analysis.hu.HungarianAnalyzer">
-			<constructor-arg index="0" ref="luceneVersion" />
 		</bean>
 
-		<bean id="indexPath" class="java.io.File">
+		<bean id="indexPath" class="java.nio.file.Paths" factory-method="get">
 			<constructor-arg type="java.lang.String" value="${snoop.directory.path:#{ systemProperties['user.dir'] + systemProperties['file.separator'] + 'directory' }}" />
+			<constructor-arg><array /></constructor-arg>
 		</bean>
 
 		<bean id="lockFactory" class="org.apache.lucene.store.SimpleFSLockFactory" />
 
-<!-- 		<bean id="fsDirectory" class="org.apache.lucene.store.NIOFSDirectory"> -->
-        <bean id="fsDirectory" class="org.apache.lucene.store.MMapDirectory">
+		<bean id="fsDirectory" class="org.apache.lucene.store.NIOFSDirectory">
+<!--         <bean id="fsDirectory" class="org.apache.lucene.store.MMapDirectory"> -->
 			<constructor-arg index="0" ref="indexPath"/>
 			<!-- constructor-arg index="1" ref="lockFactory"/ -->
 		</bean>
 
 		<bean id="indexWriterConfig" class="org.apache.lucene.index.IndexWriterConfig">
-			<constructor-arg index="0" ref="luceneVersion" />
-			<constructor-arg index="1" ref="analyzer" />			
+<!-- 			<constructor-arg index="0" ref="luceneVersion" /> -->
+			<constructor-arg index="0" ref="analyzer" />
 		</bean>
 
 		<bean id="indexWriter" class="org.apache.lucene.index.IndexWriter">

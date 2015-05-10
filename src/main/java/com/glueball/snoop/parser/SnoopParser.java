@@ -9,7 +9,7 @@ package com.glueball.snoop.parser;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Writer;
+import java.io.Reader;
 
 import org.apache.tika.exception.TikaException;
 import org.xml.sax.SAXException;
@@ -39,7 +39,7 @@ public interface SnoopParser {
      *             on unsuccessful content parse operation (e.g. unsopported
      *             font type)
      */
-    Meta parseContent(final String uri, final Writer out) throws IOException,
+    Reader parseContent(final String uri, final Meta meta) throws IOException,
             SAXException, TikaException;
 
     /**
@@ -58,7 +58,7 @@ public interface SnoopParser {
      *             on unsuccessful content parse operation (e.g. unsopported
      *             font type)
      */
-    Meta parseContent(final File path, final Writer out) throws IOException,
+    Reader parseContent(final File path, final Meta meta) throws IOException,
             SAXException,
             TikaException;
 
@@ -78,7 +78,7 @@ public interface SnoopParser {
      *             on unsuccessful content parse operation (e.g. unsopported
      *             font type)
      */
-    Meta parseContent(final InputStream is, final Writer out)
+    Reader parseContent(final InputStream is, final Meta meta)
             throws IOException,
             SAXException, TikaException;
 }

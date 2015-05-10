@@ -172,7 +172,7 @@ public class SearchService {
         LOG.debug("query: " + query);
 
         final TopScoreDocCollector collector = TopScoreDocCollector.create(
-                MAX_SCORE_DOCS, true);
+                MAX_SCORE_DOCS);
         ScoreDoc[] hits = new ScoreDoc[] {};
         try {
 

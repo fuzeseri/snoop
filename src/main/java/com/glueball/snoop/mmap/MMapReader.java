@@ -60,75 +60,29 @@ public class MMapReader<T extends Mappable> {
      * @throws IOException
      *             on any IO error.
      */
-    @SuppressWarnings("unchecked")
     public List<T> read() throws IOException {
 
-        final File lock = new File(file.getAbsolutePath() + ".lock");
-        try {
+        final List<T> results = new ArrayList<T>();
+        read(new MappableVisitor<T>() {
 
-            while (lock.exists()) {
-            }
-            lock.createNewFile();
-            LOG.info("File locked: " + file.getAbsolutePath() + " ,lock file: "
-                    + lock.getAbsolutePath());
+            @Override
+            public void onObject(T object) {
 
-            List<T> list = new ArrayList<T>(0);
-            int objectSize = 0;
-            if (mapObj != null) {
-
-                objectSize = mapObj.size();
+                results.add(object);
             }
 
-            try (final RandomAccessFile raf = new RandomAccessFile(file, "r");
-                    final FileChannel fc = raf.getChannel()) {
+            @Override
+            public void onStart() {
 
-                if (fc.size() % objectSize > 0) {
-
-                    throw new IllegalArgumentException(
-                            "File doesn't contain the given type of objects "
-                                    + mapObj.getClass().getName());
-                }
-
-                int listSize = (int) (fc.size() / objectSize);
-
-                if (listSize == 0) {
-
-                    return list;
-                }
-                list = new ArrayList<T>(listSize);
-
-                final BufferSizeCalculator bufSize = new BufferSizeCalculator(
-                        (fc.size() / objectSize), maxBufSize);
-
-                long start = 0;
-                MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY,
-                        start,
-                        objectSize * bufSize.nextBufSize());
-
-                final byte[] arr = new byte[objectSize];
-                long position = 0;
-                while (position < fc.size()) {
-
-                    if (!mem.hasRemaining()) {
-
-                        start += mem.position();
-                        mem = fc.map(FileChannel.MapMode.READ_ONLY, position,
-                                objectSize * bufSize.nextBufSize());
-                    }
-
-                    mem.get(arr);
-                    list.add((T) mapObj.fromByteArray(arr));
-
-                    position = position + objectSize;
-                }
             }
 
-            return list;
-        } finally {
+            @Override
+            public void onFinish() {
 
-            lock.delete();
-            LOG.info("File unlocked: " + file.getAbsolutePath());
-        }
+            }
+
+        });
+        return results;
     }
 
     /**
@@ -138,83 +92,52 @@ public class MMapReader<T extends Mappable> {
      * @throws IOException
      *             on any IO error.
      */
-    @SuppressWarnings("unchecked")
-    public void read(final MappableVisitor<T> visitor)
-            throws IOException {
-
-        final File lock = new File(file.getAbsolutePath() + ".lock");
-        try {
-
-            while (lock.exists()) {
-            }
-            lock.createNewFile();
-            LOG.info("File locked: " + file.getAbsolutePath() + " ,lock file: "
-                    + lock.getAbsolutePath());
-
-            visitor.onStart();
-
-            int objectSize = 0;
-            if (mapObj != null) {
-
-                objectSize = mapObj.size();
-            }
-
-            try (final RandomAccessFile raf = new RandomAccessFile(file, "r");
-                    final FileChannel fc = raf.getChannel()) {
-
-                if (fc.size() % objectSize > 0) {
-
-                    throw new IllegalArgumentException(
-                            "File doesn't contain the given type of objects "
-                                    + mapObj.getClass().getName());
-                }
-
-                final BufferSizeCalculator bufSize = new BufferSizeCalculator(
-                        fc.size() / objectSize, maxBufSize);
-
-                long start = 0;
-                MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY,
-                        start,
-                        objectSize * bufSize.nextBufSize());
-
-                final byte[] arr = new byte[objectSize];
-                long position = 0;
-                while (position < fc.size()) {
-
-                    if (!mem.hasRemaining()) {
-
-                        start += mem.position();
-                        mem = fc.map(FileChannel.MapMode.READ_ONLY, position,
-                                objectSize * bufSize.nextBufSize());
-                    }
-
-                    mem.get(arr);
-                    visitor.onObject((T) mapObj.fromByteArray(arr));
-
-                    position = position + objectSize;
-                }
-            }
-
-            visitor.onFinish();
-        } finally {
-
-            lock.delete();
-            LOG.info("File unlocked: " + file.getAbsolutePath());
-        }
-    }
-
-    /**
-     * Read Objects from the memory mapped file and apply the given visitor on
-     * them.
-     *
-     * @throws IOException
-     *             on any IO error.
-     */
-    @SuppressWarnings("unchecked")
     public void read(final MappableVisitor<T> visitor, final Counter counter,
             final int maxSize)
             throws IOException {
 
+        read(visitor, new Expression() {
+
+            @Override
+            public boolean evaluate() {
+
+                return counter.getCount() < maxSize;
+            }
+
+        });
+    }
+
+    /**
+     * Read Objects from the memory mapped file and apply the given visitor on
+     * them.
+     *
+     * @throws IOException
+     *             on any IO error.
+     */
+    public void read(final MappableVisitor<T> visitor)
+            throws IOException {
+
+        read(visitor, new Expression() {
+
+            @Override
+            public boolean evaluate() {
+
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Read Objects from the memory mapped file and apply the given visitor on
+     * them.
+     *
+     * @throws IOException
+     *             on any IO error.
+     */
+    @SuppressWarnings("unchecked")
+    public void read(final MappableVisitor<T> visitor, final Expression e)
+            throws IOException {
+
         final File lock = new File(file.getAbsolutePath() + ".lock");
         try {
 
@@ -242,8 +165,6 @@ public class MMapReader<T extends Mappable> {
                                     + mapObj.getClass().getName());
                 }
 
-                // long objectsInFile = fc.size() / objectSize;
-
                 final BufferSizeCalculator bufSize = new BufferSizeCalculator(
                         fc.size() / objectSize, maxBufSize);
 
@@ -254,8 +175,7 @@ public class MMapReader<T extends Mappable> {
 
                 final byte[] arr = new byte[objectSize];
                 long position = 0;
-
-                while (position < fc.size() && counter.getCount() < maxSize) {
+                while (position < fc.size() && e.evaluate()) {
 
                     if (!mem.hasRemaining()) {
 
@@ -268,17 +188,14 @@ public class MMapReader<T extends Mappable> {
                     visitor.onObject((T) mapObj.fromByteArray(arr));
 
                     position = position + objectSize;
-                    System.out.println("COUNTER: " + counter.getCount());
                 }
             }
 
             visitor.onFinish();
-
         } finally {
 
             lock.delete();
             LOG.info("File unlocked: " + file.getAbsolutePath());
-
         }
     }
 }

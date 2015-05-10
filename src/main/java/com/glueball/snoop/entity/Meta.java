@@ -18,17 +18,17 @@ public class Meta {
     /**
      * The author of the document.
      */
-    private final String author;
+    private String author;
 
     /**
      * The title of the document.
      */
-    private final String title;
+    private String title;
 
     /**
      * The description of the document.
      */
-    private final String description;
+    private String description;
 
     /**
      * Constructor.
@@ -46,6 +46,13 @@ public class Meta {
         this.author = pAuthor;
         this.title = pTitle;
         this.description = pDescription;
+    }
+
+    public Meta() {
+
+        this.author = "";
+        this.title = "";
+        this.description = "";
     }
 
     /**
@@ -70,6 +77,33 @@ public class Meta {
     public final String getDescription() {
 
         return description;
+    }
+
+    /**
+     * @param author
+     *            the author to set
+     */
+    public void setAuthor(String author) {
+
+        this.author = author;
+    }
+
+    /**
+     * @param title
+     *            the title to set
+     */
+    public void setTitle(String title) {
+
+        this.title = title;
+    }
+
+    /**
+     * @param description
+     *            the description to set
+     */
+    public void setDescription(String description) {
+
+        this.description = description;
     }
 
     /**

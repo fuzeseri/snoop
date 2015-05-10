@@ -6,11 +6,10 @@ package com.glueball.snoop.bean;
  * regarding copyright ownership. You may obtain a copy of the License at
  * http://www.glueball.hu/licenses/snoop/sourcecode
  */
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
@@ -98,6 +97,11 @@ public final class DataIndexer {
 
                     indexWriter.deleteDocuments(new Term("id",
                             MD5.toHexString(data.getId().getBytes())));
+
+                    if (IndexStatus.DELETED.getStatus() == data.getStatus()) {
+
+                        data.setDeleted((byte) 1);
+                    }
                 } catch (final IOException e) {
 
                     LOG.error("ERROR while deleting document from index the");
@@ -137,7 +141,7 @@ public final class DataIndexer {
 
                 if (!this.parserMap.hasParser(contentType)) {
 
-                    LOG.debug("Can't find parser for content. File name: "
+                    LOG.info("Can't find parser for content. File name: "
                             + localPath + " content-type: "
                             + contentType);
 
@@ -264,18 +268,15 @@ public final class DataIndexer {
 
         LOG.info("Indexing file: " + fileName);
 
-        try (final Writer contentWriter = new StringWriter()) {
+        try (final InputStream fis = new FileInputStream(localPath)) {
 
-            final Meta meta = this.parserMap.getParser(contentType)
-                    .parseContent(localPath, contentWriter);
+            final Meta meta = new Meta();
+            final Reader reader = this.parserMap.getParser(contentType)
+                    .parseContent(fis, meta);
 
-            try (final Reader contentReader =
-                    new StringReader(contentWriter.toString())) {
-
-                indexWriter.addDocument(getLuceneDocument(data, fileName,
-                        localPath, remotePath, contentType, meta,
-                        contentReader));
-            }
+            indexWriter.addDocument(getLuceneDocument(data, fileName,
+                    localPath, remotePath, contentType, meta,
+                    reader));
 
             LOG.info("File added to index: " + fileName);
 
@@ -283,8 +284,7 @@ public final class DataIndexer {
 
         } catch (final Throwable e) {
 
-            LOG.error("Can't find parser for file: " + localPath);
-            LOG.debug(e.getMessage());
+            LOG.error("Error parsing content of file: " + localPath, e);
 
             return false;
         }

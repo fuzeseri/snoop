@@ -202,6 +202,8 @@ public class IndexTask implements SnoopTask {
 
                 if (data.getLock() == 0
                         &&
+                        data.getDeleted() == 0
+                        &&
                         (data.getStatus() == IndexStatus.NEW.getStatus()
                                 || data.getStatus() == IndexStatus.MODIFIED
                                         .getStatus()
@@ -210,15 +212,11 @@ public class IndexTask implements SnoopTask {
                                 || data.getStatus() == IndexStatus.DELETED
                                 .getStatus())
                 ) {
-                    System.out.println("PRE INDEX STATUS: " + data.getStatus());
 
                     data.setLock(lock);
                     data.setLocktime(now);
                     datas.add(data);
                     counter.increment();
-                } else {
-
-                    System.out.println("DATA SATUS: " + data.getStatus());
                 }
             }
 
@@ -307,8 +305,6 @@ public class IndexTask implements SnoopTask {
 
         for (final FileData dat : data) {
 
-            System.out.println("LOCK : " + dat.getLock());
-            System.out.println("POST INDEX STATUS: " + dat.getStatus());
             dat.setLock(0L);
             dat.setLocktime(0L);
             dat.setLitime(now);
