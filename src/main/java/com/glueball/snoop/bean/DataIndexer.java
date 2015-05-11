@@ -124,6 +124,18 @@ public final class DataIndexer {
         }
     }
 
+    /**
+     * Index a list of documents.
+     *
+     * @param toIndex
+     *            List of file data.
+     * @param fileNames
+     *            file names map.
+     * @param localPaths
+     *            local paths map.
+     * @param remotePaths
+     *            remote paths map.
+     */
     private void indexList(final List<FileData> toIndex,
             final Map<FileId, String> fileNames,
             final Map<FileId, String> localPaths,
@@ -173,6 +185,18 @@ public final class DataIndexer {
         }
     }
 
+    /**
+     * Index, re-index or delete documents.
+     *
+     * @param datas
+     *            List of file data.
+     * @param fileNames
+     *            file names map.
+     * @param localPaths
+     *            local paths map.
+     * @param remotePaths
+     *            remote paths map.
+     */
     public void index(final List<FileData> datas,
             final Map<FileId, String> fileNames,
             final Map<FileId, String> localPaths,
