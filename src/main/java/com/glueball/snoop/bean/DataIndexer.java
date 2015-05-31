@@ -117,10 +117,10 @@ public final class DataIndexer {
                 LOG.error("ERROR while trying to commit index changes");
                 LOG.debug(e.getMessage());
             }
-            LOG.debug("index contains deleted files: "
+            LOG.info("index contains deleted files: "
                     + indexWriter.hasDeletions());
 
-            LOG.debug("index contains documents: " + indexWriter.maxDoc());
+            LOG.info("index contains documents: " + indexWriter.maxDoc());
         }
     }
 
@@ -162,7 +162,7 @@ public final class DataIndexer {
                     continue;
                 }
 
-                LOG.debug("Indexing file: " + localPath);
+                LOG.info("Indexing file: " + localPath);
 
                 boolean indexed = indexFileContent(data, fileName, localPath,
                         remotePath, contentType);
@@ -171,7 +171,9 @@ public final class DataIndexer {
                 data.setStatus(indexed ? IndexStatus.INDEXED.getStatus()
                         : IndexStatus.ERROR.getStatus());
             }
+        } catch (final Throwable e) {
 
+            e.printStackTrace();
         } finally {
 
             try {
