@@ -13,8 +13,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -49,7 +47,7 @@ public final class Result extends Composite {
      * Link to the uri of the file.
      */
     @UiField
-    Anchor link;
+    Label link;
 
     /**
      * Mime icon image.
@@ -109,7 +107,6 @@ public final class Result extends Composite {
         title.setText(this.result.getTitle());
         author.setText(this.result.getAuthor());
         description.setText(this.result.getDescription());
-        link.setHref(this.result.getUri());
         link.setText(this.result.getFileName());
     }
 
@@ -132,6 +129,11 @@ public final class Result extends Composite {
     @UiHandler("link")
     public void linkClickHandler(final ClickEvent event) {
 
-        Window.Location.replace(this.result.getUri());
+        openFile(this.result.getUri());
     }
+
+    public static native void openFile(final String uri) /*-{
+
+		$wnd.snoopObj.openFile(uri);
+    }-*/;
 }

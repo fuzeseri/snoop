@@ -227,7 +227,8 @@ public class SearchService {
                 res.setAuthor(doc.get("author"));
                 res.setDescription(doc.get("description"));
                 res.setFileName(doc.get("fileName"));
-                res.setUri(doc.get("path"));
+                res.setUri(doc.get("uri"));
+                System.out.println(doc.get("uri"));
                 res.setContentType(doc.get("contentType"));
                 results.add(res);
             } catch (final IOException e) {

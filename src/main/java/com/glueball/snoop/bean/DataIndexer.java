@@ -10,7 +10,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -257,7 +256,8 @@ public final class DataIndexer {
         doc.add(new TextField("file", fileName, Field.Store.YES));
         doc.add(new StringField("path", remotePath, Field.Store.YES));
         doc.add(new StringField("uri",
-                Paths.get(remotePath).toUri().toString(),
+                // Paths.get(remotePath).toUri().toString(),
+                remotePath,
                 Field.Store.YES));
         doc.add(new StringField("contentType", contentType,
                 Field.Store.YES));

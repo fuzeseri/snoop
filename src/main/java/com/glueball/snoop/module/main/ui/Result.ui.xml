@@ -12,7 +12,7 @@
 				<g:Grid>
 					<g:row>
 						<g:customCell><g:Label text='File:' /></g:customCell>
-						<g:customCell><g:Anchor ui:field="link"  /></g:customCell>
+						<g:customCell><g:Label ui:field="link"  /></g:customCell>
 					</g:row>
 					<g:row>
 						<g:customCell><g:Label text='Title:' /></g:customCell>

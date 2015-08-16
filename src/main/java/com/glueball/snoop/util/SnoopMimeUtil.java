@@ -53,30 +53,5 @@ public final class SnoopMimeUtil {
 
             return "";
         }
-
-        // final File f = new File(path);
-        // if (f.exists()) {
-        // System.out.println("FILE exists -- " + path);
-        // } else {
-        // System.out.println("FILE NOT exists -- " + path);
-        // }
-        //
-        // try (final InputStream is = new FileInputStream(f)) {
-        //
-        // final MimeTypes mimeTypes = new MimeTypes();
-        //
-        // final Metadata meta = new Metadata();
-        // final MediaType type = mimeTypes.detect(is, meta);
-        //
-        // return type.getType();
-        //
-        // } catch (final IOException e) {
-        //
-        // LOG.info("Error detecting content type of file: " + path);
-        // LOG.debug(e.getMessage(), e);
-        // e.printStackTrace();
-        //
-        // return "";
-        // }
     }
 }
