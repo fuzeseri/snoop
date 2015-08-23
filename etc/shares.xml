@@ -2,8 +2,8 @@
 <shares xmlns="http://snoop.glueball.com/share">
     <share>
         <name>karesz-home</name>
-        <localPath>/home/karesz/dokumentumok/java</localPath>
-        <remotePath>/home/karesz/dokumentumok/java</remotePath>
+        <localPath>/home/karesz/dokumentumok</localPath>
+        <remotePath>/home/karesz/dokumentumok</remotePath>
         <aktiv>true</aktiv>
         <scanDelay>10m</scanDelay>
     </share>

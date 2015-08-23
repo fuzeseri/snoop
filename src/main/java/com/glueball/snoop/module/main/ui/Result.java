@@ -62,7 +62,7 @@ public final class Result extends Composite {
 
     /**
      * GWT uibinder interface declaration.
-     * 
+     *
      * @author karesz
      */
     interface ResultUiBinder extends UiBinder<Widget, Result> {

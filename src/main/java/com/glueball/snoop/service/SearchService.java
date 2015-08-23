@@ -56,12 +56,12 @@ public class SearchService {
     /**
      * Maximum number of document selected from the index.
      */
-    private static final int MAX_SCORE_DOCS = 1000;
+    private static final int MAX_SCORE_DOCS = 300;
 
     /**
      * Default maximum number of hits on a page.
      */
-    private static final int DEFAULT_HITS_PER_PAGE = 50;
+    private static final int DEFAULT_HITS_PER_PAGE = 30;
     /**
      * The lucene directory object.
      */

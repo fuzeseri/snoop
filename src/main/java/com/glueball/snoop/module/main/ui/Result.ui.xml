@@ -2,7 +2,12 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
-	
+        
+        .file {
+            color: blue;
+            cursor: pointer;
+            text-decoration: underline;
+            }
 	</ui:style>
 	<g:HTMLPanel>
 		<g:HorizontalPanel>
@@ -12,7 +17,7 @@
 				<g:Grid>
 					<g:row>
 						<g:customCell><g:Label text='File:' /></g:customCell>
-						<g:customCell><g:Label ui:field="link"  /></g:customCell>
+						<g:customCell><g:Label ui:field="link" styleName='{style.file}' /></g:customCell>
 					</g:row>
 					<g:row>
 						<g:customCell><g:Label text='Title:' /></g:customCell>

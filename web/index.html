@@ -1,12 +1,152 @@
-<!doctype html>
-<html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>Snoop Search</title>
-    <link rel="shortcut icon" href="/snoop.ico"/>
-  </head>
-  <body>
-    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
-	<script languge="javascript" src="/page/Main/com.glueball.snoop.module.MainModule.nocache.js"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Snoop</title>
+
+<meta name="description" content="Snoop search engine">
+<meta name="author" content="Glueball Ltd.">
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+
+</head>
+<script src="js/angular.min.js"></script>
+<body>
+
+	<div class="row" ng-app="myApp" ng-controller="mainCtrl">
+		<div class="col-md-12">
+
+			<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+
+				<div class="navbar-header">
+					<img class="navbar-logo" src="images/snoop-logo.png" style="height:55px;">
+				</div>
+
+				<div id="custom-search-input">
+					<div class="input-group ">
+
+						<input type="text" class="form-control input-lg"
+							placeholder="Search" ng-model="searchText" ng-keyup="$event.keyCode == 13 && search()" /> <span class="input-group-btn">
+
+							<div class="btn-group">
+
+								<a id="amount_type" class="btn dropdown-toggle"
+									data-toggle="dropdown" href="#">.pdf<span class="caret"></span></a>
+
+								<ul id="mediaTypes" class="dropdown-menu">
+									<li class="selected"><a href="#">.xls</a></li>
+									<li><a href="#">.jpg</a></li>
+									<li><a href="#">.doc</a></li>
+									<li><a href="#">.xls</a></li>
+									<li><a href="#">.pdf</a></li>
+								</ul>
+							</div>
+
+						</span> <span class="input-group-btn">
+							<button class="btn btn-info btn-lg" type="button" ng-click="search()">
+								<i class="glyphicon glyphicon-search"></i>
+							</button>
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="row" style="height: 50px"></div>
+			<div ng-repeat="x in results">
+
+				<div class="search-result" style="margin-left:100px;">
+
+                    <table>
+                        <tr>
+                        <td style="vertical-align:center;">
+	                    <div style="display: inline-block; vertical-align:top;">
+	                       <img style="width:40px; height:50px; vertical-align:top;" src="../images/fileicons/{{ x.fileName.substring(x.fileName.lastIndexOf('.') + 1 ) }}.png">
+	                    </div>
+	                    </td>
+	                    <td style="width:10px;">
+	                    </td>
+	                    <td style="vertical-align:top;">
+	                    <div style="display: inline-block;  vertical-align:center;">
+							<h3><a href="#" ng-click="openFile(x.uri)">{{ x.fileName }}</a></h3>
+							<h4><a href="#" class="search-link">{{ x.title }}</a></h4>
+							<h4><a href="#" class="search-link">{{ x.author }}</a></h4>
+							<h4><a href="#" class="search-link">{{ x.contentType }}</a></h4>
+						</div>
+						</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+
+			<div class="navbar navbar-default navbar-fixed-bottom">
+
+			     <div class="container">
+					<nav>
+						  <ul class="pagination">
+							    
+							    <li>
+							      <a href="#" aria-label="Previous">
+							        <span aria-hidden="true">&laquo;</span>
+							      </a>
+							    </li>
+							    
+							    <li><a href="#" ng-repeat="pg in pages" ng-click="search(pg)">{{ pg }}</a></li>
+							    
+							    <li>
+							      <a href="#" aria-label="Next">
+							        <span aria-hidden="true">&raquo;</span>
+							      </a>
+							    </li>
+							    
+						  </ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/scripts.js"></script>
+
+<script>
+
+var app = angular.module('myApp', []);
+
+app.controller('mainCtrl', function($scope, $http, $window) {
+
+    $scope.search = function(pageNum) {
+    
+        if ( null == pageNum ) {
+
+            pageNum = 1;
+        }
+
+		$http.get("http://localhost:8080/search/" + $scope.searchText + "?page=" + pageNum).success(
+
+		   function (response) {
+		       $scope.results = response.results;
+		       $scope.pages = response.pages;
+		       $scope.currentPage = response.currentPage;
+		       $scope.totalHits = response.totalHits;
+		   });
+	}
+
+	$scope.openFile = function(uri) {
+
+        snoopObj.openFile(uri);
+        };
+
+    $scope.alert = function (message) {
+
+        $window.alert(message);
+    }
+});
+
+</script>
+</body>
 </html>
