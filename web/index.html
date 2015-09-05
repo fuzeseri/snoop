@@ -89,15 +89,19 @@
 						  <ul class="pagination">
 							    
 							    <li>
-							      <a href="#" aria-label="Previous">
+							      <a href="#" aria-label="Previous" ng-click="search(currentPage - 1)">
 							        <span aria-hidden="true">&laquo;</span>
 							      </a>
 							    </li>
 							    
-							    <li><a href="#" ng-repeat="pg in pages" ng-click="search(pg)">{{ pg }}</a></li>
-							    
+							    <li ng-repeat="pg in pages" ng-class="{active : pg == currentPage}">
+							         <a href="#" ng-click="search(pg)">
+							             {{ pg }}
+							         </a>
+							    </li>
+
 							    <li>
-							      <a href="#" aria-label="Next">
+							      <a href="#" aria-label="Next" ng-click="search(currentPage + 1)">
 							        <span aria-hidden="true">&raquo;</span>
 							      </a>
 							    </li>
@@ -112,41 +116,6 @@
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/scripts.js"></script>
-
-<script>
-
-var app = angular.module('myApp', []);
-
-app.controller('mainCtrl', function($scope, $http, $window) {
-
-    $scope.search = function(pageNum) {
-    
-        if ( null == pageNum ) {
-
-            pageNum = 1;
-        }
-
-		$http.get("http://localhost:8080/search/" + $scope.searchText + "?page=" + pageNum).success(
-
-		   function (response) {
-		       $scope.results = response.results;
-		       $scope.pages = response.pages;
-		       $scope.currentPage = response.currentPage;
-		       $scope.totalHits = response.totalHits;
-		   });
-	}
-
-	$scope.openFile = function(uri) {
-
-        snoopObj.openFile(uri);
-        };
-
-    $scope.alert = function (message) {
-
-        $window.alert(message);
-    }
-});
-
-</script>
+    <script src="js/searchpage.js"></script>
 </body>
 </html>
